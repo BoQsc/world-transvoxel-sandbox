@@ -20,6 +20,7 @@ DEFAULT_OUTPUT = ROOT / "world"
 ORIGIN = (-2, -2, -2)
 DIMENSIONS = (133, 69, 133)
 LOD0_CHUNKS = (8, 4, 8)
+WORLD_EXTENT = tuple(value * 16 for value in LOD0_CHUNKS)
 SOURCE_REVISION = 10001
 
 
@@ -59,6 +60,7 @@ def write_volume(preset: str) -> dict[str, int]:
     material_counts = {str(index): 0 for index in range(6)}
     cave_samples = 0
     ore_samples = 0
+    boundary_samples = 0
 
     x_coordinates = [ORIGIN[0] + index for index in range(DIMENSIONS[0])]
     y_coordinates = [ORIGIN[1] + index for index in range(DIMENSIONS[1])]
@@ -78,7 +80,12 @@ def write_volume(preset: str) -> dict[str, int]:
             for x_index, x in enumerate(x_coordinates):
                 height = heights[x_index]
                 density = float(y) - height
-                if preset == "terrain" and y < height - 6.0:
+                cave_margin = (
+                    1 < x < WORLD_EXTENT[0] - 1
+                    and 1 < y
+                    and 1 < z < WORLD_EXTENT[2] - 1
+                )
+                if preset == "terrain" and cave_margin and y < height - 6.0:
                     cave = (
                         sin_x[x_index]
                         + sin_y[y_index]
@@ -89,6 +96,21 @@ def write_volume(preset: str) -> dict[str, int]:
                         density = max(density, (cave - 2.28) * 9.0)
                         if density >= 0.0:
                             cave_samples += 1
+
+                boundary_distance = min(
+                    x,
+                    WORLD_EXTENT[0] - x,
+                    y,
+                    z,
+                    WORLD_EXTENT[2] - z,
+                )
+                # Keep the finite shell halfway between integer samples. An
+                # exact zero at distance one creates collapsed/isovalue-tied
+                # boundary triangles and fragmented material patches.
+                boundary_density = 0.5 - float(boundary_distance)
+                if boundary_density >= density:
+                    density = boundary_density
+                    boundary_samples += 1
 
                 material = 0
                 if density < 0.0:
@@ -126,6 +148,7 @@ def write_volume(preset: str) -> dict[str, int]:
         "samples": len(densities),
         "cave_samples": cave_samples,
         "ore_samples": ore_samples,
+        "boundary_samples": boundary_samples,
         **{f"material_{key}": value for key, value in material_counts.items()},
     }
 
@@ -243,4 +266,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -13,6 +13,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "tests"
 ENGINE_VERSIONS = ("4.6.3", "4.7")
+TEST_CASES = (
+    ("smoke", "res://tests/sandbox_smoke.gd", "WT_SANDBOX_SMOKE_PASS"),
+    (
+        "geometry",
+        "res://tests/terrain_geometry_audit.gd",
+        "WT_SANDBOX_GEOMETRY_PASS",
+    ),
+    (
+        "interaction",
+        "res://tests/terrain_interaction_audit.gd",
+        "WT_SANDBOX_INTERACTION_PASS",
+    ),
+    ("seams", "res://tests/terrain_seam_audit.gd", "WT_SANDBOX_SEAM_PASS"),
+)
 DEBUG_DLL = (
     ROOT
     / "addons"
@@ -52,7 +66,7 @@ def discover_engines(explicit: list[Path]) -> list[tuple[str, Path]]:
     )
 
 
-def run_case(engine: Path, name: str) -> None:
+def run_case(engine: Path, name: str, script: str, marker: str) -> None:
     journal = ROOT / "world" / "world.wtedit"
     if journal.exists():
         journal.unlink()
@@ -63,7 +77,7 @@ def run_case(engine: Path, name: str) -> None:
             "--path",
             str(ROOT),
             "--script",
-            "res://tests/sandbox_smoke.gd",
+            script,
         ],
         cwd=ROOT,
         check=False,
@@ -81,7 +95,7 @@ def run_case(engine: Path, name: str) -> None:
     )
     combined = result.stdout + result.stderr
     print(combined, end="" if combined.endswith("\n") else "\n")
-    if result.returncode != 0 or "WT_SANDBOX_SMOKE_PASS" not in combined:
+    if result.returncode != 0 or marker not in combined:
         raise RuntimeError(f"Sandbox Godot case failed: {name}")
 
 
@@ -143,7 +157,13 @@ def main() -> None:
     for version, engine in engines:
         import_project(engine, f"godot-{version}")
     for version, engine in engines:
-        run_case(engine, f"godot-{version}-debug")
+        for case_name, script, marker in TEST_CASES:
+            run_case(
+                engine,
+                f"godot-{version}-debug-{case_name}",
+                script,
+                marker,
+            )
 
     backup = ARTIFACT_ROOT / f"{DEBUG_DLL.name}.backup"
     backup.parent.mkdir(parents=True, exist_ok=True)
@@ -151,13 +171,20 @@ def main() -> None:
     try:
         shutil.copy2(RELEASE_DLL, DEBUG_DLL)
         for version, engine in engines:
-            run_case(engine, f"godot-{version}-release")
+            for case_name, script, marker in TEST_CASES:
+                run_case(
+                    engine,
+                    f"godot-{version}-release-{case_name}",
+                    script,
+                    marker,
+                )
     finally:
         shutil.copy2(backup, DEBUG_DLL)
         backup.unlink(missing_ok=True)
     print(
         "WT_SANDBOX_MATRIX_PASS "
-        f"engines={len(engines)} configurations=2 cases={len(engines) * 2}"
+        f"engines={len(engines)} configurations=2 "
+        f"tests={len(TEST_CASES)} cases={len(engines) * 2 * len(TEST_CASES)}"
     )
 
 

@@ -1,10 +1,10 @@
 {
   "artifact": {
-    "bytes": 6185055,
-    "content_sha256": "1fbbe3451d4388c18eafa38982771f9ca78e4c3c34f83354b8c3bc826406aac4",
-    "file_count": 143,
+    "bytes": 6196046,
+    "content_sha256": "a79171c639aa01f7cfec420a303264d056bd36d2c8bed7715887f796acf19b6c",
+    "file_count": 147,
     "format": "directory",
-    "name": "world-transvoxel-1.0.0-windows-x86_64"
+    "name": "world-transvoxel-1.0.1-windows-x86_64"
   },
   "backend": {
     "id": "transvoxel_mit_official",
@@ -34,9 +34,9 @@
       "sha256": "11f8fcff254eb168cf438597185961d181b1b017c59933f0119ab804442f1043"
     },
     {
-      "bytes": 3422,
+      "bytes": 3435,
       "path": "addons/world_transvoxel/OPERATING_LIMITS.md",
-      "sha256": "e939338461826fb174a6c34c858456111f13adee7117755c453c6d411af652c5"
+      "sha256": "e13bf979e359b9577a6691f1c8dbc17c83c0bcbfc1b71ed3dc9e35bb0e15420b"
     },
     {
       "bytes": 4240,
@@ -44,19 +44,19 @@
       "sha256": "bebd0737c9fb452d631593a72bd13dc6c4a4921500c58a398503c651cbdfdca9"
     },
     {
-      "bytes": 2759,
+      "bytes": 2901,
       "path": "addons/world_transvoxel/README.md",
-      "sha256": "1ff7a3e8b79d6fdda16429ea1e58476e9b82c786ca85f571b71527a1123911b0"
+      "sha256": "978e14477cd5904d5b7d917b25ba06ae448e2ba54fe8fbee187ac4491f2a7ef3"
     },
     {
-      "bytes": 1649664,
+      "bytes": 1651200,
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
-      "sha256": "dbd52edd6025f16d7efd8289420852d916d9b181fbc52894cdfb6fc7e2f04b87"
+      "sha256": "450b1d266083ba704415f7c942a0e87888f673448f2ae8eb84c5dcac48e51406"
     },
     {
-      "bytes": 1601024,
+      "bytes": 1602560,
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
-      "sha256": "c9a2066ba98af64fefdc55cad396af1ea5e070f8d3da5f1ea8708b510531796a"
+      "sha256": "720bfa7aaf6da7d0111943461125410c6bba08fb301d85d75e4872975eb62a2b"
     },
     {
       "bytes": 561664,
@@ -101,7 +101,7 @@
     {
       "bytes": 188,
       "path": "addons/world_transvoxel/plugin.cfg",
-      "sha256": "d6f5073fc1285d806c5ae08cd99786d54be39247413c28bb4fc99d913a5a4387"
+      "sha256": "c6c92426e4797c98cc3db5d2ffaafd1d3d8b064fa314e74fef039f11274f521c"
     },
     {
       "bytes": 2492,
@@ -261,7 +261,7 @@
     {
       "bytes": 180,
       "path": "addons/world_transvoxel/src/core/wt_version.h",
-      "sha256": "56c45b496ad5080fdd88a819471ced128bd8ba9160c9437ba3ea97c6d37e1693"
+      "sha256": "4a9d5c9822e184b6c5107c250b02cf5577408a289a7444c81691bf6fad95f5a8"
     },
     {
       "bytes": 8668,
@@ -309,19 +309,39 @@
       "sha256": "95f7e86078f468548d1273f0299b5f7792ea980a5aec263a764959fb4cc51194"
     },
     {
-      "bytes": 3834,
+      "bytes": 3138,
+      "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesh_finalize.cpp",
+      "sha256": "5723f6bb3698feab4deebd2d641c91ad7ff25353110ee4796d94adbaf30b8f96"
+    },
+    {
+      "bytes": 297,
+      "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesh_finalize.h",
+      "sha256": "ac2f44256f1c8183976c2bb326d0f8f24dbbd808713b0d45bddb497a4d995ff4"
+    },
+    {
+      "bytes": 5773,
       "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesh_geometry.cpp",
-      "sha256": "3e3bf60d2f13946d39f9264779990b13075e73391a94aba98b285d16df5753e3"
+      "sha256": "02b5505d6bfca17b36f2ac35cb60140d77203d43c61b7d993f26960819f649cc"
     },
     {
-      "bytes": 583,
+      "bytes": 606,
       "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesh_geometry.h",
-      "sha256": "54804958d42aa1bc73722cce78e78a3446526eab8efb7e1783cd552147276ef8"
+      "sha256": "8fd9a3bd28a78ad7ca81ebb0e07d1905a4d436fb024a5cd0810eb94d521e0677"
     },
     {
-      "bytes": 18160,
+      "bytes": 1613,
+      "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesh_key.cpp",
+      "sha256": "dd36206636b1445c2a6fae592e95b3725db6091538c9c9dc38ad57d813877284"
+    },
+    {
+      "bytes": 165,
+      "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesh_key.h",
+      "sha256": "5bafd04ea73e799af71e7afdb19c06a0ece5d47272fdb98706a055eddec93fda"
+    },
+    {
+      "bytes": 17898,
       "path": "addons/world_transvoxel/src/meshing/wt_chunk_mesher.cpp",
-      "sha256": "277317a6bb68c738fc9b53e1ada43e5d154cb45a23e8c51c58ad3d5130b4e2d0"
+      "sha256": "9790cd89c3122a6f377941a2c15591bf46df59d5221107e5a981964d2ed203eb"
     },
     {
       "bytes": 2752,
@@ -349,9 +369,9 @@
       "sha256": "16b882260baed811548a97b81a617174829d0e455dac64b05be56cd9894462b7"
     },
     {
-      "bytes": 3160,
+      "bytes": 3531,
       "path": "addons/world_transvoxel/src/physics/wt_godot_collision_sink.cpp",
-      "sha256": "0550ed4cc0cf2ee0330d1bd9c74283b75e7c997cac3fdb2297637d4436a5d9b6"
+      "sha256": "27144aad556b49ad79735ec888b16541ef401f0ec12d7b67a7593c256d3ee8bd"
     },
     {
       "bytes": 934,
@@ -369,9 +389,9 @@
       "sha256": "3d2d0bc14b95b00e57503e5c58bfec97ddef3b828a874e8341d4e9248c966930"
     },
     {
-      "bytes": 4235,
+      "bytes": 4715,
       "path": "addons/world_transvoxel/src/render/wt_godot_render_sink.cpp",
-      "sha256": "989d66f46911d2d0395a08e737e837ed1016f1d8fbf5fb6baa62fd801d31979e"
+      "sha256": "c008e22f9e2d1f27542d992bb439d8a1a709d5ee2fc451549c0bdd33aa09c0f9"
     },
     {
       "bytes": 852,
@@ -749,5 +769,5 @@
     "godot_cpp_revision": "e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77",
     "zig": "0.16.0"
   },
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

@@ -3,6 +3,9 @@ extends Node3D
 
 signal lab_status_changed(message: String)
 
+const WORLD_MIN := Vector3(0.001, 0.001, 0.001)
+const WORLD_MAX := Vector3(127.999, 63.999, 127.999)
+
 @export_file("*.wtworld") var world_manifest_path := "res://world/world.wtworld"
 @export_dir var world_object_root := "res://world"
 @export var terrain_path: NodePath
@@ -13,6 +16,7 @@ signal lab_status_changed(message: String)
 @export_range(0, 20, 1) var maximum_lod := 1
 @export_range(0.25, 16.0, 0.25) var mining_radius := 3.0
 @export_range(1.0, 32.0, 0.5) var mining_strength := 6.0
+@export_range(16.0, 512.0, 1.0) var aim_distance := 256.0
 
 @onready var terrain: Node3D = get_node(terrain_path)
 @onready var viewer: Node3D = get_node(viewer_path)
@@ -20,7 +24,10 @@ signal lab_status_changed(message: String)
 
 var _viewer_revision := 0
 var _last_viewer_position := Vector3.INF
+var _streaming_position := Vector3.ZERO
 var _status := "initializing"
+var _aim_status := "waiting for collision"
+var _aim_elapsed := 0.0
 
 
 func _ready() -> void:
@@ -45,10 +52,29 @@ func _exit_tree() -> void:
 		terrain.call("stop_world")
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if not event is InputEventMouseButton or 			event.button_index != MOUSE_BUTTON_LEFT or 			not event.pressed or 			Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+func _physics_process(delta: float) -> void:
+	_aim_elapsed += delta
+	if _aim_elapsed < 0.1:
 		return
-	_apply_mining(event.shift_pressed, event.ctrl_pressed)
+	_aim_elapsed = 0.0
+	if not terrain.call("is_world_running"):
+		_aim_status = "world is not running"
+		return
+	var hit := _raycast_terrain()
+	if hit.is_empty():
+		_aim_status = "miss (aim at loaded collision)"
+	else:
+		var aim_point: Vector3 = hit["position"]
+		_aim_status = "hit " + str(aim_point.round())
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not event is InputEventMouseButton or \
+			event.button_index != MOUSE_BUTTON_LEFT or \
+			not event.pressed or \
+			Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+		return
+	submit_mining_at_aim(event.shift_pressed, event.ctrl_pressed)
 	get_viewport().set_input_as_handled()
 
 
@@ -68,39 +94,40 @@ func _on_viewer_position_changed(position: Vector3) -> void:
 
 
 func _submit_viewer(position: Vector3) -> void:
-	if position.is_equal_approx(_last_viewer_position):
+	var bounded := Vector3(
+		clampf(position.x, WORLD_MIN.x, WORLD_MAX.x),
+		clampf(position.y, WORLD_MIN.y, WORLD_MAX.y),
+		clampf(position.z, WORLD_MIN.z, WORLD_MAX.z)
+	)
+	_streaming_position = bounded
+	if bounded.is_equal_approx(_last_viewer_position):
 		return
 	_viewer_revision += 1
 	if terrain.call(
 		"update_viewer",
 		viewer_id,
 		_viewer_revision,
-		position,
+		bounded,
 		radius_chunks,
 		maximum_lod
 	):
-		_last_viewer_position = position
+		_last_viewer_position = bounded
 	else:
 		_set_status("viewer rejected: " + str(terrain.call("get_world_error")))
 
 
-func _apply_mining(fill: bool, paint: bool) -> void:
+func submit_mining_at_aim(fill: bool = false, paint: bool = false) -> bool:
 	if not terrain.call("is_world_running"):
 		_set_status("mining ignored: world is not running")
-		return
-	var origin := camera.global_position
-	var direction := -camera.global_transform.basis.z
-	var query := PhysicsRayQueryParameters3D.create(
-		origin, origin + direction * 256.0
-	)
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+		return false
+	var hit := _raycast_terrain()
 	if hit.is_empty():
 		_set_status("mining ray missed terrain")
-		return
+		return false
 	var transaction: Object = terrain.call("begin_edit_transaction", 1)
 	if transaction == null:
 		_set_status("edit rejected: " + str(terrain.call("get_world_error")))
-		return
+		return false
 	var point: Vector3 = hit["position"]
 	var command_ok := false
 	var operation := "carve"
@@ -122,8 +149,15 @@ func _apply_mining(fill: bool, paint: bool) -> void:
 		"commit_edit_transaction", transaction
 	):
 		_set_status("edit failed: " + str(transaction.call("get_error")))
-		return
+		return false
+	_show_edit_marker(
+		point,
+		Color(0.95, 0.25, 0.12)
+		if operation == "carve"
+		else Color(0.20, 0.85, 1.0)
+	)
 	_set_status(operation + " submitted at " + str(point.round()))
+	return true
 
 
 func _on_edit_committed(world_revision: int) -> void:
@@ -142,3 +176,38 @@ func _set_status(message: String) -> void:
 
 func get_status() -> String:
 	return _status
+
+
+func get_aim_status() -> String:
+	return _aim_status
+
+
+func get_streaming_position() -> Vector3:
+	return _streaming_position
+
+
+func _raycast_terrain() -> Dictionary:
+	var origin := camera.global_position
+	var direction := -camera.global_transform.basis.z
+	var query := PhysicsRayQueryParameters3D.create(
+		origin, origin + direction * aim_distance
+	)
+	return get_world_3d().direct_space_state.intersect_ray(query)
+
+
+func _show_edit_marker(point: Vector3, color: Color) -> void:
+	var marker := MeshInstance3D.new()
+	marker.name = "WT_EditMarker"
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.35
+	sphere.height = 0.7
+	marker.mesh = sphere
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.albedo_color = color
+	material.emission_enabled = true
+	material.emission = color
+	marker.material_override = material
+	marker.position = point
+	add_child(marker)
+	get_tree().create_timer(0.8).timeout.connect(marker.queue_free)

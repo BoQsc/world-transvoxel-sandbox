@@ -5,13 +5,13 @@ uniform int debug_mode : hint_range(0, 2) = 0;
 uniform float pattern_scale : hint_range(0.01, 2.0) = 0.16;
 instance uniform float lod_level = 0.0;
 
-varying flat float material_id;
+varying float material_id;
 varying vec3 world_position;
 
 vec3 material_color(float id) {
 	if (id < 1.5) return vec3(0.18, 0.42, 0.12);
 	if (id < 2.5) return vec3(0.34, 0.20, 0.10);
-	if (id < 3.5) return vec3(0.34, 0.36, 0.40);
+	if (id < 3.5) return vec3(0.20, 0.22, 0.24);
 	if (id < 4.5) return vec3(0.65, 0.30, 0.08);
 	return vec3(0.12, 0.14, 0.18);
 }
@@ -29,7 +29,8 @@ void vertex() {
 }
 
 void fragment() {
-	vec3 base = material_color(material_id);
+	float resolved_material = floor(material_id + 0.5);
+	vec3 base = material_color(resolved_material);
 	if (debug_mode == 2) {
 		base = lod_color(lod_level);
 	} else if (debug_mode == 0) {
@@ -45,7 +46,6 @@ void fragment() {
 		base *= 0.86 + grain * 0.11;
 	}
 	ALBEDO = base;
-	ROUGHNESS = material_id > 3.5 && material_id < 4.5 ? 0.55 : 0.92;
-	METALLIC = material_id > 3.5 && material_id < 4.5 ? 0.22 : 0.0;
+	ROUGHNESS = resolved_material > 3.5 && resolved_material < 4.5 ? 0.55 : 0.92;
+	METALLIC = resolved_material > 3.5 && resolved_material < 4.5 ? 0.22 : 0.0;
 }
-

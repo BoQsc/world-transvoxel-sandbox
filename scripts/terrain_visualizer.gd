@@ -5,18 +5,25 @@ signal visualization_changed
 
 @export var terrain_path: NodePath
 @export var terrain_material: ShaderMaterial
-@export var bounds_visible := true
+@export var bounds_visible := false
 
 var _terrain: Node
 var _debug_mode := 0
 var _lod_counts: Dictionary = {}
 var _chunk_lods: Dictionary = {}
+var _world_bounds: MeshInstance3D
 
 
 func _ready() -> void:
 	_terrain = get_node(terrain_path)
 	_terrain.child_entered_tree.connect(_on_terrain_child_entered)
 	_terrain.child_exiting_tree.connect(_on_terrain_child_exiting)
+	_world_bounds = _create_box_bounds(
+		Vector3(128, 64, 128),
+		Color(1.0, 0.55, 0.12, 0.9),
+		"WT_WorldBounds"
+	)
+	_terrain.add_child(_world_bounds)
 	for child in _terrain.get_children():
 		_configure_child.call_deferred(child)
 
@@ -35,6 +42,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			var bounds := child.get_node_or_null("WT_DebugBounds")
 			if bounds != null:
 				bounds.visible = bounds_visible
+		_world_bounds.visible = bounds_visible
 		visualization_changed.emit()
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_F3:
@@ -77,11 +85,26 @@ func _on_terrain_child_exiting(child: Node) -> void:
 
 func _create_bounds(lod: int) -> MeshInstance3D:
 	var extent := float(16 << lod)
+	return _create_box_bounds(
+		Vector3(extent, extent, extent),
+		Color(0.20, 0.95, 0.35, 0.8)
+		if lod == 0
+		else Color(0.20, 0.55, 1.0, 0.8),
+		"WT_DebugBounds"
+	)
+
+
+func _create_box_bounds(
+	extent: Vector3,
+	color: Color,
+	node_name: String
+) -> MeshInstance3D:
 	var corners := [
-		Vector3(0, 0, 0), Vector3(extent, 0, 0),
-		Vector3(extent, extent, 0), Vector3(0, extent, 0),
-		Vector3(0, 0, extent), Vector3(extent, 0, extent),
-		Vector3(extent, extent, extent), Vector3(0, extent, extent),
+		Vector3(0, 0, 0), Vector3(extent.x, 0, 0),
+		Vector3(extent.x, extent.y, 0), Vector3(0, extent.y, 0),
+		Vector3(0, 0, extent.z), Vector3(extent.x, 0, extent.z),
+		Vector3(extent.x, extent.y, extent.z),
+		Vector3(0, extent.y, extent.z),
 	]
 	var edges := [
 		[0, 1], [1, 2], [2, 3], [3, 0],
@@ -91,11 +114,7 @@ func _create_bounds(lod: int) -> MeshInstance3D:
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.no_depth_test = true
-	material.albedo_color = (
-		Color(0.20, 0.95, 0.35, 0.8)
-		if lod == 0
-		else Color(0.20, 0.55, 1.0, 0.8)
-	)
+	material.albedo_color = color
 	var mesh := ImmediateMesh.new()
 	mesh.surface_begin(Mesh.PRIMITIVE_LINES, material)
 	for edge in edges:
@@ -103,7 +122,7 @@ func _create_bounds(lod: int) -> MeshInstance3D:
 		mesh.surface_add_vertex(corners[edge[1]])
 	mesh.surface_end()
 	var instance := MeshInstance3D.new()
-	instance.name = "WT_DebugBounds"
+	instance.name = node_name
 	instance.mesh = mesh
 	instance.visible = bounds_visible
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

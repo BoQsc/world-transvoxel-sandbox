@@ -39,11 +39,11 @@ configuration = ExtResource("2_config")
 script = ExtResource("4_visualizer")
 terrain_path = NodePath("../Terrain")
 terrain_material = ExtResource("5_material")
-bounds_visible = true
+bounds_visible = false
 
 [node name="Viewer" type="Node3D" parent="."]
-position = Vector3(64, 52, 108)
-rotation_degrees = Vector3(-18, 0, 0)
+position = Vector3(64, 72, 112)
+rotation_degrees = Vector3(-28, 0, 0)
 script = ExtResource("3_fly")
 
 [node name="Camera3D" type="Camera3D" parent="Viewer"]
@@ -66,4 +66,3 @@ lab_path = NodePath("..")
 terrain_path = NodePath("../Terrain")
 viewer_path = NodePath("../Viewer")
 visualizer_path = NodePath("../Visualizer")
-

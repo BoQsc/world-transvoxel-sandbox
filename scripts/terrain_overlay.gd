@@ -12,6 +12,7 @@ var _viewer: Node3D
 var _visualizer: Node
 var _panel: PanelContainer
 var _label: Label
+var _crosshair: Label
 var _elapsed := 0.0
 
 
@@ -37,6 +38,13 @@ func _ready() -> void:
 	margin.add_child(_label)
 	_panel.add_child(margin)
 	add_child(_panel)
+	_crosshair = Label.new()
+	_crosshair.text = "+"
+	_crosshair.add_theme_font_size_override("font_size", 26)
+	_crosshair.add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
+	add_child(_crosshair)
+	_crosshair.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_crosshair.position -= _crosshair.size * 0.5
 	_refresh()
 
 
@@ -59,14 +67,25 @@ func _refresh() -> void:
 	var fps := Engine.get_frames_per_second()
 	var frame_ms := 1000.0 / maxf(float(fps), 1.0)
 	var lod_counts: Dictionary = _visualizer.call("get_lod_counts")
+	var position := _viewer.global_position
+	var inside_map := (
+		position.x >= 0.0 and position.x <= 128.0
+		and position.z >= 0.0 and position.z <= 128.0
+	)
 	_label.text = (
 		"World Transvoxel 1.0 Visual Sandbox\n" +
 		"status: %s\n" % _lab.call("get_status") +
+		"aim: %s\n" % _lab.call("get_aim_status") +
 		"fps: %d  approximate frame: %.2f ms\n" % [fps, frame_ms] +
-		"viewer: %s  speed: %.1f\n" % [
-			str(_viewer.global_position.round()),
+		"viewer: %s  speed: %.1f  map XZ: %s\n" % [
+			str(position.round()),
 			_viewer.call("get_movement_speed"),
+			"inside" if inside_map else "OUTSIDE",
 		] +
+		"streaming anchor: %s\n" % str(
+			_lab.call("get_streaming_position").round()
+		) +
+		"orientation: +Y up; F2 wire box=boundary; orange terrain=ore\n" +
 		"world pages: %d  revision: %d\n" % [
 			_terrain.call("get_world_page_count"),
 			_terrain.call("get_world_revision"),
@@ -96,5 +115,5 @@ func _refresh() -> void:
 		] +
 		"RMB mouse | WASD QE move | Shift fast | wheel speed\n" +
 		"LMB carve | Shift+LMB fill | Ctrl+LMB paint ore\n" +
-		"F1 shader view | F2 bounds | F3 collisions | F4 overlay"
+		"F1 view | F2 bounds | F3 collisions | F4 overlay | F5 reset camera"
 	)

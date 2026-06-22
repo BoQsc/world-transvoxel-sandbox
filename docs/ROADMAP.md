@@ -5,22 +5,28 @@ It does not begin 0BSD replacement or compute work prematurely.
 
 ## S0 - Visible integration
 
-Status: implemented.
+Status: revalidated against corrective World Transvoxel 1.0.1.
 
-- vendored and locked World Transvoxel 1.0.0 release;
+- vendored and locked World Transvoxel 1.0.1 release; 1.0.0 is withdrawn;
 - deterministic 128 x 64 x 128 hills/caves/strata/veins world;
 - material and LOD shader views;
 - chunk, collision, queue, latency, and resource visualization;
 - fly camera and interactive carve/fill/paint controls;
-- headless startup, streaming, edit, and shutdown smoke test.
+- headless startup, streaming, edit, and shutdown smoke test;
+- complete loaded-world winding, collision, density-sign, edit, and finite-map
+  boundary audit;
+- exact full-world mixed-LOD manifold and cross-chunk normal-continuity audit;
+- automated center-screen carve interaction and deterministic visual captures.
 
 Exit: a human can see, navigate, inspect, and modify real terrain.
 
 ## S1 - Visual acceptance
 
-Status: next; requires human review.
+Status: automated correctness checks complete; human appearance/playtest review
+remains.
 
-- inspect surfaces, seams, normals, LOD transitions, caves, and collisions;
+- inspect surfaces, LOD appearance, caves, and interaction feel using the
+  generated evidence; topology, winding, and collision are automated gates;
 - add real texture-array/triplanar assets after the procedural palette is
   accepted;
 - record representative screenshots and identified defects;
@@ -74,4 +80,3 @@ starts only after the official backend survives this vertical slice.
 
 Exit: proceed with a game, revise the terrain architecture, or stop with a
 documented reason.
-
