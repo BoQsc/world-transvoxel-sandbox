@@ -1,0 +1,24 @@
+[gd_resource type="WorldTransvoxelConfig" format=3]
+
+[resource]
+active_chunk_capacity = 512
+viewer_capacity = 2
+demand_capacity_per_viewer = 512
+storage_request_capacity = 512
+storage_completion_capacity = 512
+encoded_page_entry_capacity = 384
+encoded_page_byte_capacity = 134217728
+decoded_page_entry_capacity = 256
+decoded_page_byte_capacity = 134217728
+mesh_entry_capacity = 256
+mesh_byte_capacity = 268435456
+render_entry_capacity = 256
+render_byte_capacity = 268435456
+collision_entry_capacity = 128
+collision_byte_capacity = 134217728
+trace_event_capacity = 65536
+render_apply_budget = 6
+collision_apply_budget = 3
+collision_activation_distance = 72.0
+collision_deactivation_distance = 96.0
+

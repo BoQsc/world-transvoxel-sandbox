@@ -1,0 +1,6 @@
+.godot/
+.generated/
+world/
+artifacts/
+__pycache__/
+*.pyc
