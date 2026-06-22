@@ -25,6 +25,11 @@ TEST_CASES = (
         "res://tests/terrain_interaction_audit.gd",
         "WT_SANDBOX_INTERACTION_PASS",
     ),
+    (
+        "motion",
+        "res://tests/terrain_motion_audit.gd",
+        "WT_SANDBOX_MOTION_PASS",
+    ),
     ("seams", "res://tests/terrain_seam_audit.gd", "WT_SANDBOX_SEAM_PASS"),
 )
 DEBUG_DLL = (

@@ -1,17 +1,18 @@
 # World Transvoxel Sandbox
 
 Visual, gameplay, and scale validation for the qualified World Transvoxel
-1.0.1 MIT-backed addon. This repository is deliberately a sandbox before it
+1.0.2 MIT-backed addon. This repository is deliberately a sandbox before it
 becomes a game.
 
 World Transvoxel 1.0.0 is rejected and withdrawn. This sandbox exposed its
 incorrect Godot render/collision winding, incomplete convex mixed-LOD corner
-deformation, and inadequate one-chunk acceptance tests. Version 1.0.1 is the
-corrective baseline; it is not a claim that the sandbox is a finished terrain
-product or game.
+deformation, and inadequate one-chunk acceptance tests. Version 1.0.1 is also
+superseded because moving-viewer LOD changes could remove old chunks before
+their replacements were applied. Version 1.0.2 is the current baseline; it is
+not a claim that the sandbox is a finished terrain product or game.
 
 The vendored addon is the exact Windows x86-64 release from
-`world-transvoxel` commit `2e82440`. Its mixed 0BSD/MIT scope and release
+`world-transvoxel` commit `50f3a6d`. Its mixed 0BSD/MIT scope and release
 manifest are retained at the repository root.
 
 ## Run
@@ -63,6 +64,9 @@ triangle is finite, nondegenerate, and outward-facing for Godot; outside rays
 must hit collision; click-to-carve must change authoritative density and
 remesh; both LODs must be present; every full-world triangle edge must form a
 closed two-use manifold; and coincident cross-chunk normals must agree.
+Continuous motion checks 480 viewer positions, direct render coverage, and
+2,400 collision probes while confirming staged replacement resources return
+to zero after motion settles.
 Eight deterministic captures cover surface, material, LOD, top, unshadowed
 top, top LOD, and surface/material views of the closed boundary. Human review
 is for appearance and game feel, not for proving Transvoxel topology.

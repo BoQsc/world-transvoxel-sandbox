@@ -74,6 +74,12 @@ Application budgets and metrics:
 - `get_collision_latency_frames_maximum() -> int`
 - `get_runtime_metrics() -> Dictionary`
 
+The metrics dictionary includes `pending_chunk_retirements`, the number of old
+chunk records/resources retained until the current replacement set is fully
+ready. `visual_ready_chunk_records` and `fully_ready_chunk_records` provide
+explicit settlement counts against `active_chunk_records`. Pending retirement
+must return to zero and fully-ready must equal active after streaming settles.
+
 Signals:
 
 - `world_state_changed(state, state_name)`

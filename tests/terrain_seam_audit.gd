@@ -15,6 +15,8 @@ func _run() -> void:
 	if packed == null:
 		return _fail("terrain lab scene could not load")
 	_scene_root = packed.instantiate()
+	# Preserve the exact 88-leaf mixed-LOD topology used by this seam gallery.
+	_scene_root.radius_chunks = 2
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")
@@ -159,8 +161,6 @@ func _wait_for_world(terrain: Node) -> bool:
 
 
 func _wait_for_complete_lod_set(terrain: Node) -> bool:
-	var stable_frames := 0
-	var previous := Vector2i(-1, -1)
 	for _frame in range(TIMEOUT_FRAMES):
 		var metrics: Dictionary = terrain.get_runtime_metrics()
 		var counts := Vector2i(
@@ -169,13 +169,14 @@ func _wait_for_complete_lod_set(terrain: Node) -> bool:
 		)
 		if int(metrics.get("active_chunk_records", 0)) == 88 and \
 				counts.x > 0 and counts.y >= 16 and \
-				int(metrics.get("queued_render", 0)) == 0:
-			stable_frames = stable_frames + 1 if counts == previous else 0
-			if stable_frames >= 60:
-				return true
-		else:
-			stable_frames = 0
-		previous = counts
+				int(metrics.get("queued_render", 0)) == 0 and \
+				int(metrics.get("queued_collision", 0)) == 0 and \
+				int(metrics.get("mesh_jobs", 0)) == \
+				int(metrics.get("mesh_completions", -1)) and \
+				int(metrics.get("fully_ready_chunk_records", -1)) == 88 and \
+				int(metrics.get("pending_chunk_retirements", 0)) == 0:
+			await process_frame
+			return true
 		await process_frame
 	return false
 

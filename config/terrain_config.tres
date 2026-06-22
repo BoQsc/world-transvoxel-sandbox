@@ -19,6 +19,5 @@ collision_byte_capacity = 134217728
 trace_event_capacity = 65536
 render_apply_budget = 6
 collision_apply_budget = 3
-collision_activation_distance = 72.0
-collision_deactivation_distance = 96.0
-
+collision_activation_distance = 96.0
+collision_deactivation_distance = 128.0

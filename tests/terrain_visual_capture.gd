@@ -151,23 +151,24 @@ func _wait_for_world(terrain: Node) -> bool:
 
 
 func _wait_for_settled_resources(terrain: Node) -> bool:
-	var stable_frames := 0
-	var previous := Vector2i(-1, -1)
+	var ready_since_ms := -1
 	for _frame in range(TIMEOUT_FRAMES):
 		var metrics: Dictionary = terrain.get_runtime_metrics()
-		var current := Vector2i(
-			terrain.get_rendered_chunk_count(),
-			int(metrics.get("mesh_completions", 0))
-		)
-		if current.x > 0 and terrain.get_collision_chunk_count() > 0 and \
+		if terrain.get_rendered_chunk_count() > 0 and \
+				terrain.get_collision_chunk_count() > 0 and \
 				int(metrics.get("queued_render", 0)) == 0 and \
-				int(metrics.get("queued_collision", 0)) == 0:
-			stable_frames = stable_frames + 1 if current == previous else 0
-			if stable_frames >= 180:
+				int(metrics.get("queued_collision", 0)) == 0 and \
+				int(metrics.get("mesh_jobs", 0)) == \
+				int(metrics.get("mesh_completions", -1)) and \
+				int(metrics.get("fully_ready_chunk_records", -1)) == \
+				int(metrics.get("active_chunk_records", 0)) and \
+				int(metrics.get("pending_chunk_retirements", 0)) == 0:
+			if ready_since_ms < 0:
+				ready_since_ms = Time.get_ticks_msec()
+			elif Time.get_ticks_msec() - ready_since_ms >= 500:
 				return true
 		else:
-			stable_frames = 0
-		previous = current
+			ready_since_ms = -1
 		await process_frame
 	return false
 

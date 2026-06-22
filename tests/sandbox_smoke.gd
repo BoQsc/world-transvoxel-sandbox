@@ -23,13 +23,22 @@ func _run() -> void:
 			_fail("world did not reach running: " + str(terrain.call("get_world_error")))
 			return
 		await process_frame
-	if terrain.call("get_addon_version") != "1.0.1":
+	if terrain.call("get_addon_version") != "1.0.2":
 		_fail("unexpected addon version")
 		return
 	if terrain.call("get_world_page_count") != 288:
 		_fail("unexpected sandbox page count")
 		return
-	while terrain.call("get_rendered_chunk_count") <= 0 or 			terrain.call("get_collision_chunk_count") <= 0:
+	while true:
+		var metrics: Dictionary = terrain.call("get_runtime_metrics")
+		if terrain.call("get_rendered_chunk_count") > 0 and \
+				terrain.call("get_collision_chunk_count") > 0 and \
+				int(metrics.get("mesh_jobs", 0)) == \
+				int(metrics.get("mesh_completions", -1)) and \
+				int(metrics.get("fully_ready_chunk_records", -1)) == \
+				int(metrics.get("active_chunk_records", 0)) and \
+				int(metrics.get("pending_chunk_retirements", 0)) == 0:
+			break
 		if Time.get_ticks_msec() - started > TIMEOUT_MS:
 			_fail("render/collision resources did not become ready")
 			return

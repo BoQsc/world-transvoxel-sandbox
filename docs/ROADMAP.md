@@ -5,9 +5,10 @@ It does not begin 0BSD replacement or compute work prematurely.
 
 ## S0 - Visible integration
 
-Status: revalidated against corrective World Transvoxel 1.0.1.
+Status: revalidated against World Transvoxel 1.0.2.
 
-- vendored and locked World Transvoxel 1.0.1 release; 1.0.0 is withdrawn;
+- vendored and locked World Transvoxel 1.0.2 release; 1.0.0 is withdrawn and
+  1.0.1 is superseded for premature moving-viewer chunk retirement;
 - deterministic 128 x 64 x 128 hills/caves/strata/veins world;
 - material and LOD shader views;
 - chunk, collision, queue, latency, and resource visualization;
@@ -17,6 +18,8 @@ Status: revalidated against corrective World Transvoxel 1.0.1.
   boundary audit;
 - exact full-world mixed-LOD manifold and cross-chunk normal-continuity audit;
 - automated center-screen carve interaction and deterministic visual captures.
+- continuous-motion render/collision coverage and bounded staged-retirement
+  regression across the complete supported Godot/build matrix.
 
 Exit: a human can see, navigate, inspect, and modify real terrain.
 

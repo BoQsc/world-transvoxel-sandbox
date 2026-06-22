@@ -200,8 +200,6 @@ func _wait_for_world(terrain: Node) -> bool:
 
 
 func _wait_for_settled_resources(terrain: Node) -> bool:
-	var stable_frames := 0
-	var previous_counts := Vector2i(-1, -1)
 	for _frame in range(TIMEOUT_FRAMES):
 		var metrics: Dictionary = terrain.get_runtime_metrics()
 		var counts := Vector2i(
@@ -210,13 +208,14 @@ func _wait_for_settled_resources(terrain: Node) -> bool:
 		)
 		if counts.x > 0 and counts.y > 0 and \
 				int(metrics.get("queued_render", 0)) == 0 and \
-				int(metrics.get("queued_collision", 0)) == 0:
-			stable_frames = stable_frames + 1 if counts == previous_counts else 0
-			if stable_frames >= 60:
-				return true
-		else:
-			stable_frames = 0
-		previous_counts = counts
+				int(metrics.get("queued_collision", 0)) == 0 and \
+				int(metrics.get("mesh_jobs", 0)) == \
+				int(metrics.get("mesh_completions", -1)) and \
+				int(metrics.get("fully_ready_chunk_records", -1)) == \
+				int(metrics.get("active_chunk_records", 0)) and \
+				int(metrics.get("pending_chunk_retirements", 0)) == 0:
+			await process_frame
+			return true
 		await process_frame
 	return false
 

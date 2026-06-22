@@ -90,8 +90,10 @@ func _refresh() -> void:
 			_terrain.call("get_world_page_count"),
 			_terrain.call("get_world_revision"),
 		] +
-		"active records: %d  render: %d  collision: %d\n" % [
+		"active/ready: %d/%d  retiring: %d  render: %d  collision: %d\n" % [
 			int(metrics.get("active_chunk_records", 0)),
+			int(metrics.get("fully_ready_chunk_records", 0)),
+			int(metrics.get("pending_chunk_retirements", 0)),
 			int(metrics.get("render_resources", 0)),
 			int(metrics.get("collision_resources", 0)),
 		] +

@@ -29,7 +29,7 @@ script = ExtResource("1_lab")
 terrain_path = NodePath("Terrain")
 viewer_path = NodePath("Viewer")
 camera_path = NodePath("Viewer/Camera3D")
-radius_chunks = 2
+radius_chunks = 3
 maximum_lod = 1
 
 [node name="Terrain" type="WorldTransvoxelTerrain" parent="."]

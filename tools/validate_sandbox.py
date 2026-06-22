@@ -58,6 +58,7 @@ def main() -> int:
         "tests/sandbox_smoke.gd",
         "tests/terrain_geometry_audit.gd",
         "tests/terrain_interaction_audit.gd",
+        "tests/terrain_motion_audit.gd",
         "tests/terrain_seam_audit.gd",
         "tests/terrain_visual_capture.gd",
         "docs/ROADMAP.md",
