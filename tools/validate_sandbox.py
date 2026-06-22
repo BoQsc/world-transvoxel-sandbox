@@ -69,7 +69,26 @@ def main() -> int:
         expected_manifest_hash = lock["world_transvoxel"]["manifest_sha256"]
         if sha256(MANIFEST_PATH) != expected_manifest_hash:
             errors.append("vendored release manifest hash mismatch")
-        for record in manifest.get("files", []):
+        records = manifest.get("files", [])
+        listed_addon_paths = {
+            record["path"]
+            for record in records
+            if record["path"].startswith("addons/world_transvoxel/")
+        }
+        addon_root = ROOT / "addons" / "world_transvoxel"
+        actual_addon_paths = {
+            path.relative_to(ROOT).as_posix()
+            for path in addon_root.rglob("*")
+            if path.is_file()
+        }
+        if actual_addon_paths != listed_addon_paths:
+            missing = sorted(listed_addon_paths - actual_addon_paths)
+            unlisted = sorted(actual_addon_paths - listed_addon_paths)
+            errors.append(
+                "vendored addon payload differs from manifest: "
+                f"missing={missing[:10]}, unlisted={unlisted[:10]}"
+            )
+        for record in records:
             relative = record["path"]
             if not relative.startswith("addons/world_transvoxel/"):
                 continue

@@ -5,7 +5,7 @@ Visual, gameplay, and scale validation for the qualified World Transvoxel
 becomes a game.
 
 The vendored addon is the exact Windows x86-64 release from
-`world-transvoxel` commit `f4d9aca`. Its mixed 0BSD/MIT scope and release
+`world-transvoxel` commit `ad53292`. Its mixed 0BSD/MIT scope and release
 manifest are retained at the repository root.
 
 ## Run
