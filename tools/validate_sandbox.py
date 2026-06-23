@@ -67,6 +67,7 @@ def main() -> int:
         "tests/terrain_seam_audit.gd",
         "tests/terrain_visual_capture.gd",
         "docs/ROADMAP.md",
+        "docs/TERRAIN_ACCEPTANCE_STANDARD.md",
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
@@ -126,6 +127,20 @@ def main() -> int:
         ):
             if phrase not in text:
                 errors.append(f"recovery contract is missing phrase: {phrase}")
+
+    standard = ROOT / "docs" / "TERRAIN_ACCEPTANCE_STANDARD.md"
+    if standard.is_file():
+        text = standard.read_text(encoding="utf-8")
+        for phrase in (
+            "standards-first",
+            "Large-terrain ladder",
+            "Dynamic LOD popping remains a blocker",
+            "Settled terrain must stay cold",
+            "no tracked PowerShell workflow scripts",
+            "Compute shaders are deferred",
+        ):
+            if phrase not in text:
+                errors.append(f"terrain standard is missing phrase: {phrase}")
 
     files = tracked_files()
     for relative in files:

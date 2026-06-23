@@ -21,6 +21,13 @@ LOD replacement popping is an open visual-quality blocker. The normal human
 playtest therefore uses a fixed, complete LOD0 map and must not be presented
 as proof that dynamic LOD appearance is finished.
 
+The project is standards-first. Larger terrain without artifacts, holes,
+upside-down behavior, uncontrolled background work, or unexplained visual
+popping comes before GPU acceleration, water/lava, planets, structural
+collapse, or a small-game repository. The current acceptance standard is
+recorded in
+[`docs/TERRAIN_ACCEPTANCE_STANDARD.md`](docs/TERRAIN_ACCEPTANCE_STANDARD.md).
+
 ## Run
 
 Python 3.11 or newer is required for generation. Godot 4.6.3 or 4.7 is the

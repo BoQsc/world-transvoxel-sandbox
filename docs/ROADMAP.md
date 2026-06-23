@@ -2,6 +2,8 @@
 
 This roadmap ends in a decision about using World Transvoxel in a small game.
 It does not begin 0BSD replacement or compute work prematurely.
+The governing quality gate is `docs/TERRAIN_ACCEPTANCE_STANDARD.md`: larger
+artifact-free terrain and standards come before optional feature systems.
 
 ## S0 - Visible integration
 
@@ -39,6 +41,11 @@ Status: reference-scene stability defaults are in place; human
 appearance/playtest review remains.
 
 - dynamic mixed-LOD replacement popping remains an explicit visual blocker;
+- classify every visible artifact as topology/collision, generation,
+  material/shading, LOD transition, streaming/lifetime, harness
+  misunderstanding, or documented limitation;
+- do not accept holes, missing backsides, upside-down terrain, diagonal ridges,
+  or unexplained popping as normal behavior;
 - inspect surfaces, caves, and interaction feel using the conservative LOD0
   reference scene;
 - inspect mixed-LOD appearance separately using the existing audit/debug views;
@@ -55,10 +62,13 @@ Exit: no visible correctness blocker remains in the test gallery.
 
 Status: pending.
 
+- follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
+  and 2048 horizontal cells;
 - replace whole-volume source generation with bounded chunked/sparse baking;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,
-  movement latency, frame time, and shutdown;
+  idle CPU/GPU/memory, movement latency, frame time, edit latency, visual
+  captures, known defects, and shutdown;
 - set the supported vertical range and target hardware profile.
 
 Exit: the 2K claim is accepted with evidence or rejected with a measured
