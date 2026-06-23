@@ -65,7 +65,8 @@ Exit: no visible correctness blocker remains in the test gallery.
 Status: active; L0 remains the default accepted playtest world. L1 256 has
 generation, headless runtime, and automated visual evidence. L2 512 has
 generation, headless runtime, and automated static visual evidence, but is not
-yet human or dynamically visually accepted.
+yet human or dynamically visually accepted. L3 1024 has generation-only
+evidence and no runtime or visual acceptance.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -105,8 +106,17 @@ yet human or dynamically visually accepted.
   palette, boundary shell is expected, and LOD color partitioning is expected
   in debug view;
 - L2 still not proven: human visual acceptance, dynamic seamless LOD
-  appearance, fast travel or disjoint teleport movement, or 1024/2048 scale
-  support;
+  appearance, fast travel or disjoint teleport movement, or larger-scale
+  runtime/visual support;
+- L3 generated artifact evidence: 18,432 pages, 764,449,679 stable payload
+  bytes, 642.484 generation seconds, 73,060,029 source samples, 143,831
+  volumetric columns, world hash
+  `6c2ae9110f18fbc480a35308850ed97f981b155c7767e130a9b552de9f05e09d`;
+- L3 resource warning: preflight had only 139,122,578 bytes above the
+  conservative source/payload estimate plus 512 MiB safety reserve; generation
+  completed, but the warning remains part of the evidence;
+- L3 not yet proven: runtime budget, Godot startup, movement,
+  render/collision coverage, editing, visual acceptance, or L4 2048 support;
 - replace whole-volume source generation with bounded chunked/sparse baking;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,

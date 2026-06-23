@@ -4,21 +4,71 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import shutil
 import subprocess
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    from generate_world import SCALE_PROFILES
+except ModuleNotFoundError:
+    from tools.generate_world import SCALE_PROFILES
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
-SUPPORTED_LEVELS = ("L0", "L1", "L2")
+SUPPORTED_LEVELS = ("L0", "L1", "L2", "L3")
 GENERATION_TIMEOUT_SECONDS = {
     "L0": 300,
     "L1": 300,
     "L2": 900,
+    "L3": 3600,
 }
+PAYLOAD_BUDGET_PER_PAGE = 48 * 1024
+DISK_SAFETY_RESERVE_BYTES = 512 * 1024 * 1024
+DISK_WARNING_HEADROOM_BYTES = 256 * 1024 * 1024
+
+
+def resource_preflight(level: str) -> tuple[dict, list[str]]:
+    profile = SCALE_PROFILES[level]
+    samples = math.prod(profile.dimensions)
+    source_bytes = samples * 6
+    lod0_pages = math.prod(profile.lod0_chunks)
+    lod1_pages = math.prod(value // 2 for value in profile.lod0_chunks)
+    pages = lod0_pages + lod1_pages
+    payload_bytes = pages * PAYLOAD_BUDGET_PER_PAGE
+    disk_free = shutil.disk_usage(ROOT).free
+    required = source_bytes + payload_bytes + DISK_SAFETY_RESERVE_BYTES
+    if disk_free < required:
+        raise RuntimeError(
+            "scale ladder disk preflight failed: "
+            f"level={level} free={disk_free} required={required}"
+        )
+    warnings: list[str] = []
+    if disk_free - required < DISK_WARNING_HEADROOM_BYTES:
+        warnings.append(
+            "disk headroom is below 256 MiB above the conservative "
+            "generation estimate"
+        )
+    memory_available: int | None = None
+    try:
+        import psutil
+
+        memory_available = int(psutil.virtual_memory().available)
+    except ImportError:
+        pass
+    return {
+        "disk_free_before_bytes": disk_free,
+        "estimated_source_bytes": source_bytes,
+        "estimated_payload_bytes": payload_bytes,
+        "disk_safety_reserve_bytes": DISK_SAFETY_RESERVE_BYTES,
+        "required_free_bytes": required,
+        "memory_available_before_bytes": memory_available,
+        "expected_pages": pages,
+    }, warnings
 
 
 def directory_size(path: Path, excluded_names: set[str] | None = None) -> int:
@@ -31,6 +81,7 @@ def directory_size(path: Path, excluded_names: set[str] | None = None) -> int:
 
 
 def run_generation(level: str, preset: str, force: bool) -> dict:
+    preflight, warnings = resource_preflight(level)
     output = ARTIFACT_ROOT / level / "world"
     command = [
         sys.executable,
@@ -81,7 +132,9 @@ def run_generation(level: str, preset: str, force: bool) -> dict:
         "world_payload_bytes": directory_size(output, {"sandbox_generation.json"}),
         "world_report_bytes": (output / "sandbox_generation.json").stat().st_size,
         "generation": generation_report,
-        "warnings": [],
+        "resource_preflight": preflight,
+        "disk_free_after_bytes": shutil.disk_usage(ROOT).free,
+        "warnings": warnings,
         "proven": [
             "Python generation completed",
             "native bake tool completed",

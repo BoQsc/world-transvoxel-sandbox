@@ -60,6 +60,9 @@ SCALE_PROFILES = {
     "L2": ScaleProfile(
         "L2", 512, 64, (32, 4, 32), "512 generation preflight"
     ),
+    "L3": ScaleProfile(
+        "L3", 1024, 64, (64, 4, 64), "1024 generation preflight"
+    ),
 }
 DEFAULT_SCALE_LEVEL = "L0"
 

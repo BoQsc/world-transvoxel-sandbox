@@ -25,6 +25,37 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.7 - L3 1024 generation preflight is complete for generation-only evidence.
+
+Command:
+
+```console
+python tools/scale_ladder.py --level L3 --force
+```
+
+Result:
+
+- horizontal cells: 1,024;
+- vertical cells: 64;
+- dimensions: 1,029 x 69 x 1,029 samples;
+- LOD0 chunks: 64 x 4 x 64;
+- pages: 18,432;
+- generation seconds: 642.484;
+- scale-ladder elapsed seconds: 642.719;
+- stable world payload bytes: 764,449,679;
+- source samples: 73,060,029;
+- volumetric columns: 143,831;
+- resource preflight: 2,020,323,328 free bytes, 1,881,200,750 required
+  bytes including a 512 MiB safety reserve, and 2,872,004,608 available
+  memory bytes;
+- warning recorded: disk headroom was below 256 MiB above the conservative
+  generation estimate before the run;
+- world hash:
+  `6c2ae9110f18fbc480a35308850ed97f981b155c7767e130a9b552de9f05e09d`;
+- proven: Python generation, native bake tool, storage validation;
+- not proven: Godot startup, movement/render/collision coverage, visual
+  artifact acceptance, edit latency, or L4 2048 scale support.
+
 S2.6 - L2 visual capture and artifact classification is complete for
 automated static visual evidence.
 
@@ -186,29 +217,30 @@ Result:
 
 ## Current active task
 
-S2.7 - L3 1024 generation preflight.
+S2.8 - L3 runtime budget planning.
 
 Scope:
 
-- add an L3 1024 generation-only profile only after preserving L0/L1/L2
-  evidence;
-- generate L3 as an artifact path, not as the accepted playtest world;
-- record page count, payload bytes, generation duration, world hash, and
-  memory/disk warnings if encountered;
-- do not claim L3 runtime or visual support from generation-only evidence.
+- do not copy the L2 runtime budget into L3 by assumption;
+- define the L3 movement class, radius, maximum LOD, active chunk capacity,
+  inherited cache budgets, and explicit overrides;
+- derive a safe initial budget from L2 measured demand and replacement
+  behavior before running Godot;
+- keep L3 runtime support unclaimed until the planned profile passes the
+  supported Godot engine matrix.
 
 Exit:
 
-- `python tools/scale_ladder.py --level L3 --force` produces a report or a
-  documented failure;
-- the report clearly says what is and is not proven;
+- `docs/TERRAIN_RUNTIME_BUDGETS.md` contains a provisional L3 profile and
+  rationale;
+- `python tools/runtime_budget_profiles.py --check` enforces that profile;
 - no GDScript performance logic is added.
 
 ## Next finite steps
 
-1. Add L3 1024 generation-only profile.
-2. Generate L3 as an artifact and record the result.
-3. Add L3 runtime budget planning only if generation succeeds.
+1. Define and validate the provisional L3 runtime budget.
+2. Add L3 runtime audit support using that explicit profile.
+3. Run L3 headless startup/movement/collision/edit acceptance.
 
 ## Deferred by rule
 
