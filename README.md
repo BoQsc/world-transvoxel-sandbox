@@ -47,6 +47,7 @@ world:
 
 ```console
 python tools/scale_ladder.py --level L1 --force
+python tools/scale_runtime.py --level L1
 ```
 
 Then open `project.godot`, or run:

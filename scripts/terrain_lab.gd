@@ -5,11 +5,11 @@ signal lab_status_changed(message: String)
 
 const SculptController = preload("res://scripts/terrain_sculpt_controller.gd")
 const RecoveryPolicy = preload("res://scripts/terrain_recovery_policy.gd")
-const WORLD_MIN := Vector3(0.001, 0.001, 0.001)
-const WORLD_MAX := Vector3(127.999, 63.999, 127.999)
 
 @export_file("*.wtworld") var world_manifest_path := "res://world/world.wtworld"
 @export_dir var world_object_root := "res://world"
+@export var world_min := Vector3(0.001, 0.001, 0.001)
+@export var world_max := Vector3(127.999, 63.999, 127.999)
 @export var terrain_path: NodePath
 @export var viewer_path: NodePath
 @export var camera_path: NodePath
@@ -116,9 +116,9 @@ func _streaming_target(viewer_position: Vector3) -> Vector3:
 
 func _submit_viewer(position: Vector3, force: bool = false) -> void:
 	var bounded := Vector3(
-		clampf(position.x, WORLD_MIN.x, WORLD_MAX.x),
-		clampf(position.y, WORLD_MIN.y, WORLD_MAX.y),
-		clampf(position.z, WORLD_MIN.z, WORLD_MAX.z)
+		clampf(position.x, world_min.x, world_max.x),
+		clampf(position.y, world_min.y, world_max.y),
+		clampf(position.z, world_min.z, world_max.z)
 	)
 	var distance := 0.0
 	if _last_viewer_position != Vector3.INF:

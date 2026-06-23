@@ -24,6 +24,29 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.2 - L1 runtime acceptance path is complete for headless runtime evidence.
+
+Command:
+
+```console
+python tools/scale_runtime.py --level L1
+```
+
+Result:
+
+- engines: Godot 4.6.3 and 4.7;
+- positions: 5 staged positions;
+- probes: 25 render/collision probes per engine;
+- minimum rendered chunks: 97;
+- minimum collision chunks: 97;
+- Godot 4.6.3: startup 301 ms, settle 3,704 ms, edit 512 ms;
+- Godot 4.7: startup 110 ms, settle 2,752 ms, edit 529 ms;
+- edit density delta: 6.0;
+- proven: Godot startup, staged movement render/collision coverage, one
+  density edit/remesh, clean shutdown;
+- not proven: visual artifact acceptance, dynamic seamless LOD appearance, or
+  512/1024/2048 scale support.
+
 S2.1 - Python scale-ladder generation proof is complete for L1.
 
 Command:
@@ -47,30 +70,28 @@ Result:
 
 ## Current active task
 
-S2.2 - L1 runtime acceptance path.
+S2.3 - L1 visual capture and artifact classification.
 
 Scope:
 
 - keep L0 128 as the default accepted playtest world;
-- load the generated L1 artifact through Godot without pretending it is the
-  accepted human playtest mode;
-- measure startup, movement, render/collision coverage, and edit latency;
 - capture representative L1 visuals and classify artifacts;
+- inspect surface, material, LOD, boundary, and at least one underground view;
+- keep the report explicit that dynamic seamless LOD is still not proven;
 - do not change accepted playtest semantics just to make a larger map appear;
 - do not hide visual artifacts behind feature work.
 
 Exit:
 
-- an L1 runtime report clearly says what is proven and what is still not
-  proven;
+- L1 visual captures exist under artifacts and have nonblank viewport range;
 - all visible artifacts found during L1 inspection are classified;
 - no GDScript performance logic is added for this step.
 
 ## Next finite steps
 
-1. Add a larger-world startup/motion/capture path for L1.
+1. Add L1 visual capture/reporting.
 2. Classify any artifact before moving to 512.
-3. Move to L2 512 only after L1 has generation plus runtime evidence.
+3. Move to L2 512 only after L1 has generation, runtime, and visual evidence.
 
 ## Deferred by rule
 
