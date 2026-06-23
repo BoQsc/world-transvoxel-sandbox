@@ -48,9 +48,9 @@ def terrain_height(x: int, z: int, preset: str) -> float:
     if preset == "flat":
         return 32.0
     broad = 7.0 * math.sin(x * 0.047) + 5.0 * math.cos(z * 0.053)
-    crossing = 3.5 * math.sin((x + z) * 0.029)
-    ridge = 4.0 * abs(math.sin((x - z) * 0.021))
-    return 34.0 + broad + crossing + ridge
+    local = 2.0 * math.sin(x * 0.091 + 0.7 * math.cos(z * 0.037))
+    mound = 3.0 * math.sin(x * 0.023) * math.cos(z * 0.031)
+    return 34.0 + broad + local + mound
 
 
 def write_volume(preset: str) -> dict[str, int]:

@@ -15,6 +15,7 @@ func _run() -> void:
 		_fail("terrain lab scene could not load")
 		return
 	_scene_root = packed.instantiate()
+	_scene_root.get_node("Viewer").set("input_enabled", false)
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var started := Time.get_ticks_msec()

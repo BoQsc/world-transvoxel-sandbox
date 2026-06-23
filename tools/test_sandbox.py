@@ -15,6 +15,7 @@ ARTIFACT_ROOT = ROOT / "artifacts" / "tests"
 ENGINE_VERSIONS = ("4.6.3", "4.7")
 TEST_CASES = (
     ("smoke", "res://tests/sandbox_smoke.gd", "WT_SANDBOX_SMOKE_PASS"),
+    ("idle", "res://tests/terrain_idle_audit.gd", "WT_SANDBOX_IDLE_PASS"),
     (
         "geometry",
         "res://tests/terrain_geometry_audit.gd",

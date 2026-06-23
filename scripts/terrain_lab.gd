@@ -14,6 +14,9 @@ const WORLD_MAX := Vector3(127.999, 63.999, 127.999)
 @export_range(1, 1024, 1) var viewer_id := 1
 @export_range(0, 16, 1) var radius_chunks := 2
 @export_range(0, 20, 1) var maximum_lod := 1
+@export_range(0.0, 32.0, 0.25) var streaming_update_distance := 8.0
+@export var streaming_follows_viewer := true
+@export var fixed_streaming_position := Vector3(64.0, 32.0, 64.0)
 @export_range(0.25, 16.0, 0.25) var mining_radius := 3.0
 @export_range(1.0, 32.0, 0.5) var mining_strength := 6.0
 @export_range(16.0, 512.0, 1.0) var aim_distance := 256.0
@@ -81,7 +84,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_world_state_changed(_state: int, state_name: String) -> void:
 	_set_status("world " + state_name)
 	if state_name == "running":
-		_submit_viewer(viewer.global_position)
+		_submit_viewer(_streaming_target(viewer.global_position), true)
 
 
 func _on_world_failed(message: String) -> void:
@@ -89,18 +92,25 @@ func _on_world_failed(message: String) -> void:
 
 
 func _on_viewer_position_changed(position: Vector3) -> void:
-	if terrain.call("is_world_running"):
-		_submit_viewer(position)
+	if streaming_follows_viewer and terrain.call("is_world_running"):
+		_submit_viewer(position, false)
 
 
-func _submit_viewer(position: Vector3) -> void:
+func _streaming_target(viewer_position: Vector3) -> Vector3:
+	return viewer_position if streaming_follows_viewer else fixed_streaming_position
+
+
+func _submit_viewer(position: Vector3, force: bool = false) -> void:
 	var bounded := Vector3(
 		clampf(position.x, WORLD_MIN.x, WORLD_MAX.x),
 		clampf(position.y, WORLD_MIN.y, WORLD_MAX.y),
 		clampf(position.z, WORLD_MIN.z, WORLD_MAX.z)
 	)
-	_streaming_position = bounded
-	if bounded.is_equal_approx(_last_viewer_position):
+	var distance := 0.0
+	if _last_viewer_position != Vector3.INF:
+		distance = bounded.distance_to(_last_viewer_position)
+	if not force and _last_viewer_position != Vector3.INF and \
+			distance < streaming_update_distance:
 		return
 	_viewer_revision += 1
 	if terrain.call(
@@ -112,6 +122,7 @@ func _submit_viewer(position: Vector3) -> void:
 		maximum_lod
 	):
 		_last_viewer_position = bounded
+		_streaming_position = bounded
 	else:
 		_set_status("viewer rejected: " + str(terrain.call("get_world_error")))
 

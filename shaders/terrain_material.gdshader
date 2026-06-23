@@ -3,6 +3,7 @@ render_mode cull_back, depth_draw_opaque;
 
 uniform int debug_mode : hint_range(0, 2) = 0;
 uniform float pattern_scale : hint_range(0.01, 2.0) = 0.16;
+uniform float surface_grain_strength : hint_range(0.0, 1.0) = 0.0;
 instance uniform float lod_level = 0.0;
 
 varying float material_id;
@@ -33,7 +34,7 @@ void fragment() {
 	vec3 base = material_color(resolved_material);
 	if (debug_mode == 2) {
 		base = lod_color(lod_level);
-	} else if (debug_mode == 0) {
+	} else if (debug_mode == 0 && surface_grain_strength > 0.0) {
 		vec3 weights = pow(abs(NORMAL), vec3(4.0));
 		weights /= max(weights.x + weights.y + weights.z, 0.0001);
 		float px = sin(world_position.y * pattern_scale) *
@@ -43,7 +44,7 @@ void fragment() {
 		float pz = sin(world_position.x * pattern_scale) *
 			cos(world_position.y * pattern_scale * 0.73);
 		float grain = dot(vec3(px, py, pz), weights);
-		base *= 0.86 + grain * 0.11;
+		base *= 1.0 + grain * 0.11 * surface_grain_strength;
 	}
 	ALBEDO = base;
 	ROUGHNESS = resolved_material > 3.5 && resolved_material < 4.5 ? 0.55 : 0.92;

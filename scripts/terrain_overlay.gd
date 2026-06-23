@@ -73,7 +73,7 @@ func _refresh() -> void:
 		and position.z >= 0.0 and position.z <= 128.0
 	)
 	_label.text = (
-		"World Transvoxel 1.0 Visual Sandbox\n" +
+		"World Transvoxel 1.0.2 Visual Sandbox\n" +
 		"status: %s\n" % _lab.call("get_status") +
 		"aim: %s\n" % _lab.call("get_aim_status") +
 		"fps: %d  approximate frame: %.2f ms\n" % [fps, frame_ms] +
@@ -85,6 +85,11 @@ func _refresh() -> void:
 		"streaming anchor: %s\n" % str(
 			_lab.call("get_streaming_position").round()
 		) +
+		"streaming policy: %s  max LOD %d  update distance %.1f\n" % [
+			"follow viewer" if _lab.streaming_follows_viewer else "fixed full map",
+			_lab.maximum_lod,
+			_lab.streaming_update_distance,
+		] +
 		"orientation: +Y up; F2 wire box=boundary; orange terrain=ore\n" +
 		"world pages: %d  revision: %d\n" % [
 			_terrain.call("get_world_page_count"),

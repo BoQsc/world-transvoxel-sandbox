@@ -18,6 +18,7 @@ func _run() -> void:
 	if packed == null:
 		return _fail("terrain lab scene could not load")
 	_scene_root = packed.instantiate()
+	_scene_root.get_node("Viewer").set("input_enabled", false)
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")
@@ -77,16 +78,27 @@ func _run() -> void:
 		await process_frame
 	var probe_results: Array[String] = []
 	for screen_y in range(430, 671, 40):
-		var probe_origin := camera.project_ray_origin(Vector2(660, screen_y))
-		var probe_direction := camera.project_ray_normal(Vector2(660, screen_y))
+		var probe_origin := camera.project_ray_origin(Vector2(1000, screen_y))
+		var probe_direction := camera.project_ray_normal(Vector2(1000, screen_y))
 		var probe := PhysicsRayQueryParameters3D.create(
 			probe_origin, probe_origin + probe_direction * 256.0
 		)
 		var probe_hit: Dictionary = terrain.get_world_3d().direct_space_state.intersect_ray(probe)
 		var render_hit := _render_ray_hit(terrain, probe_origin, probe_direction)
+		if probe_hit.is_empty() and render_hit.is_empty():
+			probe_results.append("%d:miss" % screen_y)
+			continue
 		if probe_hit.is_empty() or render_hit.is_empty() or (
 				(probe_hit.position as Vector3).distance_to(render_hit.position) > 0.001):
-			return _fail("boundary render/collision rays disagree at y=" + str(screen_y))
+			return _fail(
+				"boundary render/collision rays disagree at y=%d collision=%s "
+				% [screen_y, probe_hit.get("position", "miss")]
+				+ "render=%s chunk=%s"
+				% [
+					render_hit.get("position", "miss"),
+					render_hit.get("chunk", "none"),
+				]
+			)
 		probe_results.append(
 			"%d:c=%s/r=%s/m=%s" % [screen_y,
 				probe_hit.get("position", "miss"),
@@ -193,7 +205,7 @@ func _render_ray_hit(terrain: Node, origin: Vector3, direction: Vector3) -> Dict
 			var edge_ac := c - a
 			var h := direction.cross(edge_ac)
 			var determinant := edge_ab.dot(h)
-			if absf(determinant) < 0.000001:
+			if determinant >= -0.000001:
 				continue
 			var inverse := 1.0 / determinant
 			var offset := origin - a

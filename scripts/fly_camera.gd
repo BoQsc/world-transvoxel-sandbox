@@ -6,6 +6,7 @@ signal position_changed(position: Vector3)
 @export_range(1.0, 500.0, 1.0) var movement_speed := 24.0
 @export_range(1.0, 10.0, 0.1) var fast_multiplier := 4.0
 @export_range(0.01, 1.0, 0.01) var mouse_sensitivity := 0.12
+@export var input_enabled := true
 @export var position_bounds_enabled := true
 @export var position_min := Vector3(0.001, 0.001, 0.001)
 @export var position_max := Vector3(127.999, 63.999, 127.999)
@@ -19,7 +20,12 @@ func _ready() -> void:
 	_initial_transform = global_transform
 	_yaw_degrees = rotation_degrees.y
 	_pitch_degrees = rotation_degrees.x
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	input_enabled = input_enabled and \
+		not OS.get_cmdline_user_args().has("--disable-player-input")
+	set_process(input_enabled)
+	set_process_unhandled_input(input_enabled)
+	if input_enabled:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	position_changed.emit(global_position)
 
 

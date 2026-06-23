@@ -57,6 +57,7 @@ def main() -> int:
         "tools/test_sandbox.py",
         "tests/sandbox_smoke.gd",
         "tests/terrain_geometry_audit.gd",
+        "tests/terrain_idle_audit.gd",
         "tests/terrain_interaction_audit.gd",
         "tests/terrain_motion_audit.gd",
         "tests/terrain_seam_audit.gd",

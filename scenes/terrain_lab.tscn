@@ -29,8 +29,11 @@ script = ExtResource("1_lab")
 terrain_path = NodePath("Terrain")
 viewer_path = NodePath("Viewer")
 camera_path = NodePath("Viewer/Camera3D")
-radius_chunks = 3
-maximum_lod = 1
+radius_chunks = 4
+maximum_lod = 0
+streaming_update_distance = 8.0
+streaming_follows_viewer = false
+fixed_streaming_position = Vector3(64, 32, 64)
 
 [node name="Terrain" type="WorldTransvoxelTerrain" parent="."]
 configuration = ExtResource("2_config")

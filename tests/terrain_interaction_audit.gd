@@ -20,6 +20,7 @@ func _run() -> void:
 	if packed == null:
 		return _fail("terrain lab scene could not load")
 	_scene_root = packed.instantiate()
+	_scene_root.get_node("Viewer").set("input_enabled", false)
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")

@@ -7,4 +7,4 @@ render_priority = 0
 shader = ExtResource("1_shader")
 shader_parameter/debug_mode = 0
 shader_parameter/pattern_scale = 0.16
-
+shader_parameter/surface_grain_strength = 0.0

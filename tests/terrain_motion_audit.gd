@@ -21,6 +21,10 @@ func _run() -> void:
 	# Load the finite map before motion so every miss is an LOD/transition swap,
 	# not a camera outrunning newly entering world coverage.
 	_scene_root.radius_chunks = 3
+	_scene_root.maximum_lod = 1
+	_scene_root.streaming_update_distance = 0.0
+	_scene_root.streaming_follows_viewer = true
+	_scene_root.get_node("Viewer").set("input_enabled", false)
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")
@@ -212,7 +216,7 @@ func _render_ray_hit(
 			var edge_ac := c - a
 			var h := direction.cross(edge_ac)
 			var determinant := edge_ab.dot(h)
-			if absf(determinant) < 0.000001:
+			if determinant >= -0.000001:
 				continue
 			var inverse := 1.0 / determinant
 			var offset := origin - a

@@ -13,6 +13,10 @@ Status: revalidated against World Transvoxel 1.0.2.
 - material and LOD shader views;
 - chunk, collision, queue, latency, and resource visualization;
 - fly camera and interactive carve/fill/paint controls;
+- 60 FPS cap and fixed-center complete-map LOD0 playtest mode with full
+  collision availability for stable human inspection;
+- idle-work regression proving settled terrain and sub-threshold camera
+  movement do not produce new streaming or meshing work;
 - headless startup, streaming, edit, and shutdown smoke test;
 - complete loaded-world winding, collision, density-sign, edit, and finite-map
   boundary audit;
@@ -25,11 +29,15 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 
 ## S1 - Visual acceptance
 
-Status: automated correctness checks complete; human appearance/playtest review
-remains.
+Status: reference-scene stability defaults are in place; human
+appearance/playtest review remains.
 
-- inspect surfaces, LOD appearance, caves, and interaction feel using the
-  generated evidence; topology, winding, and collision are automated gates;
+- dynamic mixed-LOD replacement popping remains an explicit visual blocker;
+- inspect surfaces, caves, and interaction feel using the conservative LOD0
+  reference scene;
+- inspect mixed-LOD appearance separately using the existing audit/debug views;
+- decide whether visible LOD popping requires geomorphing, cross-fading,
+  stronger hysteresis, larger prefetch rings, or a different default policy;
 - add real texture-array/triplanar assets after the procedural palette is
   accepted;
 - record representative screenshots and identified defects;

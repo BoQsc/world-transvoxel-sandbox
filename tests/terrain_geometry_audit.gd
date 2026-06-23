@@ -1,5 +1,4 @@
 extends SceneTree
-
 const TIMEOUT_FRAMES := 1800
 const JOURNAL_PATH := "res://world/world.wtedit"
 var _scene_root: Node
@@ -18,6 +17,11 @@ func _run() -> void:
 	if packed == null:
 		return _fail("terrain lab scene could not load")
 	_scene_root = packed.instantiate()
+	_scene_root.radius_chunks = 3
+	_scene_root.maximum_lod = 1
+	_scene_root.streaming_update_distance = 0.0
+	_scene_root.streaming_follows_viewer = true
+	_scene_root.get_node("Viewer").set("input_enabled", false)
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")
@@ -219,7 +223,6 @@ func _wait_for_settled_resources(terrain: Node) -> bool:
 		await process_frame
 	return false
 
-
 func _wait_for_edit(terrain: Node, revision: int, old_hash: int) -> bool:
 	for _frame in range(TIMEOUT_FRAMES):
 		if terrain.get_world_revision() > revision and \
@@ -233,14 +236,12 @@ func _wait_for_edit(terrain: Node, revision: int, old_hash: int) -> bool:
 func _on_sample_ready(request_id: int, sample: RefCounted) -> void:
 	_samples[request_id] = sample
 
-
 func _on_sample_failed(request_id: int, error: String) -> void:
 	_sample_failures[request_id] = error
 
 
 func _on_edit_committed(revision: int) -> void:
 	_committed_revisions.append(revision)
-
 
 func _fail(message: String) -> void:
 	push_error("WT_SANDBOX_GEOMETRY_FAIL: " + message)

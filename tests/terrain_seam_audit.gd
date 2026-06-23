@@ -17,6 +17,10 @@ func _run() -> void:
 	_scene_root = packed.instantiate()
 	# Preserve the exact 88-leaf mixed-LOD topology used by this seam gallery.
 	_scene_root.radius_chunks = 2
+	_scene_root.maximum_lod = 1
+	_scene_root.streaming_update_distance = 0.0
+	_scene_root.streaming_follows_viewer = true
+	_scene_root.get_node("Viewer").set("input_enabled", false)
 	root.add_child(_scene_root)
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")

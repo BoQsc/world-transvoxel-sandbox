@@ -5,6 +5,7 @@ config_version=5
 
 config/name="World Transvoxel Sandbox"
 run/main_scene="res://scenes/terrain_lab.tscn"
+run/max_fps=60
 
 [editor_plugins]
 
@@ -22,4 +23,3 @@ window/size/window_height_override=720
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/default_filters/use_nearest_mipmap_filter=false
-
