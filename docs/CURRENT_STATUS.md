@@ -25,6 +25,49 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.9 - L3 runtime acceptance is complete for headless runtime evidence.
+
+Command:
+
+```console
+python tools/scale_runtime.py --level L3
+```
+
+Result:
+
+- engines: Godot 4.6.3 and 4.7;
+- accepted L3 runtime budget: staged movement, radius 3, maximum LOD 1,
+  active chunk capacity 1,024, inherited cache budgets;
+- positions: 7 staged positions across the 1,024 world;
+- probes: 35 render/collision probes per engine;
+- minimum rendered chunks: 201;
+- minimum collision chunks: 201;
+- Godot 4.6.3: startup 141 ms, settle 2,820 ms, edit 663 ms;
+- Godot 4.7: startup 148 ms, settle 3,119 ms, edit 547 ms;
+- edit density delta: 6.0;
+- maximum pending retirements: 0;
+- fixed during this step: the first audit edited the distant map center after
+  the viewer reached the final stage, so the durable edit committed but no
+  active chunk required remeshing; the audit now edits inside the final active
+  window and proves remeshing;
+- proven: derived L3 runtime budget, Godot startup, staged movement
+  render/collision coverage, one active-window edit/remesh, clean shutdown;
+- not proven: visual artifact acceptance, dynamic seamless LOD appearance,
+  fast travel or disjoint teleport movement, or L4 2048 support.
+
+S2.8 - L3 runtime budget planning is complete.
+
+Result:
+
+- local demand is derived from radius 3 and maximum LOD 1, not total world
+  width;
+- L2 observed active set bound: approximately 308 chunks;
+- conservative full replacement bound: 616 records;
+- selected active chunk capacity: 1,024, leaving 408 records above that bound;
+- inherited storage/page/mesh/render/collision cache budgets remain explicit
+  in `config/terrain_config.tres`;
+- the budget was provisional until S2.9 runtime acceptance passed.
+
 S2.7 - L3 1024 generation preflight is complete for generation-only evidence.
 
 Command:
@@ -217,30 +260,27 @@ Result:
 
 ## Current active task
 
-S2.8 - L3 runtime budget planning.
+S2.10 - L3 visual capture and artifact classification.
 
 Scope:
 
-- do not copy the L2 runtime budget into L3 by assumption;
-- define the L3 movement class, radius, maximum LOD, active chunk capacity,
-  inherited cache budgets, and explicit overrides;
-- derive a safe initial budget from L2 measured demand and replacement
-  behavior before running Godot;
-- keep L3 runtime support unclaimed until the planned profile passes the
-  supported Godot engine matrix.
+- use the generated L3 artifact and accepted L3 runtime budget;
+- capture overview/material/LOD/top/tunnel/boundary images for L3;
+- reject bad camera framing before accepting capture evidence;
+- keep human and dynamic visual acceptance separate from static captures.
 
 Exit:
 
-- `docs/TERRAIN_RUNTIME_BUDGETS.md` contains a provisional L3 profile and
-  rationale;
-- `python tools/runtime_budget_profiles.py --check` enforces that profile;
+- `python tools/scale_visual.py --level L3` produces a report or documented
+  failure;
+- every capture is classified and the accepted budget is recorded;
 - no GDScript performance logic is added.
 
 ## Next finite steps
 
-1. Define and validate the provisional L3 runtime budget.
-2. Add L3 runtime audit support using that explicit profile.
-3. Run L3 headless startup/movement/collision/edit acceptance.
+1. Add L3 visual capture support using the accepted budget.
+2. Run and inspect L3 graphical captures.
+3. Proceed to L4 generation only if no new L3 static visual blocker appears.
 
 ## Deferred by rule
 

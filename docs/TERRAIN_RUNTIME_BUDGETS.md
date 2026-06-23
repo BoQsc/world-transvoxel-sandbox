@@ -27,13 +27,14 @@ The profile must include:
 Changing a budget is not a hidden fix. The changed value must be in the audit
 marker, the runtime report, and this document.
 
-## Accepted profiles
+## Accepted and provisional profiles
 
 | Level | Horizontal cells | Movement class | Radius | Max LOD | Active capacity | Min render/collision | Status |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
 | L0 | 128 | fixed-center LOD0 reference | 4 | 0 | 512 | full reference world | accepted baseline |
 | L1 | 256 | staged movement | 3 | 1 | 512 | 97 / 97 | accepted runtime |
 | L2 | 512 | staged movement | 3 | 1 | 1024 | 176 / 176 | accepted runtime |
+| L3 | 1024 | staged movement | 3 | 1 | 1024 | 201 / 201 | accepted runtime |
 
 ## L2 capacity classification
 
@@ -66,8 +67,22 @@ Fast travel must get a separate policy before it can be called supported. Valid
 solutions may include a larger delta budget, progressive catch-up, a streaming
 reset path, loading screen semantics, or a dedicated teleport API.
 
-## Next scale rule
+## L3 derivation and acceptance
 
-L3 runtime must not start as a copy of L2 by assumption. Before L3 runtime
-acceptance, choose and document the expected budget profile, then prove or
-reject it with the audit.
+L3 keeps radius 3 and maximum LOD 1. Horizontal world extent increases page
+storage but does not increase the local planner window for those settings.
+
+The L2 visual/runtime evidence observed an active set up to roughly 308 chunks.
+A conservative full replacement bound is therefore 616 records. Active chunk
+capacity 1,024 leaves 408 records above that bound.
+
+L3 inherits storage, encoded/decoded page, mesh, render, collision, byte, and
+apply budgets from `config/terrain_config.tres`. Its only scale-specific
+override is `active_chunk_capacity = 1024`, matching the derived local replacement
+bound rather than copying world size.
+
+The profile passed Godot 4.6.3 and 4.7 with seven staged positions, 35
+render/collision probes, minimum 201 render/collision chunks, one active-window
+edit/remesh, and clean shutdown. It is accepted for staged movement only. It
+does not prove fast travel, disjoint teleport movement, visual acceptance, or
+L4 support.

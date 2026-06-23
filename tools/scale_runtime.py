@@ -14,18 +14,21 @@ from test_sandbox import discover_engines
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
-SUPPORTED_LEVELS = ("L1", "L2")
+SUPPORTED_LEVELS = ("L1", "L2", "L3")
 SCRIPT_BY_LEVEL = {
     "L1": "res://tests/terrain_l1_runtime_audit.gd",
     "L2": "res://tests/terrain_l2_runtime_audit.gd",
+    "L3": "res://tests/terrain_l3_runtime_audit.gd",
 }
 MARKER_BY_LEVEL = {
     "L1": "WT_SANDBOX_L1_RUNTIME_PASS",
     "L2": "WT_SANDBOX_L2_RUNTIME_PASS",
+    "L3": "WT_SANDBOX_L3_RUNTIME_PASS",
 }
 RUNTIME_TIMEOUT_SECONDS = {
     "L1": 180,
     "L2": 300,
+    "L3": 600,
 }
 RUNTIME_BUDGET_BY_LEVEL = {
     "L1": {
@@ -39,6 +42,13 @@ RUNTIME_BUDGET_BY_LEVEL = {
         "radius_chunks": 3,
         "maximum_lod": 1,
         "active_chunk_capacity": 1024,
+    },
+    "L3": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 1024,
+        "cache_policy": "inherit config/terrain_config.tres",
     },
 }
 

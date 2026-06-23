@@ -37,6 +37,10 @@ PROFILES = {
         "L2", 512, "staged movement", 3, 1, 1024, 176, 176,
         "accepted runtime",
     ),
+    "L3": RuntimeBudgetProfile(
+        "L3", 1024, "staged movement", 3, 1, 1024, 201, 201,
+        "accepted runtime",
+    ),
 }
 
 
@@ -55,6 +59,7 @@ def validate() -> list[str]:
     status = read_text("docs/CURRENT_STATUS.md")
     runtime_tool = read_text("tools/scale_runtime.py")
     l2_audit = read_text("tests/terrain_l2_runtime_audit.gd")
+    l3_audit = read_text("tests/terrain_l3_runtime_audit.gd")
     config = read_text("config/terrain_config.tres")
 
     for phrase in (
@@ -62,7 +67,10 @@ def validate() -> list[str]:
         "Every accepted runtime scale must declare its budget profile",
         "| L2 | 512 | staged movement | 3 | 1 | 1024 | 176 / 176",
         "Fast travel is not proven by L2 runtime acceptance",
-        "L3 runtime must not start as a copy of L2 by assumption",
+        "| L3 | 1024 | staged movement | 3 | 1 | 1024 | 201 / 201",
+        "A conservative full replacement bound is therefore 616 records",
+        "Its only scale-specific",
+        "The profile passed Godot 4.6.3 and 4.7",
     ):
         require(contract, phrase, "runtime budget contract", errors)
 
@@ -81,7 +89,15 @@ def validate() -> list[str]:
         errors,
     )
     require(l2_audit, "active_capacity=%d", "L2 runtime audit", errors)
+    require(
+        l3_audit,
+        "const ACTIVE_CHUNK_CAPACITY := 1024",
+        "L3 runtime audit",
+        errors,
+    )
+    require(l3_audit, "active_capacity=%d", "L3 runtime audit", errors)
     require(runtime_tool, '"L2": {', "scale runtime tool", errors)
+    require(runtime_tool, '"L3": {', "scale runtime tool", errors)
     require(runtime_tool, '"active_chunk_capacity": 1024', "scale runtime tool", errors)
     return errors
 
@@ -117,7 +133,7 @@ def main() -> int:
     if errors:
         print(f"Runtime budget validation failed with {len(errors)} error(s).")
         return 1
-    print("WT_SANDBOX_RUNTIME_BUDGETS_PASS profiles=3")
+    print("WT_SANDBOX_RUNTIME_BUDGETS_PASS profiles=4")
     return 0
 
 
