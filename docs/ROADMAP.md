@@ -16,6 +16,8 @@ Status: revalidated against World Transvoxel 1.0.2.
 - fly camera and distinct carve/construct/paint controls;
 - bounded pre-carve authoritative sample capture and exact LIFO carve
   restoration at the original brush coordinates;
+- terrain recovery contract with `manual_exact_restore` as the default and
+  automatic regeneration, smoothing, collapse, and fluid equilibrium disabled;
 - 60 FPS cap and fixed-center complete-map LOD0 playtest mode with full
   collision availability for stable human inspection;
 - idle-work regression proving settled terrain and sub-threshold camera
@@ -72,6 +74,8 @@ Status: pending.
 - measure restoration capture latency and edit-journal growth; replace the
   correctness-first point-command snapshot with a compressed native delta path
   if it misses the production interaction or storage budgets;
+- implement and audit restore-to-base as the next recovery target before any
+  timed regeneration, surface relaxation, or stability/collapse module;
 - establish idle CPU, active CPU, render, physics, I/O, and memory budgets.
 
 Exit: the representative small-game workload meets its budgets without

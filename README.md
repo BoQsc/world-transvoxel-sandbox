@@ -85,6 +85,13 @@ solid density and explicitly paints rock material 3; it is not undo. The carve
 restoration stack is session-local; both carvings and committed restorations
 still persist through the addon's edit journal.
 
+Terrain recovery is governed by
+[`docs/TERRAIN_RECOVERY_CONTRACT.md`](docs/TERRAIN_RECOVERY_CONTRACT.md).
+The current default is `manual_exact_restore`: no automatic timed
+regeneration, smoothing, structural collapse, or water/lava equilibrium runs
+unless an explicit future module enables it. The idle audit verifies this
+default remains zero-idle-work.
+
 The interactive reference scene is deliberately conservative: it is capped at
 60 FPS and loads the complete small finite map once at LOD0 from a fixed
 center anchor. Camera movement therefore causes no chunk or LOD replacement

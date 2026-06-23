@@ -106,7 +106,13 @@ def run_case(engine: Path, name: str, script: str, marker: str) -> None:
     )
     combined = result.stdout + result.stderr
     print(combined, end="" if combined.endswith("\n") else "\n")
-    if result.returncode != 0 or marker not in combined:
+    if (
+        result.returncode != 0
+        or marker not in combined
+        or "SCRIPT ERROR:" in combined
+        or combined.startswith("ERROR:")
+        or "\nERROR:" in combined
+    ):
         raise RuntimeError(f"Sandbox Godot case failed: {name}")
 
 

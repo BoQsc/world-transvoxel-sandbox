@@ -4,6 +4,7 @@ extends Node3D
 signal lab_status_changed(message: String)
 
 const SculptController = preload("res://scripts/terrain_sculpt_controller.gd")
+const RecoveryPolicy = preload("res://scripts/terrain_recovery_policy.gd")
 const WORLD_MIN := Vector3(0.001, 0.001, 0.001)
 const WORLD_MAX := Vector3(127.999, 63.999, 127.999)
 
@@ -161,6 +162,10 @@ func restore_last_carve() -> bool:
 
 func get_restorable_carve_count() -> int:
 	return _sculpt_controller.get_restorable_carve_count()
+
+
+func get_recovery_policy() -> Dictionary:
+	return RecoveryPolicy.default_state()
 
 
 func _handle_sculpt_result(result: Dictionary) -> bool:

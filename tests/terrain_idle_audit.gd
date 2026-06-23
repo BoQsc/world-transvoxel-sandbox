@@ -1,5 +1,6 @@
 extends SceneTree
 
+const RecoveryPolicy = preload("res://scripts/terrain_recovery_policy.gd")
 const TIMEOUT_FRAMES := 1800
 const IDLE_FRAMES := 120
 
@@ -29,6 +30,9 @@ func _run() -> void:
 		return _fail("interactive reference scene does not load the full map")
 	if not is_equal_approx(_scene_root.streaming_update_distance, 8.0):
 		return _fail("interactive streaming update distance is not 8")
+	var recovery: Dictionary = _scene_root.call("get_recovery_policy")
+	if not RecoveryPolicy.is_default_zero_idle(recovery):
+		return _fail("default recovery policy is not manual zero-idle")
 	if not await _wait_for_world(terrain):
 		return _fail("world did not become ready")
 	if not await _wait_for_settled_resources(terrain):
@@ -66,9 +70,12 @@ func _run() -> void:
 	for _frame in range(TIMEOUT_FRAMES):
 		if terrain.get_world_state_name() == "stopped":
 			print(
-				"WT_SANDBOX_IDLE_PASS fps_cap=60 max_lod=0 full_map=1 "
-				+ "update_distance=8 idle_frames=%d viewer_updates=%d"
-				% [IDLE_FRAMES * 2, int(moved.get("viewer_updates", 0))]
+				"WT_SANDBOX_IDLE_PASS fps_cap=60 max_lod=0 full_map=1 update_distance=8 recovery=%s idle_frames=%d viewer_updates=%d"
+				% [
+					str(recovery.get("policy", "unknown")),
+					IDLE_FRAMES * 2,
+					int(moved.get("viewer_updates", 0)),
+				]
 			)
 			_scene_root.queue_free()
 			quit(0)

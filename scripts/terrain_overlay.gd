@@ -67,6 +67,7 @@ func _refresh() -> void:
 	var fps := Engine.get_frames_per_second()
 	var frame_ms := 1000.0 / maxf(float(fps), 1.0)
 	var lod_counts: Dictionary = _visualizer.call("get_lod_counts")
+	var recovery: Dictionary = _lab.call("get_recovery_policy")
 	var position := _viewer.global_position
 	var inside_map := (
 		position.x >= 0.0 and position.x <= 128.0
@@ -91,6 +92,7 @@ func _refresh() -> void:
 			_lab.streaming_update_distance,
 		] +
 		"orientation: +Y up; F2 wire box=boundary; orange terrain=ore\n" +
+		"recovery: %s\n" % str(recovery.get("summary", "unknown")) +
 		"world pages: %d  revision: %d\n" % [
 			_terrain.call("get_world_page_count"),
 			_terrain.call("get_world_revision"),

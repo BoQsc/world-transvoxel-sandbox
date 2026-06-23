@@ -46,6 +46,8 @@ def main() -> int:
         "project.godot",
         "scenes/terrain_lab.tscn",
         "scripts/terrain_lab.gd",
+        "scripts/terrain_recovery_policy.gd",
+        "scripts/terrain_recovery_policy.gd.uid",
         "scripts/terrain_sculpt_controller.gd",
         "scripts/fly_camera.gd",
         "scripts/terrain_visualizer.gd",
@@ -65,6 +67,7 @@ def main() -> int:
         "tests/terrain_seam_audit.gd",
         "tests/terrain_visual_capture.gd",
         "docs/ROADMAP.md",
+        "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
     )
@@ -108,6 +111,21 @@ def main() -> int:
                 or sha256(path) != record["sha256"]
             ):
                 errors.append(f"vendored addon file mismatch: {relative}")
+
+    contract = ROOT / "docs" / "TERRAIN_RECOVERY_CONTRACT.md"
+    if contract.is_file():
+        text = contract.read_text(encoding="utf-8")
+        for phrase in (
+            "manual_exact_restore",
+            "restore_to_base",
+            "timed_regeneration",
+            "surface_relaxation",
+            "structural_stability",
+            "fluid_equilibrium",
+            "settled terrain must stay cold",
+        ):
+            if phrase not in text:
+                errors.append(f"recovery contract is missing phrase: {phrase}")
 
     files = tracked_files()
     for relative in files:
