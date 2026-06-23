@@ -56,6 +56,7 @@ def main() -> int:
         "materials/terrain_material.tres",
         "config/terrain_config.tres",
         "tools/generate_world.py",
+        "tools/runtime_budget_profiles.py",
         "tools/scale_ladder.py",
         "tools/scale_runtime.py",
         "tools/scale_visual.py",
@@ -78,6 +79,7 @@ def main() -> int:
         "docs/CURRENT_STATUS.md",
         "docs/ROADMAP.md",
         "docs/TERRAIN_ACCEPTANCE_STANDARD.md",
+        "docs/TERRAIN_RUNTIME_BUDGETS.md",
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
@@ -165,11 +167,25 @@ def main() -> int:
             "S2.4 - L2 512 generation preflight is complete",
             "S2.5 - L2 runtime acceptance path",
             "S2.6 - L2 visual capture and artifact classification",
+            "docs/TERRAIN_RUNTIME_BUDGETS.md",
             "GDScript is glue",
             "Deferred by rule",
         ):
             if phrase not in text:
                 errors.append(f"current status is missing phrase: {phrase}")
+
+    budget_check = subprocess.run(
+        [sys.executable, str(ROOT / "tools" / "runtime_budget_profiles.py"), "--check"],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+    if budget_check.returncode != 0:
+        errors.append(
+            "runtime budget profile validation failed: "
+            + (budget_check.stdout + budget_check.stderr).strip()
+        )
 
     files = tracked_files()
     for relative in files:

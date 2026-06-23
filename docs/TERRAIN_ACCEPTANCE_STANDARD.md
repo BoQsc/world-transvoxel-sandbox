@@ -30,6 +30,9 @@ repository work remain secondary until the terrain itself is proven at scale.
   documented standard.
 - Settled terrain must stay cold: no hidden streaming, meshing, recovery, or
   regeneration work while nothing changed.
+- Runtime budgets are part of acceptance. Each accepted scale must follow
+  `docs/TERRAIN_RUNTIME_BUDGETS.md`; larger levels must not silently inherit
+  smaller-level capacities.
 - Autonomous captures and tests must disable player input from scene startup.
 - Project scripts must remain cross-platform Python where external scripting is
   needed; no tracked PowerShell workflow scripts.
@@ -60,6 +63,7 @@ Each level must record:
 - generation duration;
 - peak generator memory;
 - world/page count and disk size;
+- runtime budget profile;
 - startup latency;
 - settled idle CPU/GPU/memory;
 - movement latency and frame time;

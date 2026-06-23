@@ -4,6 +4,7 @@ This roadmap ends in a decision about using World Transvoxel in a small game.
 It does not begin 0BSD replacement or compute work prematurely.
 The governing quality gate is `docs/TERRAIN_ACCEPTANCE_STANDARD.md`: larger
 artifact-free terrain and standards come before optional feature systems.
+Runtime budget acceptance is tracked in `docs/TERRAIN_RUNTIME_BUDGETS.md`.
 The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
@@ -69,6 +70,8 @@ generation and headless runtime evidence and is not yet visually accepted.
   and 2048 horizontal cells;
 - keep scale-ladder orchestration in Python/native-facing tooling, not
   performance-sensitive GDScript;
+- require every accepted runtime level to declare a budget profile before it is
+  used for visual capture, larger-scale work, or gameplay reference work;
 - L1 generated artifact evidence: 1,152 pages, 47,778,959 stable payload
   bytes, latest generation 33.125 seconds, world hash
   `fb10bfa47bc7530a78a41791c155599e3d4e9a7a1a070aea4dcf6acd2a01084b`;
@@ -90,7 +93,8 @@ generation and headless runtime evidence and is not yet visually accepted.
 - L2 runtime classification: the default 512 active/change capacity rejected
   L2 staged movement because the active set is about 294 chunks and large
   staged moves can exceed the delta budget; this is a budget boundary, not a
-  visual acceptance result;
+  visual acceptance result, and it is now locked in
+  `docs/TERRAIN_RUNTIME_BUDGETS.md`;
 - L2 not yet proven: visual artifact acceptance, dynamic seamless LOD
   appearance, fast travel or disjoint teleport movement, or 1024/2048 scale
   support;

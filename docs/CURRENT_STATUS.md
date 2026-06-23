@@ -6,6 +6,7 @@ turning into an endless stream of small unrelated decisions.
 ## Active operating rule
 
 Follow `docs/TERRAIN_ACCEPTANCE_STANDARD.md`.
+Runtime scale budgets are governed by `docs/TERRAIN_RUNTIME_BUDGETS.md`.
 
 Performance-sensitive terrain work belongs in native code, shaders/compute
 when justified, binary formats, or Python offline tooling. GDScript is glue for
@@ -40,14 +41,17 @@ Result:
 - probes: 25 render/collision probes per engine;
 - minimum rendered chunks: 176;
 - minimum collision chunks: 176;
-- Godot 4.6.3: startup 166 ms, settle 3,691 ms, edit 629 ms;
-- Godot 4.7: startup 139 ms, settle 3,833 ms, edit 810 ms;
+- Godot 4.6.3: startup 129 ms, settle 2,905 ms, edit 619 ms;
+- Godot 4.7: startup 149 ms, settle 2,966 ms, edit 654 ms;
 - edit density delta: 6.0;
 - maximum pending retirements: 0;
 - classified during this step: the original L2 audit failed with the default
   512 active/change capacity because L2 movement can replace most of a 294
   chunk active set and exceed the delta budget; L2 runtime acceptance therefore
   uses an explicit 1,024 active chunk capacity;
+- locked during this step: runtime budgets are now first-class acceptance data
+  in `docs/TERRAIN_RUNTIME_BUDGETS.md` and are checked by
+  `python tools/runtime_budget_profiles.py --check`;
 - proven: Godot startup, staged movement render/collision coverage, one
   density edit/remesh, clean shutdown;
 - not proven: visual artifact acceptance, dynamic seamless LOD appearance,
@@ -157,6 +161,7 @@ S2.6 - L2 visual capture and artifact classification.
 Scope:
 
 - use the generated L2 artifact path and the accepted L2 runtime budget;
+- verify the capture path follows `docs/TERRAIN_RUNTIME_BUDGETS.md`;
 - capture overview/material/LOD/top/tunnel/boundary images for L2;
 - classify every visible issue as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness

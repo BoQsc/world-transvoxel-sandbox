@@ -27,6 +27,20 @@ RUNTIME_TIMEOUT_SECONDS = {
     "L1": 180,
     "L2": 300,
 }
+RUNTIME_BUDGET_BY_LEVEL = {
+    "L1": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 512,
+    },
+    "L2": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 1024,
+    },
+}
 
 
 def ensure_generated(level: str, force: bool) -> None:
@@ -109,6 +123,7 @@ def run_level(level: str, engines: list[tuple[str, Path]]) -> dict:
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "level": level,
         "status": "runtime_headless_pass",
+        "runtime_budget": RUNTIME_BUDGET_BY_LEVEL[level],
         "engines": results,
         "proven": [
             "Godot startup on this level",
