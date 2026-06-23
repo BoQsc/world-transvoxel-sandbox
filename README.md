@@ -27,6 +27,8 @@ popping comes before GPU acceleration, water/lava, planets, structural
 collapse, or a small-game repository. The current acceptance standard is
 recorded in
 [`docs/TERRAIN_ACCEPTANCE_STANDARD.md`](docs/TERRAIN_ACCEPTANCE_STANDARD.md).
+The current active milestone and next finite task are tracked in
+[`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md).
 
 ## Run
 
@@ -38,6 +40,13 @@ python tools/validate_sandbox.py
 python tools/generate_world.py --force
 python tools/test_sandbox.py
 python tools/capture_visuals.py
+```
+
+Scale-ladder artifacts are generated separately from the accepted L0 playtest
+world:
+
+```console
+python tools/scale_ladder.py --level L1 --force
 ```
 
 Then open `project.godot`, or run:

@@ -33,6 +33,11 @@ repository work remain secondary until the terrain itself is proven at scale.
 - Autonomous captures and tests must disable player input from scene startup.
 - Project scripts must remain cross-platform Python where external scripting is
   needed; no tracked PowerShell workflow scripts.
+- GDScript is glue for Godot scene scaffolding, input routing, debug UI, and
+  headless test harnesses; performance-sensitive terrain generation, meshing,
+  large-map streaming policy, storage, recovery, fluids, and stability belong
+  in native code, shaders/compute when justified, binary formats, or Python
+  offline tooling.
 - Source files should stay small and purpose-prefixed instead of collapsing into
   one large terrain file.
 
@@ -92,6 +97,13 @@ until they have their own contract and tests.
 - Water and lava are separate fluid systems, not implicit terrain recovery.
 - Compute shaders are deferred until CPU/native behavior and workloads are
   stable enough to compare end-to-end.
+
+## Decision tracking
+
+`docs/CURRENT_STATUS.md` records the active milestone, current task, exit
+criteria, next finite steps, and deferred systems. If a decision does not
+change the active milestone, it belongs in that tracker or a backlog note; it
+must not interrupt the scale ladder.
 
 ## Exit condition
 

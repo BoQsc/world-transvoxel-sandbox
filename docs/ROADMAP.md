@@ -4,6 +4,7 @@ This roadmap ends in a decision about using World Transvoxel in a small game.
 It does not begin 0BSD replacement or compute work prematurely.
 The governing quality gate is `docs/TERRAIN_ACCEPTANCE_STANDARD.md`: larger
 artifact-free terrain and standards come before optional feature systems.
+The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
 
@@ -60,10 +61,16 @@ Exit: no visible correctness blocker remains in the test gallery.
 
 ## S2 - Chunked generation and scale ladder
 
-Status: pending.
+Status: active; L0 remains the default accepted playtest world, and L1 256 has
+generated-only evidence. L1 runtime acceptance remains pending.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
+- keep scale-ladder orchestration in Python/native-facing tooling, not
+  performance-sensitive GDScript;
+- L1 generated artifact evidence: 1,152 pages, 47,778,959 stable payload
+  bytes, latest generation 33.125 seconds, world hash
+  `fb10bfa47bc7530a78a41791c155599e3d4e9a7a1a070aea4dcf6acd2a01084b`;
 - replace whole-volume source generation with bounded chunked/sparse baking;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,

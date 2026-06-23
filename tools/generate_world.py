@@ -11,17 +11,54 @@ import shutil
 import subprocess
 import sys
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / ".generated" / "world_source"
 DEFAULT_OUTPUT = ROOT / "world"
-ORIGIN = (-2, -2, -2)
-DIMENSIONS = (133, 69, 133)
-LOD0_CHUNKS = (8, 4, 8)
-WORLD_EXTENT = tuple(value * 16 for value in LOD0_CHUNKS)
 SOURCE_REVISION = 10002
+
+
+@dataclass(frozen=True)
+class ScaleProfile:
+    level: str
+    horizontal_cells: int
+    vertical_cells: int
+    lod0_chunks: tuple[int, int, int]
+    purpose: str
+
+    @property
+    def origin(self) -> tuple[int, int, int]:
+        return (-2, -2, -2)
+
+    @property
+    def dimensions(self) -> tuple[int, int, int]:
+        return (
+            self.lod0_chunks[0] * 16 + 5,
+            self.lod0_chunks[1] * 16 + 5,
+            self.lod0_chunks[2] * 16 + 5,
+        )
+
+    @property
+    def world_extent(self) -> tuple[int, int, int]:
+        return tuple(value * 16 for value in self.lod0_chunks)
+
+    @property
+    def feature_scale(self) -> float:
+        return float(self.horizontal_cells) / 128.0
+
+
+SCALE_PROFILES = {
+    "L0": ScaleProfile(
+        "L0", 128, 64, (8, 4, 8), "current correctness and visual baseline"
+    ),
+    "L1": ScaleProfile(
+        "L1", 256, 64, (16, 4, 16), "first larger-terrain generation proof"
+    ),
+}
+DEFAULT_SCALE_LEVEL = "L0"
 
 
 def sha256(path: Path) -> str:
@@ -53,18 +90,20 @@ def terrain_height(x: int, z: int, preset: str) -> float:
     return 34.0 + broad + local + mound
 
 
-def chamber_void_density(x: int, y: int, z: int) -> float:
-    dx = (float(x) - 40.0) / 9.0
+def chamber_void_density(x: int, y: int, z: int, profile: ScaleProfile) -> float:
+    scale = profile.feature_scale
+    dx = (float(x) - 40.0 * scale) / 9.0
     dy = (float(y) - 18.0) / 6.0
-    dz = (float(z) - 40.0) / 9.0
+    dz = (float(z) - 40.0 * scale) / 9.0
     return (1.0 - math.sqrt(dx * dx + dy * dy + dz * dz)) * 7.0
 
 
-def tunnel_void_density(x: int, y: int, z: int) -> float:
-    if x < 16 or x > 112:
+def tunnel_void_density(x: int, y: int, z: int, profile: ScaleProfile) -> float:
+    scale = profile.feature_scale
+    if x < 16 * scale or x > profile.world_extent[0] - 16 * scale:
         return -math.inf
     center_y = 15.0 + 2.5 * math.sin(float(x) * 0.083)
-    center_z = 88.0 + 9.0 * math.sin(float(x) * 0.047)
+    center_z = 88.0 * scale + 9.0 * math.sin(float(x) * 0.047)
     dy = float(y) - center_y
     dz = float(z) - center_z
     return (4.2 - math.sqrt(dy * dy + dz * dz)) * 1.8
@@ -79,9 +118,11 @@ def underground_material(x: int, y: int, z: int) -> int:
     return 5 if rock_field > 0.55 else 3
 
 
-def count_volumetric_columns(densities: array.array[float]) -> int:
+def count_volumetric_columns(
+    densities: array.array[float], dimensions: tuple[int, int, int]
+) -> int:
     count = 0
-    width, height, depth = DIMENSIONS
+    width, height, depth = dimensions
     for z_index in range(2, depth - 2):
         for x_index in range(2, width - 2):
             transitions = 0
@@ -97,7 +138,7 @@ def count_volumetric_columns(densities: array.array[float]) -> int:
     return count
 
 
-def write_volume(preset: str) -> dict[str, int]:
+def write_volume(preset: str, profile: ScaleProfile) -> dict[str, int]:
     SOURCE_ROOT.mkdir(parents=True, exist_ok=True)
     densities = array.array("f")
     materials = array.array("H")
@@ -108,9 +149,11 @@ def write_volume(preset: str) -> dict[str, int]:
     ore_samples = 0
     boundary_samples = 0
 
-    x_coordinates = [ORIGIN[0] + index for index in range(DIMENSIONS[0])]
-    y_coordinates = [ORIGIN[1] + index for index in range(DIMENSIONS[1])]
-    z_coordinates = [ORIGIN[2] + index for index in range(DIMENSIONS[2])]
+    world_extent = profile.world_extent
+    dimensions = profile.dimensions
+    x_coordinates = [profile.origin[0] + index for index in range(dimensions[0])]
+    y_coordinates = [profile.origin[1] + index for index in range(dimensions[1])]
+    z_coordinates = [profile.origin[2] + index for index in range(dimensions[2])]
     sin_x = [math.sin(value * 0.112) for value in x_coordinates]
     sin_y = [math.sin(value * 0.137) for value in y_coordinates]
     cos_z = [math.cos(value * 0.104) for value in z_coordinates]
@@ -128,9 +171,9 @@ def write_volume(preset: str) -> dict[str, int]:
                 density = float(y) - height
                 base_density = density
                 cave_margin = (
-                    1 < x < WORLD_EXTENT[0] - 1
+                    1 < x < world_extent[0] - 1
                     and 1 < y
-                    and 1 < z < WORLD_EXTENT[2] - 1
+                    and 1 < z < world_extent[2] - 1
                 )
                 if preset == "terrain" and cave_margin and y < height - 6.0:
                     cave = (
@@ -142,11 +185,11 @@ def write_volume(preset: str) -> dict[str, int]:
                     if cave > 2.28:
                         density = max(density, (cave - 2.28) * 9.0)
                 if preset == "terrain" and cave_margin:
-                    chamber_density = chamber_void_density(x, y, z)
+                    chamber_density = chamber_void_density(x, y, z, profile)
                     if chamber_density > density:
                         density = chamber_density
                         chamber_samples += 1
-                    tunnel_density = tunnel_void_density(x, y, z)
+                    tunnel_density = tunnel_void_density(x, y, z, profile)
                     if tunnel_density > density:
                         density = tunnel_density
                         tunnel_samples += 1
@@ -155,10 +198,10 @@ def write_volume(preset: str) -> dict[str, int]:
 
                 boundary_distance = min(
                     x,
-                    WORLD_EXTENT[0] - x,
+                    world_extent[0] - x,
                     y,
                     z,
-                    WORLD_EXTENT[2] - z,
+                    world_extent[2] - z,
                 )
                 # Keep the finite shell halfway between integer samples. An
                 # exact zero at distance one creates collapsed/isovalue-tied
@@ -191,7 +234,7 @@ def write_volume(preset: str) -> dict[str, int]:
                 materials.append(material)
                 material_counts[str(material)] += 1
 
-    volumetric_columns = count_volumetric_columns(densities)
+    volumetric_columns = count_volumetric_columns(densities, dimensions)
     if preset == "terrain" and volumetric_columns == 0:
         raise RuntimeError("Terrain generation produced no non-heightfield columns.")
     if densities.itemsize != 4 or materials.itemsize != 2:
@@ -217,15 +260,16 @@ def write_volume(preset: str) -> dict[str, int]:
     }
 
 
-def write_keys() -> int:
+def write_keys(profile: ScaleProfile) -> int:
     keys: list[tuple[int, int, int, int]] = []
-    for z in range(LOD0_CHUNKS[2]):
-        for y in range(LOD0_CHUNKS[1]):
-            for x in range(LOD0_CHUNKS[0]):
+    lod0_chunks = profile.lod0_chunks
+    for z in range(lod0_chunks[2]):
+        for y in range(lod0_chunks[1]):
+            for x in range(lod0_chunks[0]):
                 keys.append((x, y, z, 0))
-    for z in range(LOD0_CHUNKS[2] // 2):
-        for y in range(LOD0_CHUNKS[1] // 2):
-            for x in range(LOD0_CHUNKS[0] // 2):
+    for z in range(lod0_chunks[2] // 2):
+        for y in range(lod0_chunks[1] // 2):
+            for x in range(lod0_chunks[0] // 2):
                 keys.append((x, y, z, 1))
     (SOURCE_ROOT / "keys.txt").write_text(
         "".join(f"{x} {y} {z} {lod}\n" for x, y, z, lod in keys),
@@ -234,7 +278,8 @@ def write_keys() -> int:
     return len(keys)
 
 
-def generate(output_root: Path, preset: str, force: bool) -> None:
+def generate(output_root: Path, preset: str, force: bool, scale_level: str) -> None:
+    profile = SCALE_PROFILES[scale_level]
     output_root = output_root.resolve()
     if force:
         remove_generated(SOURCE_ROOT)
@@ -243,8 +288,8 @@ def generate(output_root: Path, preset: str, force: bool) -> None:
         raise RuntimeError(f"Output exists; pass --force to replace it: {output_root}")
 
     started = time.perf_counter()
-    volume = write_volume(preset)
-    page_count = write_keys()
+    volume = write_volume(preset, profile)
+    page_count = write_keys(profile)
     bake_script = ROOT / "addons" / "world_transvoxel" / "tools" / "wt_bake.py"
     command = [
         sys.executable,
@@ -255,9 +300,9 @@ def generate(output_root: Path, preset: str, force: bool) -> None:
         "--materials",
         str(SOURCE_ROOT / "materials.u16"),
         "--origin",
-        *(str(value) for value in ORIGIN),
+        *(str(value) for value in profile.origin),
         "--dimensions",
-        *(str(value) for value in DIMENSIONS),
+        *(str(value) for value in profile.dimensions),
         "--spacing",
         "1",
         "--source-revision",
@@ -293,11 +338,15 @@ def generate(output_root: Path, preset: str, force: bool) -> None:
     )
     world_report = json.loads(validation.stdout)
     report = {
-        "schema": "world-transvoxel-sandbox.generation.v1",
+        "schema": "world-transvoxel-sandbox.generation.v2",
+        "scale_level": profile.level,
+        "horizontal_cells": profile.horizontal_cells,
+        "vertical_cells": profile.vertical_cells,
+        "scale_purpose": profile.purpose,
         "preset": preset,
-        "origin": ORIGIN,
-        "dimensions": DIMENSIONS,
-        "lod0_chunks": LOD0_CHUNKS,
+        "origin": profile.origin,
+        "dimensions": profile.dimensions,
+        "lod0_chunks": profile.lod0_chunks,
         "source_revision": SOURCE_REVISION,
         "source_density_sha256": sha256(SOURCE_ROOT / "density.f32"),
         "source_material_sha256": sha256(SOURCE_ROOT / "materials.u16"),
@@ -311,7 +360,7 @@ def generate(output_root: Path, preset: str, force: bool) -> None:
     )
     print(
         "WT_SANDBOX_GENERATION_PASS "
-        f"preset={preset} pages={page_count} "
+        f"level={profile.level} preset={preset} pages={page_count} "
         f"seconds={report['generation_seconds']} "
         f"world_sha256={world_report['sha256']}"
     )
@@ -323,9 +372,14 @@ def main() -> None:
     )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--preset", choices=("terrain", "flat"), default="terrain")
+    parser.add_argument(
+        "--scale-level",
+        choices=tuple(SCALE_PROFILES),
+        default=DEFAULT_SCALE_LEVEL,
+    )
     parser.add_argument("--force", action="store_true")
     arguments = parser.parse_args()
-    generate(arguments.output, arguments.preset, arguments.force)
+    generate(arguments.output, arguments.preset, arguments.force, arguments.scale_level)
 
 
 if __name__ == "__main__":

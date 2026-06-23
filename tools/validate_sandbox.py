@@ -56,6 +56,7 @@ def main() -> int:
         "materials/terrain_material.tres",
         "config/terrain_config.tres",
         "tools/generate_world.py",
+        "tools/scale_ladder.py",
         "tools/capture_visuals.py",
         "tools/test_sandbox.py",
         "tests/sandbox_smoke.gd",
@@ -66,6 +67,7 @@ def main() -> int:
         "tests/terrain_motion_audit.gd",
         "tests/terrain_seam_audit.gd",
         "tests/terrain_visual_capture.gd",
+        "docs/CURRENT_STATUS.md",
         "docs/ROADMAP.md",
         "docs/TERRAIN_ACCEPTANCE_STANDARD.md",
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
@@ -137,10 +139,25 @@ def main() -> int:
             "Dynamic LOD popping remains a blocker",
             "Settled terrain must stay cold",
             "no tracked PowerShell workflow scripts",
+            "GDScript is glue",
             "Compute shaders are deferred",
+            "Decision tracking",
         ):
             if phrase not in text:
                 errors.append(f"terrain standard is missing phrase: {phrase}")
+
+    status = ROOT / "docs" / "CURRENT_STATUS.md"
+    if status.is_file():
+        text = status.read_text(encoding="utf-8")
+        for phrase in (
+            "S2 - chunked generation and scale ladder",
+            "S2.1 - Python scale-ladder generation proof is complete",
+            "S2.2 - L1 runtime acceptance path",
+            "GDScript is glue",
+            "Deferred by rule",
+        ):
+            if phrase not in text:
+                errors.append(f"current status is missing phrase: {phrase}")
 
     files = tracked_files()
     for relative in files:
