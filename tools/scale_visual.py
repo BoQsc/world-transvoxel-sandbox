@@ -14,6 +14,33 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
+SUPPORTED_LEVELS = ("L1", "L2")
+SCRIPT_BY_LEVEL = {
+    "L1": "res://tests/terrain_l1_visual_capture.gd",
+    "L2": "res://tests/terrain_l2_visual_capture.gd",
+}
+CAPTURE_MARKER_BY_LEVEL = {
+    "L1": "WT_SANDBOX_L1_CAPTURE",
+    "L2": "WT_SANDBOX_L2_CAPTURE",
+}
+PASS_MARKER_BY_LEVEL = {
+    "L1": "WT_SANDBOX_L1_VISUAL_CAPTURE_PASS",
+    "L2": "WT_SANDBOX_L2_VISUAL_CAPTURE_PASS",
+}
+RUNTIME_BUDGET_BY_LEVEL = {
+    "L1": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 512,
+    },
+    "L2": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 1024,
+    },
+}
 EXPECTED_IMAGES = (
     "overview_surface.png",
     "overview_material.png",
@@ -57,10 +84,10 @@ def ensure_generated(level: str) -> None:
     )
 
 
-def parse_captures(combined: str) -> list[dict[str, str]]:
+def parse_captures(combined: str, marker: str) -> list[dict[str, str]]:
     captures: list[dict[str, str]] = []
     for line in combined.splitlines():
-        if "WT_SANDBOX_L1_CAPTURE" not in line:
+        if marker not in line:
             continue
         fields: dict[str, str] = {}
         for item in line.split()[1:]:
@@ -89,7 +116,7 @@ def run_visual(level: str, engine: Path) -> dict:
             "--path",
             str(ROOT),
             "--script",
-            "res://tests/terrain_l1_visual_capture.gd",
+            SCRIPT_BY_LEVEL[level],
             "--",
             "--disable-player-input",
         ],
@@ -103,7 +130,7 @@ def run_visual(level: str, engine: Path) -> dict:
     combined = result.stdout + result.stderr
     (visual_root / "capture.log").write_text(combined, encoding="utf-8")
     print(combined, end="" if combined.endswith("\n") else "\n")
-    captures = parse_captures(combined)
+    captures = parse_captures(combined, CAPTURE_MARKER_BY_LEVEL[level])
     missing = [
         name
         for name in EXPECTED_IMAGES
@@ -112,7 +139,7 @@ def run_visual(level: str, engine: Path) -> dict:
     ]
     if (
         result.returncode != 0
-        or "WT_SANDBOX_L1_VISUAL_CAPTURE_PASS" not in combined
+        or PASS_MARKER_BY_LEVEL[level] not in combined
         or has_godot_error(combined)
         or missing
         or len(captures) != len(EXPECTED_IMAGES)
@@ -126,25 +153,29 @@ def run_visual(level: str, engine: Path) -> dict:
         "level": level,
         "engine": str(engine),
         "status": "visual_capture_pass",
+        "runtime_budget": RUNTIME_BUDGET_BY_LEVEL[level],
         "images": captures,
         "output": visual_root.relative_to(ROOT).as_posix(),
         "artifact_classification": {
             "blank_or_missing_viewport": "not_detected",
             "finite_boundary_shell": "expected in closed_boundary captures",
-            "l1_debug_bounds": "world-bound aware",
+            "debug_bounds": "world-bound aware",
+            "lod_debug_partition": "expected in overview_lod captures",
+            "underground_tunnel": "static centerline-framed capture",
+            "top_view_detail": "limited by flat procedural palette",
             "shader_instance_variable_limit": "not_detected after per-LOD materials",
             "render_collision_runtime_gap": "not_tested_here; covered by scale_runtime",
             "dynamic_lod_popping": "not_proven_by_static_captures",
             "human_visual_acceptance": "pending",
         },
         "proven": [
-            "L1 representative visual captures were produced",
+            "representative visual captures were produced",
             "capture viewport range was nonblank for every image",
         ],
         "not_proven": [
             "human visual acceptance",
             "dynamic seamless LOD appearance",
-            "512/1024/2048 scale support",
+            "larger scale support beyond this visual level",
         ],
     }
 
@@ -153,7 +184,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Capture representative visual evidence for scale levels."
     )
-    parser.add_argument("--level", choices=("L1",), required=True)
+    parser.add_argument("--level", choices=SUPPORTED_LEVELS, required=True)
     parser.add_argument("--godot", type=Path)
     arguments = parser.parse_args()
     ensure_generated(arguments.level)

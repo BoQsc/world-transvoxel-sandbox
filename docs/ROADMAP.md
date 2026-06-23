@@ -64,7 +64,8 @@ Exit: no visible correctness blocker remains in the test gallery.
 
 Status: active; L0 remains the default accepted playtest world. L1 256 has
 generation, headless runtime, and automated visual evidence. L2 512 has
-generation and headless runtime evidence and is not yet visually accepted.
+generation, headless runtime, and automated static visual evidence, but is not
+yet human or dynamically visually accepted.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -95,7 +96,15 @@ generation and headless runtime evidence and is not yet visually accepted.
   staged moves can exceed the delta budget; this is a budget boundary, not a
   visual acceptance result, and it is now locked in
   `docs/TERRAIN_RUNTIME_BUDGETS.md`;
-- L2 not yet proven: visual artifact acceptance, dynamic seamless LOD
+- L2 visual evidence: seven Godot 4.7 captures covering overview, material,
+  LOD, top, underground tunnel, closed boundary, and boundary materials; the
+  first L2 tunnel framing was rejected and fixed by moving the camera onto the
+  generated tunnel centerline;
+- L2 static visual classification: overview is upright/nonblank, top view has
+  no old side-band symptom but remains low-detail with the flat procedural
+  palette, boundary shell is expected, and LOD color partitioning is expected
+  in debug view;
+- L2 still not proven: human visual acceptance, dynamic seamless LOD
   appearance, fast travel or disjoint teleport movement, or 1024/2048 scale
   support;
 - replace whole-volume source generation with bounded chunked/sparse baking;

@@ -25,6 +25,36 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.6 - L2 visual capture and artifact classification is complete for
+automated static visual evidence.
+
+Command:
+
+```console
+python tools/scale_visual.py --level L2
+```
+
+Result:
+
+- engine: Godot 4.7 graphical mode;
+- runtime budget: L2 staged movement profile with active chunk capacity 1,024;
+- captures: 7 images under `artifacts/scale_ladder/L2/visual`;
+- capture ranges: overview/material 0.626, LOD 0.639, top 0.077, tunnel
+  0.773, boundary/material boundary 0.434;
+- fixed during this step: the first L2 tunnel capture placed the camera too
+  close to the tunnel wall and produced a large clipped wall plane, so the
+  tunnel camera now follows the generated L2 tunnel centerline;
+- classified: overview surface is upright and nonblank;
+- classified: top view has no old side-band symptom, but remains low-detail
+  because the current procedural terrain material is flat;
+- classified: finite boundary shell is expected in boundary captures;
+- classified: LOD color partitioning is expected in LOD debug captures;
+- classified: underground tunnel is visible after centerline reframing;
+- proven: representative L2 static visual captures were produced and every
+  capture had nonblank viewport range;
+- not proven: human visual acceptance, dynamic seamless LOD appearance, fast
+  travel or disjoint teleport movement, or 1024/2048 scale support.
+
 S2.5 - L2 runtime acceptance path is complete for headless runtime evidence.
 
 Command:
@@ -156,30 +186,29 @@ Result:
 
 ## Current active task
 
-S2.6 - L2 visual capture and artifact classification.
+S2.7 - L3 1024 generation preflight.
 
 Scope:
 
-- use the generated L2 artifact path and the accepted L2 runtime budget;
-- verify the capture path follows `docs/TERRAIN_RUNTIME_BUDGETS.md`;
-- capture overview/material/LOD/top/tunnel/boundary images for L2;
-- classify every visible issue as topology/collision, generation,
-  material/shading, LOD transition, streaming/lifetime, harness
-  misunderstanding, or documented limitation;
-- keep human visual acceptance separate from automated capture existence.
+- add an L3 1024 generation-only profile only after preserving L0/L1/L2
+  evidence;
+- generate L3 as an artifact path, not as the accepted playtest world;
+- record page count, payload bytes, generation duration, world hash, and
+  memory/disk warnings if encountered;
+- do not claim L3 runtime or visual support from generation-only evidence.
 
 Exit:
 
-- `python tools/scale_visual.py --level L2` produces a report or a documented
-  failure;
-- the report clearly says what is and is not proven visually;
+- `python tools/scale_ladder.py --level L3 --force` produces a report or a
+  documented failure;
+- the report clearly says what is and is not proven;
 - no GDScript performance logic is added.
 
 ## Next finite steps
 
-1. Add L2 visual capture support without changing the L0 default.
-2. Run L2 graphical capture and classify automated images.
-3. Decide whether S2 can proceed to L3 generation or needs L2 visual fixes.
+1. Add L3 1024 generation-only profile.
+2. Generate L3 as an artifact and record the result.
+3. Add L3 runtime budget planning only if generation succeeds.
 
 ## Deferred by rule
 
