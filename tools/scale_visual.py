@@ -14,18 +14,31 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
-SUPPORTED_LEVELS = ("L1", "L2")
+SUPPORTED_LEVELS = ("L1", "L2", "L3")
 SCRIPT_BY_LEVEL = {
     "L1": "res://tests/terrain_l1_visual_capture.gd",
     "L2": "res://tests/terrain_l2_visual_capture.gd",
+    "L3": "res://tests/terrain_l3_visual_capture.gd",
 }
 CAPTURE_MARKER_BY_LEVEL = {
     "L1": "WT_SANDBOX_L1_CAPTURE",
     "L2": "WT_SANDBOX_L2_CAPTURE",
+    "L3": "WT_SANDBOX_L3_CAPTURE",
 }
 PASS_MARKER_BY_LEVEL = {
     "L1": "WT_SANDBOX_L1_VISUAL_CAPTURE_PASS",
     "L2": "WT_SANDBOX_L2_VISUAL_CAPTURE_PASS",
+    "L3": "WT_SANDBOX_L3_VISUAL_CAPTURE_PASS",
+}
+REQUIRED_MARKERS_BY_LEVEL = {
+    "L1": (),
+    "L2": (),
+    "L3": ("WT_SANDBOX_L3_BOUNDARY_PASS",),
+}
+VISUAL_TIMEOUT_SECONDS = {
+    "L1": 180,
+    "L2": 180,
+    "L3": 300,
 }
 RUNTIME_BUDGET_BY_LEVEL = {
     "L1": {
@@ -39,6 +52,13 @@ RUNTIME_BUDGET_BY_LEVEL = {
         "radius_chunks": 3,
         "maximum_lod": 1,
         "active_chunk_capacity": 1024,
+    },
+    "L3": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 1024,
+        "cache_policy": "inherit config/terrain_config.tres",
     },
 }
 EXPECTED_IMAGES = (
@@ -125,7 +145,7 @@ def run_visual(level: str, engine: Path) -> dict:
         text=True,
         capture_output=True,
         errors="replace",
-        timeout=180,
+        timeout=VISUAL_TIMEOUT_SECONDS[level],
     )
     combined = result.stdout + result.stderr
     (visual_root / "capture.log").write_text(combined, encoding="utf-8")
@@ -140,6 +160,7 @@ def run_visual(level: str, engine: Path) -> dict:
     if (
         result.returncode != 0
         or PASS_MARKER_BY_LEVEL[level] not in combined
+        or any(marker not in combined for marker in REQUIRED_MARKERS_BY_LEVEL[level])
         or has_godot_error(combined)
         or missing
         or len(captures) != len(EXPECTED_IMAGES)
@@ -158,7 +179,11 @@ def run_visual(level: str, engine: Path) -> dict:
         "output": visual_root.relative_to(ROOT).as_posix(),
         "artifact_classification": {
             "blank_or_missing_viewport": "not_detected",
-            "finite_boundary_shell": "expected in closed_boundary captures",
+            "finite_boundary_shell": (
+                "targeted collision ray and static captures passed"
+                if level == "L3"
+                else "expected in closed_boundary captures"
+            ),
             "debug_bounds": "world-bound aware",
             "lod_debug_partition": "expected in overview_lod captures",
             "underground_tunnel": "static centerline-framed capture",

@@ -22,6 +22,10 @@ repository work remain secondary until the terrain itself is proven at scale.
 - Render mesh and collision must agree for loaded terrain.
 - Terrain must be closed at finite-map boundaries unless a mode explicitly
   documents open streaming edges.
+- Finite boundary guards must reserve a measured solid region before caves,
+  chambers, tunnels, or other subtractive generation may begin. Acceptance
+  requires an outside-in render/collision probe to hit the intended boundary
+  before internal geometry; a correct density sign at one sample is not enough.
 - No holes, missing backsides, upside-down terrain, diagonal ridges, or
   untracked visual artifacts may be accepted as normal.
 - Human playtesting must use the stable accepted mode, not an experimental mode
@@ -53,7 +57,7 @@ checks.
 | Level | Horizontal cells | Purpose |
 | --- | ---: | --- |
 | L0 | 128 | correctness, visual debugging, edit semantics |
-| L1 | 256 | first chunked/sparse-generation proof |
+| L1 | 256 | first larger-terrain generation proof |
 | L2 | 512 | movement and visibility workload proof |
 | L3 | 1024 | large-map storage and latency proof |
 | L4 | 2048 | target 2K map claim |

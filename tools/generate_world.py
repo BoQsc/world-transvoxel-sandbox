@@ -18,7 +18,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / ".generated" / "world_source"
 DEFAULT_OUTPUT = ROOT / "world"
-SOURCE_REVISION = 10002
+SOURCE_REVISION = 10003
+FINITE_SHELL_SOLID_SAMPLES = 3
 
 
 @dataclass(frozen=True)
@@ -177,9 +178,11 @@ def write_volume(preset: str, profile: ScaleProfile) -> dict[str, int]:
                 density = float(y) - height
                 base_density = density
                 cave_margin = (
-                    1 < x < world_extent[0] - 1
-                    and 1 < y
-                    and 1 < z < world_extent[2] - 1
+                    FINITE_SHELL_SOLID_SAMPLES < x
+                    < world_extent[0] - FINITE_SHELL_SOLID_SAMPLES
+                    and FINITE_SHELL_SOLID_SAMPLES < y
+                    and FINITE_SHELL_SOLID_SAMPLES < z
+                    < world_extent[2] - FINITE_SHELL_SOLID_SAMPLES
                 )
                 if preset == "terrain" and cave_margin and y < height - 6.0:
                     cave = (
@@ -349,6 +352,7 @@ def generate(output_root: Path, preset: str, force: bool, scale_level: str) -> N
         "horizontal_cells": profile.horizontal_cells,
         "vertical_cells": profile.vertical_cells,
         "scale_purpose": profile.purpose,
+        "finite_shell_solid_samples": FINITE_SHELL_SOLID_SAMPLES,
         "preset": preset,
         "origin": profile.origin,
         "dimensions": profile.dimensions,

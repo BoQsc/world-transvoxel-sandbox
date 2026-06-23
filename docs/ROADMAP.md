@@ -65,8 +65,9 @@ Exit: no visible correctness blocker remains in the test gallery.
 Status: active; L0 remains the default accepted playtest world. L1 256 has
 generation, headless runtime, and automated visual evidence. L2 512 has
 generation, headless runtime, and automated static visual evidence, but is not
-yet human or dynamically visually accepted. L3 1024 has generation and
-headless runtime evidence, but no visual acceptance.
+yet human or dynamically visually accepted. L3 1024 has generation, headless
+runtime, targeted boundary, and automated static visual evidence, but is not
+yet human or dynamically visually accepted.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -75,8 +76,8 @@ headless runtime evidence, but no visual acceptance.
 - require every accepted runtime level to declare a budget profile before it is
   used for visual capture, larger-scale work, or gameplay reference work;
 - L1 generated artifact evidence: 1,152 pages, 47,778,959 stable payload
-  bytes, latest generation 33.125 seconds, world hash
-  `fb10bfa47bc7530a78a41791c155599e3d4e9a7a1a070aea4dcf6acd2a01084b`;
+  bytes, latest generation 29.442 seconds, source revision 10003, world hash
+  `4e052784ce8743a6ac72f34a8fef23699875e7fad7ed61ff8e12da1bf5ac5ff0`;
 - L1 headless runtime evidence: Godot 4.6.3 and 4.7 startup, five staged
   positions, 25 render/collision probes, minimum 97 render/collision chunks,
   one density edit/remesh, and clean shutdown;
@@ -85,9 +86,9 @@ headless runtime evidence, but no visual acceptance.
   finite boundary shell and LOD color partition are classified as expected
   debug/finite-map views, not open terrain holes;
 - L2 generated artifact evidence: 4,608 pages, 191,113,103 stable payload
-  bytes, 150.745 generation seconds, 18,442,941 source samples, 37,026
+  bytes, 135.595 generation seconds, 18,442,941 source samples, 36,259
   volumetric columns, no scale-ladder warnings, world hash
-  `1d1e27ad6ca9521229e2a4c14693150cd64e214d63cae6d628b3ee6f06da6ad4`;
+  `167c8a4aa98611bf324c373558d170509b67358dfaff7fd535fb486c51d5cd4a`;
 - L2 headless runtime evidence: Godot 4.6.3 and 4.7 startup, five staged
   positions, 25 render/collision probes, minimum 176 render/collision chunks,
   one density edit/remesh, clean shutdown, and explicit active chunk capacity
@@ -109,20 +110,27 @@ headless runtime evidence, but no visual acceptance.
   appearance, fast travel or disjoint teleport movement, or larger-scale
   runtime/visual support;
 - L3 generated artifact evidence: 18,432 pages, 764,449,679 stable payload
-  bytes, 642.484 generation seconds, 73,060,029 source samples, 143,831
+  bytes, 504.486 generation seconds, 73,060,029 source samples, 141,327
   volumetric columns, world hash
-  `6c2ae9110f18fbc480a35308850ed97f981b155c7767e130a9b552de9f05e09d`;
-- L3 resource warning: preflight had only 139,122,578 bytes above the
-  conservative source/payload estimate plus 512 MiB safety reserve; generation
-  completed, but the warning remains part of the evidence;
+  `e6f74c2b9bcf60263229e4a15ed0133d82fe2973816a1139fcd908cc821e9567`;
+- source revision 10003 reserves three solid samples between finite-map
+  boundaries and procedural caves, chambers, and tunnels at every generated
+  scale;
 - L3 accepted runtime budget: staged movement, radius 3, maximum LOD 1,
   active chunk capacity 1,024, inherited cache budgets; derived from a 616
   full replacement bound rather than copied from world width;
 - L3 headless runtime evidence: Godot 4.6.3 and 4.7 startup, seven staged
   positions, 35 render/collision probes, minimum 201 render/collision chunks,
   one active-window edit/remesh, and clean shutdown;
-- L3 not yet proven: visual acceptance, dynamic seamless LOD appearance, fast
-  travel or disjoint teleport movement, or L4 2048 support;
+- L3 visual evidence: seven Godot 4.7 captures covering overview, material,
+  LOD, top, underground tunnel, closed boundary, and boundary materials;
+- L3 boundary defect and fix: static inspection found an opening in the finite
+  wall; shadow and LOD0 isolation ruled out shading and transition causes,
+  collision rays located a cave immediately behind a one-sample wall, and the
+  three-sample source guard closed it. A permanent outside-in ray now requires
+  the first collision at x=0.500 in the affected region;
+- L3 not yet proven: human visual acceptance, dynamic seamless LOD appearance,
+  fast travel or disjoint teleport movement, or L4 2048 support;
 - replace whole-volume source generation with bounded chunked/sparse baking;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,

@@ -115,8 +115,8 @@ func _run() -> void:
 func _audit_density_signs(terrain: Node) -> bool:
 	var below := await _query_sample(terrain, Vector3i(512, 20, 512))
 	var above := await _query_sample(terrain, Vector3i(512, 60, 512))
-	var boundary := await _query_sample(terrain, Vector3i(0, 20, 512))
-	var inner := await _query_sample(terrain, Vector3i(2, 20, 512))
+	var boundary := await _query_sample(terrain, Vector3i(0, 12, 546))
+	var inner := await _query_sample(terrain, Vector3i(1, 12, 546))
 	if below == null or above == null or boundary == null or inner == null:
 		_fail("L3 density sign queries failed")
 		return false

@@ -25,6 +25,39 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.10 - L3 visual capture and artifact classification is complete for
+automated static visual and targeted boundary evidence.
+
+Command:
+
+```console
+python tools/scale_visual.py --level L3
+```
+
+Result:
+
+- engine: Godot 4.7 graphical mode;
+- accepted runtime budget: staged movement, radius 3, maximum LOD 1, active
+  chunk capacity 1,024;
+- captures: 7 images under `artifacts/scale_ladder/L3/visual`;
+- capture ranges: overview/material/LOD 0.706, top 0.090, tunnel 0.617,
+  boundary/material boundary 0.471;
+- defect found and rejected: the first boundary capture contained an opening
+  where rays passed the expected x=0.5 shell and hit geometry at x=3.9 to 9.0;
+- diagnosis: disabling shadows and forcing LOD0 did not remove the opening,
+  while authoritative samples proved x=0 empty and x=1 solid; the generator
+  had allowed a cave to begin at x=2 behind a one-sample wall;
+- fix: source revision 10003 reserves three solid samples between finite-map
+  boundaries and procedural caves, chambers, and tunnels; L0 through L3 were
+  regenerated and their runtime/visual evidence was rerun;
+- permanent regression: an outside-in collision ray at y=12, z=546 must hit
+  the finite wall at x=0.500 before any internal geometry;
+- proven: nonblank representative L3 static captures, closed targeted boundary
+  collision, staged runtime coverage on the corrected artifact, and no
+  regression in the full L0 test matrix;
+- not proven: human visual acceptance, dynamic seamless LOD appearance, fast
+  travel/disjoint teleport movement, or L4 2048 support.
+
 S2.9 - L3 runtime acceptance is complete for headless runtime evidence.
 
 Command:
@@ -42,8 +75,8 @@ Result:
 - probes: 35 render/collision probes per engine;
 - minimum rendered chunks: 201;
 - minimum collision chunks: 201;
-- Godot 4.6.3: startup 141 ms, settle 2,820 ms, edit 663 ms;
-- Godot 4.7: startup 148 ms, settle 3,119 ms, edit 547 ms;
+- Godot 4.6.3: startup 140 ms, settle 2,833 ms, edit 563 ms;
+- Godot 4.7: startup 129 ms, settle 2,634 ms, edit 563 ms;
 - edit density delta: 6.0;
 - maximum pending retirements: 0;
 - fixed during this step: the first audit edited the distant map center after
@@ -83,18 +116,18 @@ Result:
 - dimensions: 1,029 x 69 x 1,029 samples;
 - LOD0 chunks: 64 x 4 x 64;
 - pages: 18,432;
-- generation seconds: 642.484;
-- scale-ladder elapsed seconds: 642.719;
+- generation seconds: 504.486;
+- scale-ladder elapsed seconds: 512.271;
 - stable world payload bytes: 764,449,679;
 - source samples: 73,060,029;
-- volumetric columns: 143,831;
-- resource preflight: 2,020,323,328 free bytes, 1,881,200,750 required
-  bytes including a 512 MiB safety reserve, and 2,872,004,608 available
+- volumetric columns: 141,327;
+- source revision: 10003 with a three-sample finite solid-shell guard;
+- resource preflight: 6,340,239,360 free bytes, 1,881,200,750 required
+  bytes including a 512 MiB safety reserve, and 2,673,745,920 available
   memory bytes;
-- warning recorded: disk headroom was below 256 MiB above the conservative
-  generation estimate before the run;
+- warnings: none reported by the regenerated scale-ladder artifact;
 - world hash:
-  `6c2ae9110f18fbc480a35308850ed97f981b155c7767e130a9b552de9f05e09d`;
+  `e6f74c2b9bcf60263229e4a15ed0133d82fe2973816a1139fcd908cc821e9567`;
 - proven: Python generation, native bake tool, storage validation;
 - not proven: Godot startup, movement/render/collision coverage, visual
   artifact acceptance, edit latency, or L4 2048 scale support.
@@ -145,8 +178,8 @@ Result:
 - probes: 25 render/collision probes per engine;
 - minimum rendered chunks: 176;
 - minimum collision chunks: 176;
-- Godot 4.6.3: startup 129 ms, settle 2,905 ms, edit 619 ms;
-- Godot 4.7: startup 149 ms, settle 2,966 ms, edit 654 ms;
+- Godot 4.6.3: startup 119 ms, settle 2,914 ms, edit 562 ms;
+- Godot 4.7: startup 108 ms, settle 2,500 ms, edit 561 ms;
 - edit density delta: 6.0;
 - maximum pending retirements: 0;
 - classified during this step: the original L2 audit failed with the default
@@ -176,14 +209,15 @@ Result:
 - dimensions: 517 x 69 x 517 samples;
 - LOD0 chunks: 32 x 4 x 32;
 - pages: 4,608;
-- generation seconds: 150.745;
-- scale-ladder elapsed seconds: 150.998;
+- generation seconds: 135.595;
+- scale-ladder elapsed seconds: 138.322;
 - stable world payload bytes: 191,113,103;
 - source samples: 18,442,941;
-- volumetric columns: 37,026;
+- volumetric columns: 36,259;
+- source revision: 10003 with a three-sample finite solid-shell guard;
 - warnings: none reported by the scale-ladder tool;
 - world hash:
-  `1d1e27ad6ca9521229e2a4c14693150cd64e214d63cae6d628b3ee6f06da6ad4`;
+  `167c8a4aa98611bf324c373558d170509b67358dfaff7fd535fb486c51d5cd4a`;
 - proven: Python generation, native bake tool, storage validation;
 - not proven: Godot startup, movement/render/collision coverage, visual
   artifact acceptance, edit latency, dynamic seamless LOD appearance, or
@@ -229,8 +263,8 @@ Result:
 - probes: 25 render/collision probes per engine;
 - minimum rendered chunks: 97;
 - minimum collision chunks: 97;
-- Godot 4.6.3: startup 222 ms, settle 3,331 ms, edit 514 ms;
-- Godot 4.7: startup 119 ms, settle 3,107 ms, edit 513 ms;
+- Godot 4.6.3: startup 127 ms, settle 2,989 ms, edit 497 ms;
+- Godot 4.7: startup 115 ms, settle 2,776 ms, edit 496 ms;
 - edit density delta: 6.0;
 - proven: Godot startup, staged movement render/collision coverage, one
   density edit/remesh, clean shutdown;
@@ -250,37 +284,43 @@ Result:
 - horizontal cells: 256;
 - vertical cells: 64;
 - pages: 1,152;
-- latest generation seconds: 33.125;
+- latest generation seconds: 29.442;
 - stable world payload bytes: 47,778,959;
+- source revision: 10003 with a three-sample finite solid-shell guard;
 - world hash:
-  `fb10bfa47bc7530a78a41791c155599e3d4e9a7a1a070aea4dcf6acd2a01084b`;
+  `4e052784ce8743a6ac72f34a8fef23699875e7fad7ed61ff8e12da1bf5ac5ff0`;
 - proven: Python generation, native bake tool, storage validation;
 - not proven: Godot startup, movement/render/collision coverage, visual
   artifact acceptance, edit latency, or 512/1024/2048 scale support.
 
 ## Current active task
 
-S2.10 - L3 visual capture and artifact classification.
+S2.11 - L4 bounded-generation feasibility gate.
 
 Scope:
 
-- use the generated L3 artifact and accepted L3 runtime budget;
-- capture overview/material/LOD/top/tunnel/boundary images for L3;
-- reject bad camera framing before accepting capture evidence;
-- keep human and dynamic visual acceptance separate from static captures.
+- calculate the L4 source, payload, memory, disk, and duration estimates before
+  allocating a 2,048 world;
+- reject the current whole-volume source path if it cannot retain the safety
+  reserve or a defensible memory bound;
+- define and implement the bounded chunked/sparse source-generation path needed
+  to make L4 safe;
+- do not claim L4 support from preflight or generation alone.
 
 Exit:
 
-- `python tools/scale_visual.py --level L3` produces a report or documented
-  failure;
-- every capture is classified and the accepted budget is recorded;
-- no GDScript performance logic is added.
+- an explicit L4 feasibility report records estimates and the accept/reject
+  decision;
+- an unsafe dense run cannot begin accidentally;
+- if redesign is required, its bounded-memory contract and first automated
+  proof are committed before L4 generation.
 
 ## Next finite steps
 
-1. Add L3 visual capture support using the accepted budget.
-2. Run and inspect L3 graphical captures.
-3. Proceed to L4 generation only if no new L3 static visual blocker appears.
+1. Add an L4 estimate-only profile and conservative resource gate.
+2. Measure whether whole-volume source generation is safe on the target host.
+3. Implement bounded source generation if the dense path is rejected; only
+   then generate L4.
 
 ## Deferred by rule
 
