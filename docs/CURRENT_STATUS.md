@@ -24,6 +24,35 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.5 - L2 runtime acceptance path is complete for headless runtime evidence.
+
+Command:
+
+```console
+python tools/scale_runtime.py --level L2
+```
+
+Result:
+
+- engines: Godot 4.6.3 and 4.7;
+- L2 runtime budget: active chunk capacity 1,024;
+- positions: 5 staged positions;
+- probes: 25 render/collision probes per engine;
+- minimum rendered chunks: 176;
+- minimum collision chunks: 176;
+- Godot 4.6.3: startup 166 ms, settle 3,691 ms, edit 629 ms;
+- Godot 4.7: startup 139 ms, settle 3,833 ms, edit 810 ms;
+- edit density delta: 6.0;
+- maximum pending retirements: 0;
+- classified during this step: the original L2 audit failed with the default
+  512 active/change capacity because L2 movement can replace most of a 294
+  chunk active set and exceed the delta budget; L2 runtime acceptance therefore
+  uses an explicit 1,024 active chunk capacity;
+- proven: Godot startup, staged movement render/collision coverage, one
+  density edit/remesh, clean shutdown;
+- not proven: visual artifact acceptance, dynamic seamless LOD appearance,
+  fast travel or disjoint teleport movement, or 1024/2048 scale support.
+
 S2.4 - L2 512 generation preflight is complete for generation-only evidence.
 
 Command:
@@ -123,28 +152,29 @@ Result:
 
 ## Current active task
 
-S2.5 - L2 runtime acceptance path.
+S2.6 - L2 visual capture and artifact classification.
 
 Scope:
 
-- use the generated L2 artifact path, not the accepted L0 playtest world;
-- prove or reject Godot startup at L2 across the supported engine matrix;
-- measure staged movement render/collision coverage at L2;
-- measure one density edit/remesh at L2;
-- keep dynamic visual acceptance separate from headless runtime acceptance.
+- use the generated L2 artifact path and the accepted L2 runtime budget;
+- capture overview/material/LOD/top/tunnel/boundary images for L2;
+- classify every visible issue as topology/collision, generation,
+  material/shading, LOD transition, streaming/lifetime, harness
+  misunderstanding, or documented limitation;
+- keep human visual acceptance separate from automated capture existence.
 
 Exit:
 
-- `python tools/scale_runtime.py --level L2` produces a report or a documented
+- `python tools/scale_visual.py --level L2` produces a report or a documented
   failure;
-- the report clearly says what is and is not proven at runtime;
+- the report clearly says what is and is not proven visually;
 - no GDScript performance logic is added.
 
 ## Next finite steps
 
-1. Add L2 runtime acceptance support without changing the L0 default.
-2. Run L2 headless startup/movement/collision/edit coverage.
-3. Add L2 visual capture only if runtime acceptance succeeds.
+1. Add L2 visual capture support without changing the L0 default.
+2. Run L2 graphical capture and classify automated images.
+3. Decide whether S2 can proceed to L3 generation or needs L2 visual fixes.
 
 ## Deferred by rule
 

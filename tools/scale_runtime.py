@@ -14,9 +14,19 @@ from test_sandbox import discover_engines
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
-SUPPORTED_LEVELS = ("L1",)
-SCRIPT_BY_LEVEL = {"L1": "res://tests/terrain_l1_runtime_audit.gd"}
-MARKER_BY_LEVEL = {"L1": "WT_SANDBOX_L1_RUNTIME_PASS"}
+SUPPORTED_LEVELS = ("L1", "L2")
+SCRIPT_BY_LEVEL = {
+    "L1": "res://tests/terrain_l1_runtime_audit.gd",
+    "L2": "res://tests/terrain_l2_runtime_audit.gd",
+}
+MARKER_BY_LEVEL = {
+    "L1": "WT_SANDBOX_L1_RUNTIME_PASS",
+    "L2": "WT_SANDBOX_L2_RUNTIME_PASS",
+}
+RUNTIME_TIMEOUT_SECONDS = {
+    "L1": 180,
+    "L2": 300,
+}
 
 
 def ensure_generated(level: str, force: bool) -> None:
@@ -75,7 +85,7 @@ def run_level(level: str, engines: list[tuple[str, Path]]) -> dict:
             text=True,
             capture_output=True,
             errors="replace",
-            timeout=180,
+            timeout=RUNTIME_TIMEOUT_SECONDS[level],
         )
         combined = result.stdout + result.stderr
         level_root.mkdir(parents=True, exist_ok=True)
@@ -109,7 +119,7 @@ def run_level(level: str, engines: list[tuple[str, Path]]) -> dict:
         "not_proven": [
             "visual artifact acceptance on this level",
             "dynamic seamless LOD appearance on this level",
-            "512/1024/2048 scale support",
+            "larger scale support beyond this runtime level",
         ],
     }
 

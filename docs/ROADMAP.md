@@ -63,7 +63,7 @@ Exit: no visible correctness blocker remains in the test gallery.
 
 Status: active; L0 remains the default accepted playtest world. L1 256 has
 generation, headless runtime, and automated visual evidence. L2 512 has
-generation-only evidence and is not yet runtime or visually accepted.
+generation and headless runtime evidence and is not yet visually accepted.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -83,9 +83,17 @@ generation-only evidence and is not yet runtime or visually accepted.
   bytes, 150.745 generation seconds, 18,442,941 source samples, 37,026
   volumetric columns, no scale-ladder warnings, world hash
   `1d1e27ad6ca9521229e2a4c14693150cd64e214d63cae6d628b3ee6f06da6ad4`;
-- L2 not yet proven: Godot startup, runtime movement, render/collision
-  coverage, visual artifact acceptance, edit latency, dynamic seamless LOD
-  appearance, or 1024/2048 scale support;
+- L2 headless runtime evidence: Godot 4.6.3 and 4.7 startup, five staged
+  positions, 25 render/collision probes, minimum 176 render/collision chunks,
+  one density edit/remesh, clean shutdown, and explicit active chunk capacity
+  1,024;
+- L2 runtime classification: the default 512 active/change capacity rejected
+  L2 staged movement because the active set is about 294 chunks and large
+  staged moves can exceed the delta budget; this is a budget boundary, not a
+  visual acceptance result;
+- L2 not yet proven: visual artifact acceptance, dynamic seamless LOD
+  appearance, fast travel or disjoint teleport movement, or 1024/2048 scale
+  support;
 - replace whole-volume source generation with bounded chunked/sparse baking;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,

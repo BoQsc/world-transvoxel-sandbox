@@ -67,6 +67,8 @@ def main() -> int:
         "tests/terrain_interaction_audit.gd",
         "tests/terrain_l1_runtime_audit.gd",
         "tests/terrain_l1_runtime_audit.gd.uid",
+        "tests/terrain_l2_runtime_audit.gd",
+        "tests/terrain_l2_runtime_audit.gd.uid",
         "tests/terrain_l1_visual_capture.gd",
         "tests/terrain_l1_visual_capture.gd.uid",
         "tests/terrain_volumetric_audit.gd",
@@ -162,6 +164,7 @@ def main() -> int:
             "S2.3 - L1 visual capture and artifact classification is complete",
             "S2.4 - L2 512 generation preflight is complete",
             "S2.5 - L2 runtime acceptance path",
+            "S2.6 - L2 visual capture and artifact classification",
             "GDScript is glue",
             "Deferred by rule",
         ):
