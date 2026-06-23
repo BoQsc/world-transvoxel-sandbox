@@ -18,6 +18,7 @@ EXPECTED_IMAGES = (
     "top_surface.png",
     "top_unshadowed.png",
     "top_lod.png",
+    "underground_tunnel.png",
     "closed_boundary.png",
     "closed_boundary_material.png",
 )
@@ -54,6 +55,8 @@ def main() -> None:
             str(ROOT),
             "--script",
             "res://tests/terrain_visual_capture.gd",
+            "--",
+            "--disable-player-input",
         ],
         cwd=ROOT,
         check=False,

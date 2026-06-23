@@ -27,6 +27,11 @@ TEST_CASES = (
         "WT_SANDBOX_INTERACTION_PASS",
     ),
     (
+        "volumetric",
+        "res://tests/terrain_volumetric_audit.gd",
+        "WT_SANDBOX_VOLUMETRIC_PASS",
+    ),
+    (
         "motion",
         "res://tests/terrain_motion_audit.gd",
         "WT_SANDBOX_MOTION_PASS",

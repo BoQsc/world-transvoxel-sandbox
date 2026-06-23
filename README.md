@@ -54,8 +54,10 @@ scene must pass `-- --disable-player-input`.
 - mouse wheel: adjust movement speed;
 - movement is constrained to the finite map; F5 resets the camera;
 - left mouse: carve terrain;
-- Shift + left mouse: fill terrain;
+- Shift + left mouse: construct solid terrain with rock material 3;
 - Ctrl + left mouse: paint an ore material;
+- `Ctrl+Z`: exactly restore the last committed carve at its original brush
+  position; construction invalidates older carve snapshots;
 - `F1`: normal/material/LOD shader view;
 - `F2`: chunk-boundary overlay;
 - `F3`: physics collision debug;
@@ -64,10 +66,24 @@ scene must pass `-- --disable-player-input`.
 ## Current validation scope
 
 The initial generated world is 128 x 64 x 128 cells with 256 LOD0 pages and
-32 LOD1 pages. It contains deterministic hills, cliffs, caves, material
-strata, and ore veins. `+Y` is up. Black beyond the terrain is outside the
-finite closed map, and orange terrain patches are ore. The optional orange
-wire box toggled by F2 is the map boundary.
+32 LOD1 pages. A deterministic height function establishes only the outside
+surface baseline. The baked world remains a dense 3D scalar volume: procedural
+caves, a guaranteed underground chamber, a winding tunnel, XYZ-selected rock
+geology, and a 3D ore vein alter its interior. The generation audit rejects a
+terrain preset unless it contains solid-to-void-to-solid-to-air columns, which
+a height field cannot represent. `+Y` is up. Black beyond the terrain is
+outside the finite closed map, and orange terrain patches are ore. The optional
+orange wire box toggled by F2 is the map boundary.
+
+Carving and construction are intentionally different operations. Carving
+changes density without erasing the existing material. Before committing a
+carve, the sandbox captures every affected authoritative grid sample in bounded
+batches. `Ctrl+Z` restores those exact float32 values with point-sized density
+commands, so it does not raycast a new brush position or rely on numerically
+inexact `+strength/-strength` cancellation. Shift+LMB instead constructs new
+solid density and explicitly paints rock material 3; it is not undo. The carve
+restoration stack is session-local; both carvings and committed restorations
+still persist through the addon's edit journal.
 
 The interactive reference scene is deliberately conservative: it is capped at
 60 FPS and loads the complete small finite map once at LOD0 from a fixed
@@ -89,18 +105,23 @@ confirms that uncapped ~300 FPS rendering was the main unexplained load.
 Correctness is checked automatically before human playtesting: every loaded
 triangle is finite, nondegenerate, and outward-facing for Godot; render and
 collision probes must agree; click-to-carve must change authoritative density
-and remesh; mixed-LOD audits must include both LODs; every full-world triangle
-edge must form a closed two-use manifold; and coincident cross-chunk normals
-must agree. An idle audit also proves settled terrain creates no additional
-viewer updates, sample jobs, mesh jobs, mesh completions, or publications,
+and remesh; restoration must recover the exact density and original mesh hash;
+construction must assign rock material 3; an authoritative column audit must
+prove solid-void-solid-air volume and XYZ geology; mixed-LOD audits must include
+both LODs; every full-world triangle edge must form a closed two-use manifold;
+and coincident cross-chunk normals must agree. An idle audit also proves settled
+terrain creates no additional viewer updates, sample jobs, mesh jobs, mesh
+completions, or publications,
 that camera movement does not alter the fixed reference anchor, and that the
 dynamic test mode honors the eight-unit streaming threshold.
 Continuous motion checks 480 viewer positions, direct render coverage, and
 2,400 collision probes while confirming staged replacement resources return
 to zero after motion settles.
-Eight deterministic captures cover surface, material, LOD, top, unshadowed
-top, top LOD, and surface/material views of the closed boundary. Human review
-is for appearance and game feel, not for proving Transvoxel topology.
+Nine deterministic captures cover surface, material, LOD, top, unshadowed
+top, top LOD, a lit underground tunnel inspection, and surface/material views
+of the closed boundary. Capture contrast is measured outside the overlay, so a
+blank terrain viewport cannot pass from UI contrast alone. Human review is for
+appearance and game feel, not for proving Transvoxel topology.
 
 This does not yet prove a 2K map, GPU compute, water, lava, planetary terrain,
 or structural stability. Those gates are finite and recorded in

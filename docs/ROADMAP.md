@@ -9,10 +9,13 @@ Status: revalidated against World Transvoxel 1.0.2.
 
 - vendored and locked World Transvoxel 1.0.2 release; 1.0.0 is withdrawn and
   1.0.1 is superseded for premature moving-viewer chunk retirement;
-- deterministic 128 x 64 x 128 hills/caves/strata/veins world;
+- deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
+  chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
 - chunk, collision, queue, latency, and resource visualization;
-- fly camera and interactive carve/fill/paint controls;
+- fly camera and distinct carve/construct/paint controls;
+- bounded pre-carve authoritative sample capture and exact LIFO carve
+  restoration at the original brush coordinates;
 - 60 FPS cap and fixed-center complete-map LOD0 playtest mode with full
   collision availability for stable human inspection;
 - idle-work regression proving settled terrain and sub-threshold camera
@@ -21,7 +24,8 @@ Status: revalidated against World Transvoxel 1.0.2.
 - complete loaded-world winding, collision, density-sign, edit, and finite-map
   boundary audit;
 - exact full-world mixed-LOD manifold and cross-chunk normal-continuity audit;
-- automated center-screen carve interaction and deterministic visual captures.
+- automated carve, exact restoration, material-bearing construction,
+  non-heightfield underground, and deterministic visual captures;
 - continuous-motion render/collision coverage and bounded staged-retirement
   regression across the complete supported Godot/build matrix.
 
@@ -65,6 +69,9 @@ Status: pending.
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;
 - test fast travel, rapid turns, underground movement, and repeated mining;
+- measure restoration capture latency and edit-journal growth; replace the
+  correctness-first point-command snapshot with a compressed native delta path
+  if it misses the production interaction or storage budgets;
 - establish idle CPU, active CPU, render, physics, I/O, and memory budgets.
 
 Exit: the representative small-game workload meets its budgets without

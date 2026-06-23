@@ -50,10 +50,11 @@ func _run() -> void:
 	if before == null:
 		return _fail("pre-click authoritative sample query failed")
 	var density_before: float = before.get_density()
+	var material_before: int = before.get_material()
 	var revision_before: int = terrain.get_world_revision()
 	var mesh_hash_before := _mesh_hash(terrain)
 
-	if not _scene_root.call("submit_mining_at_aim", false, false):
+	if not await _scene_root.call("submit_mining_at_aim", false, false):
 		return _fail("center-screen carve submission was rejected")
 	if _scene_root.get_node_or_null("WT_EditMarker") == null:
 		return _fail("center-screen carve did not create immediate edit feedback")
@@ -71,6 +72,43 @@ func _run() -> void:
 			"left click carve changed density by %.6f instead of 6.0"
 			% density_delta
 		)
+	if after.get_material() != material_before:
+		return _fail("density-only carve changed the original material")
+	if _scene_root.call("get_restorable_carve_count") != 1:
+		return _fail("committed carve was not recorded for exact restoration")
+
+	var carved_mesh_hash := _mesh_hash(terrain)
+	var carved_revision: int = terrain.get_world_revision()
+	if not _scene_root.call("restore_last_carve"):
+		return _fail("Ctrl+Z carve restoration was rejected")
+	if not await _wait_for_edit(terrain, carved_revision, carved_mesh_hash):
+		return _fail("carve restoration did not commit and remesh terrain")
+	var restored := await _query_sample(terrain, sample_point)
+	if restored == null or restored.get_density() != density_before:
+		return _fail(
+			"carve restoration density mismatch: before=%.9f restored=%.9f"
+			% [density_before, NAN if restored == null else restored.get_density()]
+		)
+	if restored.get_material() != material_before:
+		return _fail("carve restoration did not preserve the original material")
+	if _mesh_hash(terrain) != mesh_hash_before:
+		return _fail("carve restoration did not recover the exact terrain mesh")
+	if _scene_root.call("get_restorable_carve_count") != 0:
+		return _fail("restored carve remained in the restoration history")
+
+	var restored_mesh_hash := _mesh_hash(terrain)
+	var restored_revision: int = terrain.get_world_revision()
+	if not await _scene_root.call("submit_mining_at_aim", true, false):
+		return _fail("construct-rock submission was rejected")
+	if not await _wait_for_edit(terrain, restored_revision, restored_mesh_hash):
+		return _fail("construct-rock operation did not commit and remesh terrain")
+	var constructed := await _query_sample(terrain, sample_point)
+	if constructed == null or absf(
+		constructed.get_density() - density_before + 6.0
+	) > 0.001:
+		return _fail("construct-rock operation did not add the requested solid density")
+	if constructed.get_material() != 3:
+		return _fail("construct-rock operation did not assign rock material 3")
 	if not terrain.stop_world():
 		return _fail("world stop was rejected")
 	for _frame in range(TIMEOUT_FRAMES):
@@ -78,7 +116,7 @@ func _run() -> void:
 			print(
 				"WT_SANDBOX_INTERACTION_PASS click=carve hit=%s "
 				% str((hit.position as Vector3).round())
-				+ "density_delta=%.1f remesh=observable feedback=visible"
+				+ "density_delta=%.1f restore=exact construct_material=3"
 				% density_delta
 			)
 			_scene_root.queue_free()

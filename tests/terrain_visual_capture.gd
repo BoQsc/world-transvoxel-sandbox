@@ -69,6 +69,19 @@ func _run() -> void:
 		return
 	material.set_shader_parameter("debug_mode", 0)
 
+	viewer.global_position = Vector3(64, 13, 89)
+	viewer.look_at(Vector3(80, 16, 83), Vector3.UP)
+	var tunnel_light := OmniLight3D.new()
+	tunnel_light.light_energy = 20.0
+	tunnel_light.omni_range = 20.0
+	viewer.add_child(tunnel_light)
+	tunnel_light.position = Vector3(2, 3, -3)
+	await process_frame
+	await process_frame
+	if not await _capture("underground_tunnel"):
+		return
+	tunnel_light.queue_free()
+
 	viewer.global_position = Vector3(-18, 38, 64)
 	viewer.look_at(Vector3(12, 28, 64), Vector3.UP)
 	# Keep the complete center-loaded set. Moving streaming demand outside the
@@ -114,7 +127,7 @@ func _run() -> void:
 	await process_frame
 	if not await _capture("closed_boundary_material"):
 		return
-	print("WT_SANDBOX_VISUAL_CAPTURE_PASS images=8")
+	print("WT_SANDBOX_VISUAL_CAPTURE_PASS images=9")
 	if terrain.is_world_running():
 		terrain.stop_world()
 	_scene_root.queue_free()
@@ -130,7 +143,7 @@ func _capture(name: String) -> bool:
 	var minimum := 1.0
 	var maximum := 0.0
 	for y_step in range(1, 8):
-		for x_step in range(1, 12):
+		for x_step in range(5, 12):
 			var pixel := image.get_pixel(
 				x_step * image.get_width() / 12,
 				y_step * image.get_height() / 8

@@ -121,6 +121,7 @@ func _refresh() -> void:
 			str(lod_counts),
 		] +
 		"RMB mouse | WASD QE move | Shift fast | wheel speed\n" +
-		"LMB carve | Shift+LMB fill | Ctrl+LMB paint ore\n" +
+		"LMB carve | Shift+LMB construct rock | Ctrl+LMB paint ore\n" +
+		"Ctrl+Z restore last committed carve at its original brush position\n" +
 		"F1 view | F2 bounds | F3 collisions | F4 overlay | F5 reset camera"
 	)

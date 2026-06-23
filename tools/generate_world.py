@@ -21,7 +21,7 @@ ORIGIN = (-2, -2, -2)
 DIMENSIONS = (133, 69, 133)
 LOD0_CHUNKS = (8, 4, 8)
 WORLD_EXTENT = tuple(value * 16 for value in LOD0_CHUNKS)
-SOURCE_REVISION = 10001
+SOURCE_REVISION = 10002
 
 
 def sha256(path: Path) -> str:
@@ -53,12 +53,58 @@ def terrain_height(x: int, z: int, preset: str) -> float:
     return 34.0 + broad + local + mound
 
 
+def chamber_void_density(x: int, y: int, z: int) -> float:
+    dx = (float(x) - 40.0) / 9.0
+    dy = (float(y) - 18.0) / 6.0
+    dz = (float(z) - 40.0) / 9.0
+    return (1.0 - math.sqrt(dx * dx + dy * dy + dz * dz)) * 7.0
+
+
+def tunnel_void_density(x: int, y: int, z: int) -> float:
+    if x < 16 or x > 112:
+        return -math.inf
+    center_y = 15.0 + 2.5 * math.sin(float(x) * 0.083)
+    center_z = 88.0 + 9.0 * math.sin(float(x) * 0.047)
+    dy = float(y) - center_y
+    dz = float(z) - center_z
+    return (4.2 - math.sqrt(dy * dy + dz * dz)) * 1.8
+
+
+def underground_material(x: int, y: int, z: int) -> int:
+    rock_field = (
+        math.sin(float(x) * 0.071 + float(y) * 0.043)
+        + math.cos(float(z) * 0.067 - float(y) * 0.051)
+        + 0.65 * math.sin(float(x + y + z) * 0.039)
+    )
+    return 5 if rock_field > 0.55 else 3
+
+
+def count_volumetric_columns(densities: array.array[float]) -> int:
+    count = 0
+    width, height, depth = DIMENSIONS
+    for z_index in range(2, depth - 2):
+        for x_index in range(2, width - 2):
+            transitions = 0
+            previous_solid = densities[z_index * width * height + 2 * width + x_index] < 0.0
+            for y_index in range(3, height - 2):
+                index = y_index * width + z_index * width * height + x_index
+                solid = densities[index] < 0.0
+                if solid != previous_solid:
+                    transitions += 1
+                    previous_solid = solid
+            if transitions >= 3:
+                count += 1
+    return count
+
+
 def write_volume(preset: str) -> dict[str, int]:
     SOURCE_ROOT.mkdir(parents=True, exist_ok=True)
     densities = array.array("f")
     materials = array.array("H")
     material_counts = {str(index): 0 for index in range(6)}
     cave_samples = 0
+    chamber_samples = 0
+    tunnel_samples = 0
     ore_samples = 0
     boundary_samples = 0
 
@@ -80,6 +126,7 @@ def write_volume(preset: str) -> dict[str, int]:
             for x_index, x in enumerate(x_coordinates):
                 height = heights[x_index]
                 density = float(y) - height
+                base_density = density
                 cave_margin = (
                     1 < x < WORLD_EXTENT[0] - 1
                     and 1 < y
@@ -94,8 +141,17 @@ def write_volume(preset: str) -> dict[str, int]:
                     )
                     if cave > 2.28:
                         density = max(density, (cave - 2.28) * 9.0)
-                        if density >= 0.0:
-                            cave_samples += 1
+                if preset == "terrain" and cave_margin:
+                    chamber_density = chamber_void_density(x, y, z)
+                    if chamber_density > density:
+                        density = chamber_density
+                        chamber_samples += 1
+                    tunnel_density = tunnel_void_density(x, y, z)
+                    if tunnel_density > density:
+                        density = tunnel_density
+                        tunnel_samples += 1
+                if base_density < 0.0 <= density:
+                    cave_samples += 1
 
                 boundary_distance = min(
                     x,
@@ -119,10 +175,12 @@ def write_volume(preset: str) -> dict[str, int]:
                         material = 1
                     elif depth < 8.0:
                         material = 2
-                    elif y < 10:
-                        material = 5
                     else:
-                        material = 3
+                        material = (
+                            underground_material(x, y, z)
+                            if preset == "terrain"
+                            else (5 if y < 10 else 3)
+                        )
                     if preset == "terrain" and depth > 7.0:
                         dy = float(y) - vein_y[x_index]
                         dz = float(z) - vein_z[x_index]
@@ -133,6 +191,9 @@ def write_volume(preset: str) -> dict[str, int]:
                 materials.append(material)
                 material_counts[str(material)] += 1
 
+    volumetric_columns = count_volumetric_columns(densities)
+    if preset == "terrain" and volumetric_columns == 0:
+        raise RuntimeError("Terrain generation produced no non-heightfield columns.")
     if densities.itemsize != 4 or materials.itemsize != 2:
         raise RuntimeError("Host array widths do not match the bake format.")
     if sys.byteorder != "little":
@@ -147,6 +208,9 @@ def write_volume(preset: str) -> dict[str, int]:
     return {
         "samples": len(densities),
         "cave_samples": cave_samples,
+        "chamber_samples": chamber_samples,
+        "tunnel_samples": tunnel_samples,
+        "volumetric_columns": volumetric_columns,
         "ore_samples": ore_samples,
         "boundary_samples": boundary_samples,
         **{f"material_{key}": value for key, value in material_counts.items()},
