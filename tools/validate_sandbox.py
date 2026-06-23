@@ -160,7 +160,8 @@ def main() -> int:
             "S2.1 - Python scale-ladder generation proof is complete",
             "S2.2 - L1 runtime acceptance path is complete",
             "S2.3 - L1 visual capture and artifact classification is complete",
-            "S2.4 - L2 512 generation preflight",
+            "S2.4 - L2 512 generation preflight is complete",
+            "S2.5 - L2 runtime acceptance path",
             "GDScript is glue",
             "Deferred by rule",
         ):

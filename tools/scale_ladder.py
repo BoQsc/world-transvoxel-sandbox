@@ -13,7 +13,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
-SUPPORTED_LEVELS = ("L0", "L1")
+SUPPORTED_LEVELS = ("L0", "L1", "L2")
+GENERATION_TIMEOUT_SECONDS = {
+    "L0": 300,
+    "L1": 300,
+    "L2": 900,
+}
 
 
 def directory_size(path: Path, excluded_names: set[str] | None = None) -> int:
@@ -47,7 +52,7 @@ def run_generation(level: str, preset: str, force: bool) -> dict:
         text=True,
         capture_output=True,
         errors="replace",
-        timeout=300,
+        timeout=GENERATION_TIMEOUT_SECONDS[level],
     )
     level_root = ARTIFACT_ROOT / level
     level_root.mkdir(parents=True, exist_ok=True)
@@ -76,6 +81,7 @@ def run_generation(level: str, preset: str, force: bool) -> dict:
         "world_payload_bytes": directory_size(output, {"sandbox_generation.json"}),
         "world_report_bytes": (output / "sandbox_generation.json").stat().st_size,
         "generation": generation_report,
+        "warnings": [],
         "proven": [
             "Python generation completed",
             "native bake tool completed",
@@ -86,7 +92,7 @@ def run_generation(level: str, preset: str, force: bool) -> dict:
             "movement/render/collision coverage on this level",
             "visual artifact acceptance on this level",
             "edit latency on this level",
-            "512/1024/2048 scale support",
+            "larger scale support beyond this generated level",
         ],
     }
 

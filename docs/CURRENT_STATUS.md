@@ -24,6 +24,34 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.4 - L2 512 generation preflight is complete for generation-only evidence.
+
+Command:
+
+```console
+python tools/scale_ladder.py --level L2 --force
+```
+
+Result:
+
+- horizontal cells: 512;
+- vertical cells: 64;
+- dimensions: 517 x 69 x 517 samples;
+- LOD0 chunks: 32 x 4 x 32;
+- pages: 4,608;
+- generation seconds: 150.745;
+- scale-ladder elapsed seconds: 150.998;
+- stable world payload bytes: 191,113,103;
+- source samples: 18,442,941;
+- volumetric columns: 37,026;
+- warnings: none reported by the scale-ladder tool;
+- world hash:
+  `1d1e27ad6ca9521229e2a4c14693150cd64e214d63cae6d628b3ee6f06da6ad4`;
+- proven: Python generation, native bake tool, storage validation;
+- not proven: Godot startup, movement/render/collision coverage, visual
+  artifact acceptance, edit latency, dynamic seamless LOD appearance, or
+  1024/2048 scale support.
+
 S2.3 - L1 visual capture and artifact classification is complete for automated
 visual evidence.
 
@@ -95,28 +123,28 @@ Result:
 
 ## Current active task
 
-S2.4 - L2 512 generation preflight.
+S2.5 - L2 runtime acceptance path.
 
 Scope:
 
-- add an L2 512 scale profile only after preserving L0/L1 evidence;
-- generate L2 as an artifact path, not as the accepted playtest world;
-- record page count, payload bytes, generation duration, world hash, and
-  memory/disk warnings if encountered;
-- do not claim L2 runtime or visual support from generation-only evidence.
+- use the generated L2 artifact path, not the accepted L0 playtest world;
+- prove or reject Godot startup at L2 across the supported engine matrix;
+- measure staged movement render/collision coverage at L2;
+- measure one density edit/remesh at L2;
+- keep dynamic visual acceptance separate from headless runtime acceptance.
 
 Exit:
 
-- `python tools/scale_ladder.py --level L2 --force` produces a report or a
-  documented failure;
-- the report clearly says what is and is not proven;
+- `python tools/scale_runtime.py --level L2` produces a report or a documented
+  failure;
+- the report clearly says what is and is not proven at runtime;
 - no GDScript performance logic is added.
 
 ## Next finite steps
 
-1. Add L2 512 generation-only profile.
-2. Generate L2 as an artifact and record the result.
-3. Add L2 runtime acceptance only if generation succeeds.
+1. Add L2 runtime acceptance support without changing the L0 default.
+2. Run L2 headless startup/movement/collision/edit coverage.
+3. Add L2 visual capture only if runtime acceptance succeeds.
 
 ## Deferred by rule
 

@@ -57,6 +57,9 @@ SCALE_PROFILES = {
     "L1": ScaleProfile(
         "L1", 256, 64, (16, 4, 16), "first larger-terrain generation proof"
     ),
+    "L2": ScaleProfile(
+        "L2", 512, 64, (32, 4, 32), "512 generation preflight"
+    ),
 }
 DEFAULT_SCALE_LEVEL = "L0"
 
