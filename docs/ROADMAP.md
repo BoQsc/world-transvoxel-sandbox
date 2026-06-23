@@ -62,8 +62,8 @@ Exit: no visible correctness blocker remains in the test gallery.
 ## S2 - Chunked generation and scale ladder
 
 Status: active; L0 remains the default accepted playtest world. L1 256 has
-generation and headless runtime evidence. L1 visual artifact classification
-remains pending.
+generation, headless runtime, and automated visual evidence. L2 512 generation
+preflight is next.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -75,6 +75,10 @@ remains pending.
 - L1 headless runtime evidence: Godot 4.6.3 and 4.7 startup, five staged
   positions, 25 render/collision probes, minimum 97 render/collision chunks,
   one density edit/remesh, and clean shutdown;
+- L1 visual evidence: seven Godot 4.7 captures covering overview, material,
+  LOD, top, underground tunnel, closed boundary, and boundary materials; the
+  finite boundary shell and LOD color partition are classified as expected
+  debug/finite-map views, not open terrain holes;
 - replace whole-volume source generation with bounded chunked/sparse baking;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,

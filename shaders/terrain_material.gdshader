@@ -4,7 +4,7 @@ render_mode cull_back, depth_draw_opaque;
 uniform int debug_mode : hint_range(0, 2) = 0;
 uniform float pattern_scale : hint_range(0.01, 2.0) = 0.16;
 uniform float surface_grain_strength : hint_range(0.0, 1.0) = 0.0;
-instance uniform float lod_level = 0.0;
+uniform float lod_level = 0.0;
 
 varying float material_id;
 varying vec3 world_position;

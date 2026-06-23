@@ -24,9 +24,7 @@ func _run() -> void:
 	var viewer: Node3D = _scene_root.get_node("Viewer")
 	var camera: Camera3D = _scene_root.get_node("Viewer/Camera3D")
 	var sun: DirectionalLight3D = _scene_root.get_node("Sun")
-	var material: ShaderMaterial = _scene_root.get_node(
-		"Visualizer"
-	).terrain_material
+	var visualizer: Node = _scene_root.get_node("Visualizer")
 	if not await _wait_for_world(terrain):
 		return _fail("world did not start for visual capture")
 
@@ -37,18 +35,18 @@ func _run() -> void:
 		return _fail("overview resources did not settle")
 	if not await _capture("overview_surface"):
 		return
-	material.set_shader_parameter("debug_mode", 1)
+	visualizer.call("set_debug_mode", 1)
 	await process_frame
 	await process_frame
 	if not await _capture("overview_material"):
 		return
-	material.set_shader_parameter("debug_mode", 2)
+	visualizer.call("set_debug_mode", 2)
 	await process_frame
 	await process_frame
 	if not await _capture("overview_lod"):
 		return
 
-	material.set_shader_parameter("debug_mode", 0)
+	visualizer.call("set_debug_mode", 0)
 	viewer.global_position = Vector3(64, 118, 64)
 	viewer.look_at(Vector3(64, 24, 64), Vector3.FORWARD)
 	viewer.emit_signal("position_changed", viewer.global_position)
@@ -62,12 +60,12 @@ func _run() -> void:
 	if not await _capture("top_unshadowed"):
 		return
 	sun.shadow_enabled = true
-	material.set_shader_parameter("debug_mode", 2)
+	visualizer.call("set_debug_mode", 2)
 	await process_frame
 	await process_frame
 	if not await _capture("top_lod"):
 		return
-	material.set_shader_parameter("debug_mode", 0)
+	visualizer.call("set_debug_mode", 0)
 
 	viewer.global_position = Vector3(64, 13, 89)
 	viewer.look_at(Vector3(80, 16, 83), Vector3.UP)
@@ -122,7 +120,7 @@ func _run() -> void:
 		camera.global_position, probe_results])
 	if not await _capture("closed_boundary"):
 		return
-	material.set_shader_parameter("debug_mode", 1)
+	visualizer.call("set_debug_mode", 1)
 	await process_frame
 	await process_frame
 	if not await _capture("closed_boundary_material"):

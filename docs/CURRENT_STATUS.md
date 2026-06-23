@@ -24,6 +24,31 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.3 - L1 visual capture and artifact classification is complete for automated
+visual evidence.
+
+Command:
+
+```console
+python tools/scale_visual.py --level L1
+```
+
+Result:
+
+- engine: Godot 4.7 graphical mode;
+- captures: 7 images under `artifacts/scale_ladder/L1/visual`;
+- capture ranges: overview/material/LOD 0.701, top 0.088, tunnel 0.749,
+  boundary/material boundary 0.443;
+- fixed during this step: L1 graphical capture originally exceeded the GL
+  compatibility shader instance-variable limit, so LOD debug coloring now uses
+  per-LOD material copies instead of per-instance shader parameters;
+- fixed during this step: L1 overlay/bounds reporting still assumed a 128 map,
+  so debug UI now reads active world bounds;
+- classified: finite boundary shell is expected in boundary captures;
+- classified: LOD color partitioning is expected in LOD debug captures;
+- not proven: human visual acceptance, dynamic seamless LOD appearance, or
+  512/1024/2048 scale support.
+
 S2.2 - L1 runtime acceptance path is complete for headless runtime evidence.
 
 Command:
@@ -39,8 +64,8 @@ Result:
 - probes: 25 render/collision probes per engine;
 - minimum rendered chunks: 97;
 - minimum collision chunks: 97;
-- Godot 4.6.3: startup 301 ms, settle 3,704 ms, edit 512 ms;
-- Godot 4.7: startup 110 ms, settle 2,752 ms, edit 529 ms;
+- Godot 4.6.3: startup 222 ms, settle 3,331 ms, edit 514 ms;
+- Godot 4.7: startup 119 ms, settle 3,107 ms, edit 513 ms;
 - edit density delta: 6.0;
 - proven: Godot startup, staged movement render/collision coverage, one
   density edit/remesh, clean shutdown;
@@ -70,28 +95,28 @@ Result:
 
 ## Current active task
 
-S2.3 - L1 visual capture and artifact classification.
+S2.4 - L2 512 generation preflight.
 
 Scope:
 
-- keep L0 128 as the default accepted playtest world;
-- capture representative L1 visuals and classify artifacts;
-- inspect surface, material, LOD, boundary, and at least one underground view;
-- keep the report explicit that dynamic seamless LOD is still not proven;
-- do not change accepted playtest semantics just to make a larger map appear;
-- do not hide visual artifacts behind feature work.
+- add an L2 512 scale profile only after preserving L0/L1 evidence;
+- generate L2 as an artifact path, not as the accepted playtest world;
+- record page count, payload bytes, generation duration, world hash, and
+  memory/disk warnings if encountered;
+- do not claim L2 runtime or visual support from generation-only evidence.
 
 Exit:
 
-- L1 visual captures exist under artifacts and have nonblank viewport range;
-- all visible artifacts found during L1 inspection are classified;
-- no GDScript performance logic is added for this step.
+- `python tools/scale_ladder.py --level L2 --force` produces a report or a
+  documented failure;
+- the report clearly says what is and is not proven;
+- no GDScript performance logic is added.
 
 ## Next finite steps
 
-1. Add L1 visual capture/reporting.
-2. Classify any artifact before moving to 512.
-3. Move to L2 512 only after L1 has generation, runtime, and visual evidence.
+1. Add L2 512 generation-only profile.
+2. Generate L2 as an artifact and record the result.
+3. Add L2 runtime acceptance only if generation succeeds.
 
 ## Deferred by rule
 

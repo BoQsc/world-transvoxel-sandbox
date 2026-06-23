@@ -6,11 +6,13 @@ signal visualization_changed
 @export var terrain_path: NodePath
 @export var terrain_material: ShaderMaterial
 @export var bounds_visible := false
+@export var world_bounds_extent := Vector3(128, 64, 128)
 
 var _terrain: Node
 var _debug_mode := 0
 var _lod_counts: Dictionary = {}
 var _chunk_lods: Dictionary = {}
+var _lod_materials: Dictionary = {}
 var _world_bounds: MeshInstance3D
 
 
@@ -19,7 +21,7 @@ func _ready() -> void:
 	_terrain.child_entered_tree.connect(_on_terrain_child_entered)
 	_terrain.child_exiting_tree.connect(_on_terrain_child_exiting)
 	_world_bounds = _create_box_bounds(
-		Vector3(128, 64, 128),
+		world_bounds_extent,
 		Color(1.0, 0.55, 0.12, 0.9),
 		"WT_WorldBounds"
 	)
@@ -32,9 +34,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
 	if event.keycode == KEY_F1:
-		_debug_mode = (_debug_mode + 1) % 3
-		terrain_material.set_shader_parameter("debug_mode", _debug_mode)
-		visualization_changed.emit()
+		set_debug_mode((_debug_mode + 1) % 3)
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_F2:
 		bounds_visible = not bounds_visible
@@ -62,8 +62,7 @@ func _configure_child(child: Node) -> void:
 	if _chunk_lods.has(instance_id):
 		return
 	var lod := int(String(child.name).get_slice("_L", 1))
-	child.material_override = terrain_material
-	child.set_instance_shader_parameter("lod_level", float(lod))
+	child.material_override = _material_for_lod(lod)
 	if child.get_node_or_null("WT_DebugBounds") == null:
 		child.add_child(_create_bounds(lod))
 	_chunk_lods[instance_id] = lod
@@ -81,6 +80,27 @@ func _on_terrain_child_exiting(child: Node) -> void:
 		_lod_counts.erase(lod)
 	else:
 		_lod_counts[lod] = remaining
+
+
+func set_debug_mode(mode: int) -> void:
+	_debug_mode = clampi(mode, 0, 2)
+	_apply_debug_mode()
+	visualization_changed.emit()
+
+
+func _apply_debug_mode() -> void:
+	terrain_material.set_shader_parameter("debug_mode", _debug_mode)
+	for material: ShaderMaterial in _lod_materials.values():
+		material.set_shader_parameter("debug_mode", _debug_mode)
+
+
+func _material_for_lod(lod: int) -> ShaderMaterial:
+	if not _lod_materials.has(lod):
+		var material := terrain_material.duplicate() as ShaderMaterial
+		material.set_shader_parameter("lod_level", float(lod))
+		material.set_shader_parameter("debug_mode", _debug_mode)
+		_lod_materials[lod] = material
+	return _lod_materials[lod]
 
 
 func _create_bounds(lod: int) -> MeshInstance3D:

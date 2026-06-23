@@ -21,6 +21,7 @@ func _ready() -> void:
 	_terrain = get_node(terrain_path)
 	_viewer = get_node(viewer_path)
 	_visualizer = get_node(visualizer_path)
+	_visualizer.visualization_changed.connect(_refresh)
 	_panel = PanelContainer.new()
 	_panel.position = Vector2(12, 12)
 	_panel.custom_minimum_size = Vector2(440, 0)
@@ -69,9 +70,11 @@ func _refresh() -> void:
 	var lod_counts: Dictionary = _visualizer.call("get_lod_counts")
 	var recovery: Dictionary = _lab.call("get_recovery_policy")
 	var position := _viewer.global_position
+	var world_min: Vector3 = _lab.world_min
+	var world_max: Vector3 = _lab.world_max
 	var inside_map := (
-		position.x >= 0.0 and position.x <= 128.0
-		and position.z >= 0.0 and position.z <= 128.0
+		position.x >= world_min.x and position.x <= world_max.x
+		and position.z >= world_min.z and position.z <= world_max.z
 	)
 	_label.text = (
 		"World Transvoxel 1.0.2 Visual Sandbox\n" +
