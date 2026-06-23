@@ -155,6 +155,7 @@ def main() -> int:
             "Dynamic LOD popping remains a blocker",
             "Settled terrain must stay cold",
             "Finite boundary guards",
+            "Generation preflight must account",
             "no tracked PowerShell workflow scripts",
             "GDScript is glue",
             "Compute shaders are deferred",
@@ -178,7 +179,8 @@ def main() -> int:
             "S2.8 - L3 runtime budget planning is complete",
             "S2.9 - L3 runtime acceptance is complete",
             "S2.10 - L3 visual capture and artifact classification is complete",
-            "S2.11 - L4 bounded-generation feasibility gate",
+            "S2.11 - L4 dense-generation feasibility gate is complete",
+            "S2.12 - bounded L4 source and native bake proof",
             "docs/TERRAIN_RUNTIME_BUDGETS.md",
             "GDScript is glue",
             "Deferred by rule",
@@ -198,6 +200,39 @@ def main() -> int:
             "runtime budget profile validation failed: "
             + (budget_check.stdout + budget_check.stderr).strip()
         )
+
+    generator = (ROOT / "tools" / "generate_world.py").read_text(encoding="utf-8")
+    scale_ladder = (ROOT / "tools" / "scale_ladder.py").read_text(encoding="utf-8")
+    for phrase in (
+        '"L4": ScaleProfile(',
+        '"bounded_required"',
+        "rejects whole-volume source generation",
+    ):
+        if phrase not in generator:
+            errors.append(f"L4 generation guard is missing phrase: {phrase}")
+    for phrase in (
+        "DENSE_SOURCE_LIMIT_BYTES",
+        "estimated_bake_working_set_bytes",
+        "required_available_memory_bytes",
+        "--estimate-only",
+        "reject_dense_generation",
+    ):
+        if phrase not in scale_ladder:
+            errors.append(f"L4 feasibility gate is missing phrase: {phrase}")
+    try:
+        from scale_ladder import resource_estimate
+
+        estimate, _warnings, blockers = resource_estimate("L4")
+        if (
+            estimate["estimated_source_bytes"] != 1_744_930_926
+            or estimate["expected_pages"] != 73_728
+            or estimate["estimated_bake_working_set_bytes"] != 7_113_740_508
+            or estimate["dense_generation_feasible"]
+            or not blockers
+        ):
+            errors.append(f"L4 feasibility estimate drifted: {estimate}")
+    except (ImportError, KeyError, TypeError, ValueError) as error:
+        errors.append(f"L4 feasibility estimate could not be checked: {error}")
 
     files = tracked_files()
     for relative in files:

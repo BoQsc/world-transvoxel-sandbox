@@ -25,6 +25,37 @@ replacement work before larger terrain behavior is measured.
 
 ## Latest evidence
 
+S2.11 - L4 dense-generation feasibility gate is complete.
+
+Command:
+
+```console
+python tools/scale_ladder.py --level L4 --estimate-only
+```
+
+Result:
+
+- dimensions: 2,053 x 69 x 2,053 samples;
+- source samples: 290,821,821;
+- estimated dense source: 1,744,930,926 bytes;
+- expected pages: 73,728;
+- conservative payload estimate: 3,623,878,656 bytes;
+- required disk including the 512 MiB reserve: 5,905,680,494 bytes;
+- estimated Python generator working set: 2,181,163,658 bytes;
+- estimated native bake working set: 7,113,740,508 bytes because the current
+  tool retains raw source bytes, decoded source arrays, and all baked pages;
+- required available memory including the 512 MiB reserve: 7,650,611,420
+  bytes, versus 3,333,226,496 available during the accepted estimate;
+- decision: `reject_dense_generation`;
+- the 512 MiB dense-source ceiling is above the largest proven L3 source
+  (438,360,174 bytes) but rejects L4's fourfold source jump;
+- permanent guards: direct L4 generation and scale-ladder L4 generation both
+  fail before creating a world; estimate-only remains available and succeeds;
+- proven: L4 source/page/payload/disk/memory estimates and the dense-path
+  rejection decision;
+- not proven: bounded source generation, L4 storage, Godot runtime, editing, or
+  visual acceptance.
+
 S2.10 - L3 visual capture and artifact classification is complete for
 automated static visual and targeted boundary evidence.
 
@@ -295,32 +326,33 @@ Result:
 
 ## Current active task
 
-S2.11 - L4 bounded-generation feasibility gate.
+S2.12 - bounded L4 source and native bake proof.
 
 Scope:
 
-- calculate the L4 source, payload, memory, disk, and duration estimates before
-  allocating a 2,048 world;
-- reject the current whole-volume source path if it cannot retain the safety
-  reserve or a defensible memory bound;
-- define and implement the bounded chunked/sparse source-generation path needed
-  to make L4 safe;
-- do not claim L4 support from preflight or generation alone.
+- implement bounded source writing in offline Python tooling without retaining
+  the complete density/material volume in Python arrays;
+- implement the required native addon bake path upstream in World Transvoxel,
+  without modifying the sandbox's locked vendored release in place;
+- stop retaining raw source, decoded source, and all page payloads at once;
+- preserve deterministic world/page output and manifest provenance;
+- package and lock a tested addon release before the sandbox consumes it.
 
 Exit:
 
-- an explicit L4 feasibility report records estimates and the accept/reject
-  decision;
-- an unsafe dense run cannot begin accidentally;
-- if redesign is required, its bounded-memory contract and first automated
-  proof are committed before L4 generation.
+- the bounded path has an explicit peak-memory contract below the accepted host
+  budget;
+- L0 output equivalence or an explicitly reviewed format/provenance change is
+  proven before any L4 allocation;
+- an intermediate-scale bounded bake passes storage validation;
+- no performance-sensitive generation or bake logic is moved into GDScript.
 
 ## Next finite steps
 
-1. Add an L4 estimate-only profile and conservative resource gate.
-2. Measure whether whole-volume source generation is safe on the target host.
-3. Implement bounded source generation if the dense path is rejected; only
-   then generate L4.
+1. Specify the bounded source/bake contract and batch lifetime.
+2. Implement and test the native addon capability in the upstream repository.
+3. Stream sandbox source generation and prove deterministic L0 output before
+   attempting an intermediate bounded scale.
 
 ## Deferred by rule
 

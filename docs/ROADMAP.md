@@ -131,7 +131,17 @@ yet human or dynamically visually accepted.
   the first collision at x=0.500 in the affected region;
 - L3 not yet proven: human visual acceptance, dynamic seamless LOD appearance,
   fast travel or disjoint teleport movement, or L4 2048 support;
-- replace whole-volume source generation with bounded chunked/sparse baking;
+- L4 dense feasibility evidence: 290,821,821 samples, 1,744,930,926 source
+  bytes, 73,728 pages, and 3,623,878,656 conservative payload bytes;
+- L4 dense memory rejection: the current native bake tool retains raw and
+  decoded source plus all baked pages, producing a 7,113,740,508 byte working
+  set and 7,650,611,420 byte requirement with reserve, above the measured
+  3,333,226,496 available bytes;
+- L4 whole-volume generation is now mechanically blocked before allocation;
+  `--estimate-only` records the rejection without creating world data;
+- replace whole-volume source generation and all-pages-in-memory baking with a
+  bounded native bake path in the upstream addon, then stream the sandbox's
+  Python source writer;
 - run 256, 512, 1024, and 2048 horizontal-cell worlds;
 - record page count, disk size, bake duration, peak memory, startup latency,
   idle CPU/GPU/memory, movement latency, frame time, edit latency, visual

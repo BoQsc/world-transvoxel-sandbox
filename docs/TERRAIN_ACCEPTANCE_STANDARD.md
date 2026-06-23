@@ -37,6 +37,12 @@ repository work remain secondary until the terrain itself is proven at scale.
 - Runtime budgets are part of acceptance. Each accepted scale must follow
   `docs/TERRAIN_RUNTIME_BUDGETS.md`; larger levels must not silently inherit
   smaller-level capacities.
+- Generation preflight must account for both the offline generator and native
+  bake lifetime. Raw source, decoded source, retained page payloads, and safety
+  reserve count toward the peak; disk-only source size is not a memory bound.
+- Whole-volume generation must be rejected before allocation when it exceeds
+  the accepted dense-source or peak-memory limit. Estimate-only reports are
+  evidence for a redesign decision, not evidence that the scale is supported.
 - Autonomous captures and tests must disable player input from scene startup.
 - Project scripts must remain cross-platform Python where external scripting is
   needed; no tracked PowerShell workflow scripts.

@@ -29,6 +29,7 @@ class ScaleProfile:
     vertical_cells: int
     lod0_chunks: tuple[int, int, int]
     purpose: str
+    generation_mode: str = "dense"
 
     @property
     def origin(self) -> tuple[int, int, int]:
@@ -63,6 +64,14 @@ SCALE_PROFILES = {
     ),
     "L3": ScaleProfile(
         "L3", 1024, 64, (64, 4, 64), "1024 generation preflight"
+    ),
+    "L4": ScaleProfile(
+        "L4",
+        2048,
+        64,
+        (128, 4, 128),
+        "2048 bounded generation feasibility",
+        "bounded_required",
     ),
 }
 DEFAULT_SCALE_LEVEL = "L0"
@@ -289,6 +298,12 @@ def write_keys(profile: ScaleProfile) -> int:
 
 def generate(output_root: Path, preset: str, force: bool, scale_level: str) -> None:
     profile = SCALE_PROFILES[scale_level]
+    if profile.generation_mode != "dense":
+        raise RuntimeError(
+            f"{profile.level} rejects whole-volume source generation; "
+            "run tools/scale_ladder.py --level "
+            f"{profile.level} --estimate-only and implement bounded generation first"
+        )
     output_root = output_root.resolve()
     if force:
         remove_generated(SOURCE_ROOT)
