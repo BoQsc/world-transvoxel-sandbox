@@ -29,7 +29,7 @@ class ScaleProfile:
     vertical_cells: int
     lod0_chunks: tuple[int, int, int]
     purpose: str
-    generation_mode: str = "dense"
+    generation_mode: str = "bounded"
 
     @property
     def origin(self) -> tuple[int, int, int]:
@@ -71,7 +71,7 @@ SCALE_PROFILES = {
         64,
         (128, 4, 128),
         "2048 bounded generation feasibility",
-        "bounded_required",
+        "bounded",
     ),
 }
 DEFAULT_SCALE_LEVEL = "L0"
@@ -134,36 +134,16 @@ def underground_material(x: int, y: int, z: int) -> int:
     return 5 if rock_field > 0.55 else 3
 
 
-def count_volumetric_columns(
-    densities: array.array[float], dimensions: tuple[int, int, int]
-) -> int:
-    count = 0
-    width, height, depth = dimensions
-    for z_index in range(2, depth - 2):
-        for x_index in range(2, width - 2):
-            transitions = 0
-            previous_solid = densities[z_index * width * height + 2 * width + x_index] < 0.0
-            for y_index in range(3, height - 2):
-                index = y_index * width + z_index * width * height + x_index
-                solid = densities[index] < 0.0
-                if solid != previous_solid:
-                    transitions += 1
-                    previous_solid = solid
-            if transitions >= 3:
-                count += 1
-    return count
-
-
 def write_volume(preset: str, profile: ScaleProfile) -> dict[str, int]:
     SOURCE_ROOT.mkdir(parents=True, exist_ok=True)
-    densities = array.array("f")
-    materials = array.array("H")
     material_counts = {str(index): 0 for index in range(6)}
     cave_samples = 0
     chamber_samples = 0
     tunnel_samples = 0
     ore_samples = 0
     boundary_samples = 0
+    volumetric_columns = 0
+    sample_count = 0
 
     world_extent = profile.world_extent
     dimensions = profile.dimensions
@@ -175,99 +155,118 @@ def write_volume(preset: str, profile: ScaleProfile) -> dict[str, int]:
     cos_z = [math.cos(value * 0.104) for value in z_coordinates]
     vein_y = [18.0 + 5.0 * math.sin(value * 0.078) for value in x_coordinates]
     vein_z = [64.0 + 20.0 * math.sin(value * 0.043) for value in x_coordinates]
-
-    for z_index, z in enumerate(z_coordinates):
-        heights = [terrain_height(x, z, preset) for x in x_coordinates]
-        cross_noise = [
-            0.55 * math.sin((x + z) * 0.071) for x in x_coordinates
-        ]
-        for y_index, y in enumerate(y_coordinates):
-            for x_index, x in enumerate(x_coordinates):
-                height = heights[x_index]
-                density = float(y) - height
-                base_density = density
-                cave_margin = (
-                    FINITE_SHELL_SOLID_SAMPLES < x
-                    < world_extent[0] - FINITE_SHELL_SOLID_SAMPLES
-                    and FINITE_SHELL_SOLID_SAMPLES < y
-                    and FINITE_SHELL_SOLID_SAMPLES < z
-                    < world_extent[2] - FINITE_SHELL_SOLID_SAMPLES
-                )
-                if preset == "terrain" and cave_margin and y < height - 6.0:
-                    cave = (
-                        sin_x[x_index]
-                        + sin_y[y_index]
-                        + cos_z[z_index]
-                        + cross_noise[x_index]
-                    )
-                    if cave > 2.28:
-                        density = max(density, (cave - 2.28) * 9.0)
-                if preset == "terrain" and cave_margin:
-                    chamber_density = chamber_void_density(x, y, z, profile)
-                    if chamber_density > density:
-                        density = chamber_density
-                        chamber_samples += 1
-                    tunnel_density = tunnel_void_density(x, y, z, profile)
-                    if tunnel_density > density:
-                        density = tunnel_density
-                        tunnel_samples += 1
-                if base_density < 0.0 <= density:
-                    cave_samples += 1
-
-                boundary_distance = min(
-                    x,
-                    world_extent[0] - x,
-                    y,
-                    z,
-                    world_extent[2] - z,
-                )
-                # Keep the finite shell halfway between integer samples. An
-                # exact zero at distance one creates collapsed/isovalue-tied
-                # boundary triangles and fragmented material patches.
-                boundary_density = 0.5 - float(boundary_distance)
-                if boundary_density >= density:
-                    density = boundary_density
-                    boundary_samples += 1
-
-                material = 0
-                if density < 0.0:
-                    depth = height - float(y)
-                    if depth < 2.2:
-                        material = 1
-                    elif depth < 8.0:
-                        material = 2
-                    else:
-                        material = (
-                            underground_material(x, y, z)
-                            if preset == "terrain"
-                            else (5 if y < 10 else 3)
-                        )
-                    if preset == "terrain" and depth > 7.0:
-                        dy = float(y) - vein_y[x_index]
-                        dz = float(z) - vein_z[x_index]
-                        if dy * dy + dz * dz < 5.0:
-                            material = 4
-                            ore_samples += 1
-                densities.append(density)
-                materials.append(material)
-                material_counts[str(material)] += 1
-
-    volumetric_columns = count_volumetric_columns(densities, dimensions)
-    if preset == "terrain" and volumetric_columns == 0:
-        raise RuntimeError("Terrain generation produced no non-heightfield columns.")
-    if densities.itemsize != 4 or materials.itemsize != 2:
-        raise RuntimeError("Host array widths do not match the bake format.")
-    if sys.byteorder != "little":
-        densities.byteswap()
-        materials.byteswap()
     density_path = SOURCE_ROOT / "density.f32"
     material_path = SOURCE_ROOT / "materials.u16"
-    with density_path.open("wb") as output:
-        densities.tofile(output)
-    with material_path.open("wb") as output:
-        materials.tofile(output)
+    with density_path.open("wb", buffering=1024 * 1024) as density_output, \
+            material_path.open("wb", buffering=1024 * 1024) as material_output:
+        for z_index, z in enumerate(z_coordinates):
+            heights = [terrain_height(x, z, preset) for x in x_coordinates]
+            cross_noise = [
+                0.55 * math.sin((x + z) * 0.071) for x in x_coordinates
+            ]
+            count_transitions = 2 <= z_index < dimensions[2] - 2
+            previous_solid = [False] * dimensions[0]
+            transitions = [0] * dimensions[0]
+            for y_index, y in enumerate(y_coordinates):
+                density_row = array.array("f")
+                material_row = array.array("H")
+                for x_index, x in enumerate(x_coordinates):
+                    height = heights[x_index]
+                    density = float(y) - height
+                    base_density = density
+                    cave_margin = (
+                        FINITE_SHELL_SOLID_SAMPLES < x
+                        < world_extent[0] - FINITE_SHELL_SOLID_SAMPLES
+                        and FINITE_SHELL_SOLID_SAMPLES < y
+                        and FINITE_SHELL_SOLID_SAMPLES < z
+                        < world_extent[2] - FINITE_SHELL_SOLID_SAMPLES
+                    )
+                    if preset == "terrain" and cave_margin and y < height - 6.0:
+                        cave = (
+                            sin_x[x_index]
+                            + sin_y[y_index]
+                            + cos_z[z_index]
+                            + cross_noise[x_index]
+                        )
+                        if cave > 2.28:
+                            density = max(density, (cave - 2.28) * 9.0)
+                    if preset == "terrain" and cave_margin:
+                        chamber_density = chamber_void_density(x, y, z, profile)
+                        if chamber_density > density:
+                            density = chamber_density
+                            chamber_samples += 1
+                        tunnel_density = tunnel_void_density(x, y, z, profile)
+                        if tunnel_density > density:
+                            density = tunnel_density
+                            tunnel_samples += 1
+                    if base_density < 0.0 <= density:
+                        cave_samples += 1
+
+                    boundary_distance = min(
+                        x,
+                        world_extent[0] - x,
+                        y,
+                        z,
+                        world_extent[2] - z,
+                    )
+                    boundary_density = 0.5 - float(boundary_distance)
+                    if boundary_density >= density:
+                        density = boundary_density
+                        boundary_samples += 1
+
+                    material = 0
+                    if density < 0.0:
+                        depth = height - float(y)
+                        if depth < 2.2:
+                            material = 1
+                        elif depth < 8.0:
+                            material = 2
+                        else:
+                            material = (
+                                underground_material(x, y, z)
+                                if preset == "terrain"
+                                else (5 if y < 10 else 3)
+                            )
+                        if preset == "terrain" and depth > 7.0:
+                            dy = float(y) - vein_y[x_index]
+                            dz = float(z) - vein_z[x_index]
+                            if dy * dy + dz * dz < 5.0:
+                                material = 4
+                                ore_samples += 1
+                    density_row.append(density)
+                    material_row.append(material)
+                    material_counts[str(material)] += 1
+                    if count_transitions and 2 <= y_index < dimensions[1] - 2:
+                        solid = density < 0.0
+                        if y_index == 2:
+                            previous_solid[x_index] = solid
+                        elif solid != previous_solid[x_index]:
+                            transitions[x_index] += 1
+                            previous_solid[x_index] = solid
+                if density_row.itemsize != 4 or material_row.itemsize != 2:
+                    raise RuntimeError("Host array widths do not match the bake format.")
+                sample_count += len(density_row)
+                if sys.byteorder != "little":
+                    density_row.byteswap()
+                    material_row.byteswap()
+                density_row.tofile(density_output)
+                material_row.tofile(material_output)
+            if count_transitions:
+                volumetric_columns += sum(
+                    value >= 3 for value in transitions[2 : dimensions[0] - 2]
+                )
+
+    if preset == "terrain" and volumetric_columns == 0:
+        raise RuntimeError("Terrain generation produced no non-heightfield columns.")
+    expected_samples = math.prod(dimensions)
+    if (
+        sample_count != expected_samples
+        or density_path.stat().st_size != expected_samples * 4
+        or material_path.stat().st_size != expected_samples * 2
+    ):
+        raise RuntimeError("Streamed source volume size mismatch.")
     return {
-        "samples": len(densities),
+        "samples": sample_count,
         "cave_samples": cave_samples,
         "chamber_samples": chamber_samples,
         "tunnel_samples": tunnel_samples,
@@ -296,13 +295,63 @@ def write_keys(profile: ScaleProfile) -> int:
     return len(keys)
 
 
-def generate(output_root: Path, preset: str, force: bool, scale_level: str) -> None:
+def generate_source_only(
+    preset: str,
+    force: bool,
+    scale_level: str,
+    resource_preflight_approved: bool,
+) -> None:
     profile = SCALE_PROFILES[scale_level]
-    if profile.generation_mode != "dense":
+    if profile.level == "L4" and not resource_preflight_approved:
         raise RuntimeError(
-            f"{profile.level} rejects whole-volume source generation; "
-            "run tools/scale_ladder.py --level "
-            f"{profile.level} --estimate-only and implement bounded generation first"
+            "L4 requires scale-ladder resource preflight before source allocation"
+        )
+    if force:
+        remove_generated(SOURCE_ROOT)
+    started = time.perf_counter()
+    volume = write_volume(preset, profile)
+    page_count = write_keys(profile)
+    report = {
+        "schema": "world-transvoxel-sandbox.source-generation.v1",
+        "scale_level": profile.level,
+        "preset": preset,
+        "dimensions": profile.dimensions,
+        "source_generation_mode": "streamed_x_rows",
+        "source_row_buffer_bytes": profile.dimensions[0] * 6,
+        "source_density_sha256": sha256(SOURCE_ROOT / "density.f32"),
+        "source_material_sha256": sha256(SOURCE_ROOT / "materials.u16"),
+        "pages": page_count,
+        "generation_seconds": round(time.perf_counter() - started, 3),
+        "volume": volume,
+    }
+    (SOURCE_ROOT / "source_generation.json").write_text(
+        json.dumps(report, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(
+        "WT_SANDBOX_SOURCE_GENERATION_PASS "
+        f"level={profile.level} samples={volume['samples']} "
+        f"pages={page_count} seconds={report['generation_seconds']} "
+        f"row_buffer_bytes={report['source_row_buffer_bytes']}"
+    )
+
+
+def generate(
+    output_root: Path,
+    preset: str,
+    force: bool,
+    scale_level: str,
+    resource_preflight_approved: bool,
+) -> None:
+    profile = SCALE_PROFILES[scale_level]
+    if profile.generation_mode != "bounded":
+        raise RuntimeError(
+            f"{profile.level} has unsupported generation mode "
+            f"{profile.generation_mode}"
+        )
+    if profile.level == "L4" and not resource_preflight_approved:
+        raise RuntimeError(
+            "L4 requires scale-ladder resource preflight before source allocation"
         )
     output_root = output_root.resolve()
     if force:
@@ -367,6 +416,8 @@ def generate(output_root: Path, preset: str, force: bool, scale_level: str) -> N
         "horizontal_cells": profile.horizontal_cells,
         "vertical_cells": profile.vertical_cells,
         "scale_purpose": profile.purpose,
+        "source_generation_mode": "streamed_x_rows",
+        "source_row_buffer_bytes": profile.dimensions[0] * 6,
         "finite_shell_solid_samples": FINITE_SHELL_SOLID_SAMPLES,
         "preset": preset,
         "origin": profile.origin,
@@ -403,8 +454,32 @@ def main() -> None:
         default=DEFAULT_SCALE_LEVEL,
     )
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--source-only",
+        action="store_true",
+        help="Stream source files and keys without invoking the native baker.",
+    )
+    parser.add_argument(
+        "--resource-preflight-approved",
+        action="store_true",
+        help="Internal scale-ladder authorization for a measured large allocation.",
+    )
     arguments = parser.parse_args()
-    generate(arguments.output, arguments.preset, arguments.force, arguments.scale_level)
+    if arguments.source_only:
+        generate_source_only(
+            arguments.preset,
+            arguments.force,
+            arguments.scale_level,
+            arguments.resource_preflight_approved,
+        )
+        return
+    generate(
+        arguments.output,
+        arguments.preset,
+        arguments.force,
+        arguments.scale_level,
+        arguments.resource_preflight_approved,
+    )
 
 
 if __name__ == "__main__":

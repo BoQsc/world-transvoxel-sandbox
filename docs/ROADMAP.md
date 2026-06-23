@@ -9,9 +9,9 @@ The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.2.
+Status: revalidated against World Transvoxel 1.0.3.
 
-- vendored and locked World Transvoxel 1.0.2 release; 1.0.0 is withdrawn and
+- vendored and locked World Transvoxel 1.0.3 release; 1.0.0 is withdrawn and
   1.0.1 is superseded for premature moving-viewer chunk retirement;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
@@ -62,12 +62,10 @@ Exit: no visible correctness blocker remains in the test gallery.
 
 ## S2 - Chunked generation and scale ladder
 
-Status: active; L0 remains the default accepted playtest world. L1 256 has
-generation, headless runtime, and automated visual evidence. L2 512 has
-generation, headless runtime, and automated static visual evidence, but is not
-yet human or dynamically visually accepted. L3 1024 has generation, headless
-runtime, targeted boundary, and automated static visual evidence, but is not
-yet human or dynamically visually accepted.
+Status: automated scale-ladder evidence is complete through L4 / 2048. L0
+remains the default accepted human playtest world. L1, L2, L3, and L4 have
+generation, headless runtime, and automated static visual evidence. None of
+the larger mixed-LOD levels are yet human or dynamically visually accepted.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -130,26 +128,34 @@ yet human or dynamically visually accepted.
   three-sample source guard closed it. A permanent outside-in ray now requires
   the first collision at x=0.500 in the affected region;
 - L3 not yet proven: human visual acceptance, dynamic seamless LOD appearance,
-  fast travel or disjoint teleport movement, or L4 2048 support;
-- L4 dense feasibility evidence: 290,821,821 samples, 1,744,930,926 source
-  bytes, 73,728 pages, and 3,623,878,656 conservative payload bytes;
-- L4 dense memory rejection: the current native bake tool retains raw and
-  decoded source plus all baked pages, producing a 7,113,740,508 byte working
-  set and 7,650,611,420 byte requirement with reserve, above the measured
-  3,333,226,496 available bytes;
-- L4 whole-volume generation is now mechanically blocked before allocation;
-  `--estimate-only` records the rejection without creating world data;
-- replace whole-volume source generation and all-pages-in-memory baking with a
-  bounded native bake path in the upstream addon, then stream the sandbox's
-  Python source writer;
-- run 256, 512, 1024, and 2048 horizontal-cell worlds;
-- record page count, disk size, bake duration, peak memory, startup latency,
-  idle CPU/GPU/memory, movement latency, frame time, edit latency, visual
-  captures, known defects, and shutdown;
-- set the supported vertical range and target hardware profile.
+  or fast travel/disjoint teleport movement;
+- L4 bounded generation evidence: 290,821,821 samples, 1,744,930,926 source
+  bytes, 73,728 pages, 3,057,795,983 stable payload bytes, 2,651.646
+  generation seconds, 562,862 volumetric columns, no scale-ladder warnings,
+  and world hash
+  `0f908b1e36c8c602ca884070c40d360e6a661274135791f13dafab1f48384368`;
+- L4 preflight memory contract: streamed Python source estimate 68,160,000
+  bytes, bounded native bake estimate 77,840,384 bytes, required available
+  memory with reserve 614,711,296 bytes, and no resource blockers on the
+  accepted run;
+- L4 accepted runtime budget: staged movement, radius 3, maximum LOD 1, active
+  chunk capacity 1,024, inherited cache budgets;
+- L4 headless runtime evidence: Godot 4.6.3 and 4.7 startup, seven staged
+  positions, 35 render/collision probes, minimum 195 render/collision chunks,
+  one active-window edit/remesh, and clean shutdown;
+- L4 visual evidence: seven Godot 4.7 captures covering overview, material,
+  LOD, top, underground tunnel, closed boundary, and boundary materials; the
+  permanent outside-in ray requires the first collision at x=0.500;
+- L4 not yet proven: human visual acceptance, dynamic seamless LOD appearance,
+  fast travel/disjoint teleport movement, target-hardware gameplay workload,
+  or scale support beyond 2048;
+- set the supported vertical range and target hardware profile before claiming
+  game-readiness beyond this reference machine.
 
-Exit: the 2K claim is accepted with evidence or rejected with a measured
-limit and redesign requirement.
+Exit: the automated 2K scale-ladder claim is accepted for bounded generation,
+staged runtime, edit/remesh, and static visual capture. Human visual
+acceptance, dynamic seamless LOD movement, and gameplay workload acceptance
+remain outside S2.
 
 ## S3 - Visibility and production workload
 

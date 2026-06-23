@@ -35,6 +35,7 @@ marker, the runtime report, and this document.
 | L1 | 256 | staged movement | 3 | 1 | 512 | 97 / 97 | accepted runtime |
 | L2 | 512 | staged movement | 3 | 1 | 1024 | 176 / 176 | accepted runtime |
 | L3 | 1024 | staged movement | 3 | 1 | 1024 | 201 / 201 | accepted runtime |
+| L4 | 2048 | staged movement | 3 | 1 | 1024 | 195 / 195 | accepted runtime |
 
 ## L2 capacity classification
 
@@ -86,3 +87,18 @@ render/collision probes, minimum 201 render/collision chunks, one active-window
 edit/remesh, and clean shutdown. It is accepted for staged movement only. It
 does not prove fast travel, disjoint teleport movement, visual acceptance, or
 L4 support.
+
+## L4 derivation and acceptance
+
+L4 keeps radius 3 and maximum LOD 1. The world storage is much larger, but the
+local planner window remains bounded by the same runtime budget knobs.
+
+L4 therefore uses the same active chunk capacity as L3: 1,024 records. This is
+not inherited silently; it is locked because the L4 audit passed with that
+explicit capacity.
+
+The profile passed Godot 4.6.3 and 4.7 with seven staged positions, 35
+render/collision probes, minimum 195 render/collision chunks, one active-window
+edit/remesh, and clean shutdown. It is accepted for staged movement only. It
+does not prove fast travel, disjoint teleport movement, human visual acceptance,
+dynamic seamless LOD appearance, or support beyond L4.

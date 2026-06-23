@@ -41,6 +41,10 @@ PROFILES = {
         "L3", 1024, "staged movement", 3, 1, 1024, 201, 201,
         "accepted runtime",
     ),
+    "L4": RuntimeBudgetProfile(
+        "L4", 2048, "staged movement", 3, 1, 1024, 195, 195,
+        "accepted runtime",
+    ),
 }
 
 
@@ -60,6 +64,7 @@ def validate() -> list[str]:
     runtime_tool = read_text("tools/scale_runtime.py")
     l2_audit = read_text("tests/terrain_l2_runtime_audit.gd")
     l3_audit = read_text("tests/terrain_l3_runtime_audit.gd")
+    l4_audit = read_text("tests/terrain_l4_runtime_audit.gd")
     config = read_text("config/terrain_config.tres")
 
     for phrase in (
@@ -68,15 +73,18 @@ def validate() -> list[str]:
         "| L2 | 512 | staged movement | 3 | 1 | 1024 | 176 / 176",
         "Fast travel is not proven by L2 runtime acceptance",
         "| L3 | 1024 | staged movement | 3 | 1 | 1024 | 201 / 201",
+        "| L4 | 2048 | staged movement | 3 | 1 | 1024 | 195 / 195",
         "A conservative full replacement bound is therefore 616 records",
         "Its only scale-specific",
         "The profile passed Godot 4.6.3 and 4.7",
+        "L4 therefore uses the same active chunk capacity as L3",
     ):
         require(contract, phrase, "runtime budget contract", errors)
 
     for phrase in (
         "docs/TERRAIN_RUNTIME_BUDGETS.md",
         "L2 runtime budget: active chunk capacity 1,024",
+        "L4 accepted runtime budget: staged movement",
         "fast travel or disjoint teleport movement",
     ):
         require(status, phrase, "current status", errors)
@@ -96,8 +104,16 @@ def validate() -> list[str]:
         errors,
     )
     require(l3_audit, "active_capacity=%d", "L3 runtime audit", errors)
+    require(
+        l4_audit,
+        "const ACTIVE_CHUNK_CAPACITY := 1024",
+        "L4 runtime audit",
+        errors,
+    )
+    require(l4_audit, "active_capacity=%d", "L4 runtime audit", errors)
     require(runtime_tool, '"L2": {', "scale runtime tool", errors)
     require(runtime_tool, '"L3": {', "scale runtime tool", errors)
+    require(runtime_tool, '"L4": {', "scale runtime tool", errors)
     require(runtime_tool, '"active_chunk_capacity": 1024', "scale runtime tool", errors)
     return errors
 
@@ -133,7 +149,7 @@ def main() -> int:
     if errors:
         print(f"Runtime budget validation failed with {len(errors)} error(s).")
         return 1
-    print("WT_SANDBOX_RUNTIME_BUDGETS_PASS profiles=4")
+    print("WT_SANDBOX_RUNTIME_BUDGETS_PASS profiles=5")
     return 0
 
 

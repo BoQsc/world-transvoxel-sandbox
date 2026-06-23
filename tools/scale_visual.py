@@ -14,31 +14,36 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "scale_ladder"
-SUPPORTED_LEVELS = ("L1", "L2", "L3")
+SUPPORTED_LEVELS = ("L1", "L2", "L3", "L4")
 SCRIPT_BY_LEVEL = {
     "L1": "res://tests/terrain_l1_visual_capture.gd",
     "L2": "res://tests/terrain_l2_visual_capture.gd",
     "L3": "res://tests/terrain_l3_visual_capture.gd",
+    "L4": "res://tests/terrain_l4_visual_capture.gd",
 }
 CAPTURE_MARKER_BY_LEVEL = {
     "L1": "WT_SANDBOX_L1_CAPTURE",
     "L2": "WT_SANDBOX_L2_CAPTURE",
     "L3": "WT_SANDBOX_L3_CAPTURE",
+    "L4": "WT_SANDBOX_L4_CAPTURE",
 }
 PASS_MARKER_BY_LEVEL = {
     "L1": "WT_SANDBOX_L1_VISUAL_CAPTURE_PASS",
     "L2": "WT_SANDBOX_L2_VISUAL_CAPTURE_PASS",
     "L3": "WT_SANDBOX_L3_VISUAL_CAPTURE_PASS",
+    "L4": "WT_SANDBOX_L4_VISUAL_CAPTURE_PASS",
 }
 REQUIRED_MARKERS_BY_LEVEL = {
     "L1": (),
     "L2": (),
     "L3": ("WT_SANDBOX_L3_BOUNDARY_PASS",),
+    "L4": ("WT_SANDBOX_L4_BOUNDARY_PASS",),
 }
 VISUAL_TIMEOUT_SECONDS = {
     "L1": 180,
     "L2": 180,
     "L3": 300,
+    "L4": 420,
 }
 RUNTIME_BUDGET_BY_LEVEL = {
     "L1": {
@@ -54,6 +59,13 @@ RUNTIME_BUDGET_BY_LEVEL = {
         "active_chunk_capacity": 1024,
     },
     "L3": {
+        "movement_class": "staged movement",
+        "radius_chunks": 3,
+        "maximum_lod": 1,
+        "active_chunk_capacity": 1024,
+        "cache_policy": "inherit config/terrain_config.tres",
+    },
+    "L4": {
         "movement_class": "staged movement",
         "radius_chunks": 3,
         "maximum_lod": 1,
@@ -181,7 +193,7 @@ def run_visual(level: str, engine: Path) -> dict:
             "blank_or_missing_viewport": "not_detected",
             "finite_boundary_shell": (
                 "targeted collision ray and static captures passed"
-                if level == "L3"
+                if level in {"L3", "L4"}
                 else "expected in closed_boundary captures"
             ),
             "debug_bounds": "world-bound aware",

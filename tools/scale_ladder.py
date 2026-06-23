@@ -31,13 +31,12 @@ GENERATION_TIMEOUT_SECONDS = {
 PAYLOAD_BUDGET_PER_PAGE = 48 * 1024
 DISK_SAFETY_RESERVE_BYTES = 512 * 1024 * 1024
 DISK_WARNING_HEADROOM_BYTES = 256 * 1024 * 1024
-DENSE_SOURCE_LIMIT_BYTES = 512 * 1024 * 1024
-LARGEST_PROVEN_DENSE_LEVEL = "L3"
-LARGEST_PROVEN_DENSE_SOURCE_BYTES = (
-    math.prod(SCALE_PROFILES[LARGEST_PROVEN_DENSE_LEVEL].dimensions) * 6
-)
-DENSE_MEMORY_OVERHEAD_NUMERATOR = 5
-DENSE_MEMORY_OVERHEAD_DENOMINATOR = 4
+STREAMED_GENERATOR_FIXED_BYTES = 64 * 1024 * 1024
+STREAMED_GENERATOR_BYTES_PER_X = 512
+BOUNDED_BAKE_FIXED_BYTES = 64 * 1024 * 1024
+BOUNDED_BAKE_SOURCE_CACHE_BYTES = 196_608
+BOUNDED_BAKE_DENSITY_SCAN_BYTES = 1024 * 1024
+BOUNDED_BAKE_METADATA_BYTES_PER_PAGE = 128
 MEMORY_SAFETY_RESERVE_BYTES = 512 * 1024 * 1024
 
 
@@ -51,14 +50,19 @@ def resource_estimate(level: str) -> tuple[dict, list[str], list[str]]:
     payload_bytes = pages * PAYLOAD_BUDGET_PER_PAGE
     disk_free = shutil.disk_usage(ROOT).free
     required = source_bytes + payload_bytes + DISK_SAFETY_RESERVE_BYTES
-    generator_working_set = math.ceil(
-        source_bytes
-        * DENSE_MEMORY_OVERHEAD_NUMERATOR
-        / DENSE_MEMORY_OVERHEAD_DENOMINATOR
+    generator_working_set = (
+        STREAMED_GENERATOR_FIXED_BYTES
+        + profile.dimensions[0] * STREAMED_GENERATOR_BYTES_PER_X
     )
-    bake_working_set = source_bytes * 2 + payload_bytes
-    dense_peak_memory = max(generator_working_set, bake_working_set)
-    required_memory = dense_peak_memory + MEMORY_SAFETY_RESERVE_BYTES
+    bake_working_set = (
+        BOUNDED_BAKE_FIXED_BYTES
+        + BOUNDED_BAKE_SOURCE_CACHE_BYTES
+        + BOUNDED_BAKE_DENSITY_SCAN_BYTES
+        + PAYLOAD_BUDGET_PER_PAGE
+        + pages * BOUNDED_BAKE_METADATA_BYTES_PER_PAGE
+    )
+    peak_memory = max(generator_working_set, bake_working_set)
+    required_memory = peak_memory + MEMORY_SAFETY_RESERVE_BYTES
     warnings: list[str] = []
     if disk_free - required < DISK_WARNING_HEADROOM_BYTES:
         warnings.append(
@@ -73,13 +77,8 @@ def resource_estimate(level: str) -> tuple[dict, list[str], list[str]]:
     except ImportError:
         pass
     blockers: list[str] = []
-    if profile.generation_mode != "dense":
-        blockers.append("profile requires bounded generation")
-    if source_bytes > DENSE_SOURCE_LIMIT_BYTES:
-        blockers.append(
-            f"estimated source bytes {source_bytes} exceed the dense-source "
-            f"limit {DENSE_SOURCE_LIMIT_BYTES}"
-        )
+    if profile.generation_mode != "bounded":
+        blockers.append(f"unsupported generation mode {profile.generation_mode}")
     if disk_free < required:
         blockers.append(
             f"disk free bytes {disk_free} are below required bytes {required}"
@@ -97,23 +96,22 @@ def resource_estimate(level: str) -> tuple[dict, list[str], list[str]]:
         "required_free_bytes": required,
         "memory_available_before_bytes": memory_available,
         "estimated_generator_working_set_bytes": generator_working_set,
+        "generator_memory_basis": (
+            "64 MiB fixed Python reserve plus 512 bytes per X sample for "
+            "streamed row state"
+        ),
         "estimated_bake_working_set_bytes": bake_working_set,
-        "estimated_dense_peak_memory_bytes": dense_peak_memory,
-        "dense_bake_memory_basis": (
-            "raw source bytes plus decoded source arrays plus retained baked pages"
+        "estimated_peak_memory_bytes": peak_memory,
+        "bounded_bake_memory_basis": (
+            "64 MiB fixed reserve, 1 MiB density scan, 192 KiB source cache, "
+            "one page payload, and 128 bytes of key/index metadata per page"
         ),
         "memory_safety_reserve_bytes": MEMORY_SAFETY_RESERVE_BYTES,
         "required_available_memory_bytes": required_memory,
-        "dense_source_limit_bytes": DENSE_SOURCE_LIMIT_BYTES,
-        "dense_source_limit_basis": (
-            f"{LARGEST_PROVEN_DENSE_LEVEL} proven source "
-            f"{LARGEST_PROVEN_DENSE_SOURCE_BYTES} bytes plus headroom"
-        ),
-        "largest_proven_dense_source_bytes": LARGEST_PROVEN_DENSE_SOURCE_BYTES,
         "generation_mode": profile.generation_mode,
         "expected_pages": pages,
         "blockers": blockers,
-        "dense_generation_feasible": not blockers,
+        "generation_feasible": not blockers,
     }
     return report, warnings, blockers
 
@@ -130,9 +128,11 @@ def resource_preflight(level: str) -> tuple[dict, list[str]]:
 
 def write_feasibility_report(level: str, preset: str) -> Path:
     estimate, warnings, blockers = resource_estimate(level)
-    decision = "reject_dense_generation" if blockers else "allow_dense_generation"
+    decision = (
+        "reject_bounded_generation" if blockers else "allow_bounded_generation"
+    )
     report = {
-        "schema": "world-transvoxel-sandbox.scale-feasibility.v1",
+        "schema": "world-transvoxel-sandbox.scale-feasibility.v2",
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "level": level,
         "preset": preset,
@@ -140,12 +140,11 @@ def write_feasibility_report(level: str, preset: str) -> Path:
         "resource_estimate": estimate,
         "warnings": warnings,
         "proven": [
-            "source, payload, page, disk, and dense-memory estimates calculated",
-            "whole-volume generation decision recorded before source allocation",
+            "streamed source and bounded bake memory estimates calculated",
+            "disk and memory decision recorded before source allocation",
         ],
         "not_proven": [
-            "bounded source generation",
-            "generated world storage validation",
+            "L4 generated world storage validation",
             "Godot runtime or visual acceptance",
         ],
     }
@@ -186,6 +185,7 @@ def run_generation(level: str, preset: str, force: bool) -> dict:
         level,
         "--preset",
         preset,
+        "--resource-preflight-approved",
     ]
     if force:
         command.append("--force")

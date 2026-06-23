@@ -16,45 +16,61 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S2 - chunked generation and scale ladder.
+S1 - visual acceptance and dynamic mixed-LOD quality.
 
-S0 is complete for the 128 baseline. S1 still has a visual blocker: dynamic
+S0 is complete for the 128 baseline. S2 automated scale-ladder evidence is
+complete through L4 / 2048 for bounded generation, staged runtime,
+edit/remesh, and static visual capture. S1 still has a visual blocker: dynamic
 mixed-LOD popping is not accepted as seamless. We are not starting GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement work before larger terrain behavior is measured.
+replacement work before the visual-quality blocker is resolved or explicitly
+demoted by standard.
 
 ## Latest evidence
 
-S2.11 - L4 dense-generation feasibility gate is complete.
+S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
-Command:
+Commands:
 
 ```console
-python tools/scale_ladder.py --level L4 --estimate-only
+python tools/scale_ladder.py --level L4 --force
+python tools/scale_runtime.py --level L4
+python tools/scale_visual.py --level L4
 ```
 
 Result:
 
 - dimensions: 2,053 x 69 x 2,053 samples;
 - source samples: 290,821,821;
-- estimated dense source: 1,744,930,926 bytes;
+- source bytes: 1,744,930,926;
 - expected pages: 73,728;
-- conservative payload estimate: 3,623,878,656 bytes;
-- required disk including the 512 MiB reserve: 5,905,680,494 bytes;
-- estimated Python generator working set: 2,181,163,658 bytes;
-- estimated native bake working set: 7,113,740,508 bytes because the current
-  tool retains raw source bytes, decoded source arrays, and all baked pages;
-- required available memory including the 512 MiB reserve: 7,650,611,420
-  bytes, versus 3,333,226,496 available during the accepted estimate;
-- decision: `reject_dense_generation`;
-- the 512 MiB dense-source ceiling is above the largest proven L3 source
-  (438,360,174 bytes) but rejects L4's fourfold source jump;
-- permanent guards: direct L4 generation and scale-ladder L4 generation both
-  fail before creating a world; estimate-only remains available and succeeds;
-- proven: L4 source/page/payload/disk/memory estimates and the dense-path
-  rejection decision;
-- not proven: bounded source generation, L4 storage, Godot runtime, editing, or
-  visual acceptance.
+- stable payload bytes: 3,057,795,983;
+- generation seconds: 2,651.646;
+- volumetric columns: 562,862;
+- world hash:
+  `0f908b1e36c8c602ca884070c40d360e6a661274135791f13dafab1f48384368`;
+- bounded memory contract: streamed Python source estimate 68,160,000 bytes,
+  bounded native bake estimate 77,840,384 bytes, and required available memory
+  with reserve 614,711,296 bytes;
+- direct L4 source/generation remains guarded: it requires scale-ladder
+  resource preflight and `--resource-preflight-approved`;
+- L4 accepted runtime budget: staged movement, radius 3, maximum LOD 1, active
+  chunk capacity 1,024, inherited cache budgets;
+- runtime evidence: Godot 4.6.3 and 4.7, seven staged positions, 35
+  render/collision probes, minimum 195 render/collision chunks, one
+  active-window edit/remesh, clean shutdown, and max pending retirements 0;
+- visual evidence: seven Godot 4.7 captures under
+  `artifacts/scale_ladder/L4/visual`, all nonblank, covering overview,
+  material, LOD, top, underground tunnel, closed boundary, and boundary
+  materials;
+- permanent boundary regression: an outside-in collision ray at y=12, z=1024
+  must hit the finite wall at x=0.500 before any internal geometry;
+- proven: L4 bounded generation, storage validation, Godot startup, staged
+  movement render/collision coverage, one edit/remesh, clean shutdown, and
+  static visual capture;
+- not proven: human visual acceptance, dynamic seamless LOD appearance, fast
+  travel/disjoint teleport movement, target-hardware gameplay workload,
+  water/lava, planets, structural collapse, or scale beyond L4.
 
 S2.10 - L3 visual capture and artifact classification is complete for
 automated static visual and targeted boundary evidence.
@@ -326,33 +342,37 @@ Result:
 
 ## Current active task
 
-S2.12 - bounded L4 source and native bake proof.
+S1.1 - dynamic mixed-LOD visual popping classification and fix plan.
 
 Scope:
 
-- implement bounded source writing in offline Python tooling without retaining
-  the complete density/material volume in Python arrays;
-- implement the required native addon bake path upstream in World Transvoxel,
-  without modifying the sandbox's locked vendored release in place;
-- stop retaining raw source, decoded source, and all page payloads at once;
-- preserve deterministic world/page output and manifest provenance;
-- package and lock a tested addon release before the sandbox consumes it.
+- use the completed L1-L4 automated visual/runtime evidence as the baseline;
+- inspect mixed-LOD replacement behavior separately from the conservative LOD0
+  human playtest scene;
+- classify visible popping as LOD transition, streaming/lifetime, material,
+  shading, or harness behavior;
+- decide whether the default policy needs geomorphing, cross-fading, stronger
+  hysteresis, larger prefetch rings, or a dedicated loading/teleport policy;
+- keep performance-sensitive fixes in native runtime/shader paths, not
+  GDScript.
 
 Exit:
 
-- the bounded path has an explicit peak-memory contract below the accepted host
-  budget;
-- L0 output equivalence or an explicitly reviewed format/provenance change is
-  proven before any L4 allocation;
-- an intermediate-scale bounded bake passes storage validation;
-- no performance-sensitive generation or bake logic is moved into GDScript.
+- a representative dynamic mixed-LOD capture/audit exists for the current
+  failure mode;
+- the defect is assigned to a concrete subsystem and tracked with evidence;
+- a fix is implemented and rerun, or the limitation is explicitly demoted by
+  standard with bounded use cases;
+- the fixed or demoted state is documented before compute, water/lava,
+  planets, collapse, or a game repository begins.
 
 ## Next finite steps
 
-1. Specify the bounded source/bake contract and batch lifetime.
-2. Implement and test the native addon capability in the upstream repository.
-3. Stream sandbox source generation and prove deterministic L0 output before
-   attempting an intermediate bounded scale.
+1. Run or add a dynamic mixed-LOD visual capture that reproduces popping.
+2. Record whether chunks are created late, retired early, visually swapped
+   without transition, or shaded/materialized inconsistently.
+3. Implement the smallest native/runtime policy change that removes the
+   default visible blocker, then rerun the relevant L0-L4 gates.
 
 ## Deferred by rule
 

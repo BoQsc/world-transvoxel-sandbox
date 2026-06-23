@@ -40,9 +40,11 @@ repository work remain secondary until the terrain itself is proven at scale.
 - Generation preflight must account for both the offline generator and native
   bake lifetime. Raw source, decoded source, retained page payloads, and safety
   reserve count toward the peak; disk-only source size is not a memory bound.
-- Whole-volume generation must be rejected before allocation when it exceeds
-  the accepted dense-source or peak-memory limit. Estimate-only reports are
-  evidence for a redesign decision, not evidence that the scale is supported.
+- Unbounded whole-volume generation must be rejected before allocation when it
+  exceeds the accepted source or peak-memory limit. Large levels may run only
+  through preflight-authorized streamed source generation and bounded native
+  bake paths. Estimate-only reports are evidence for a redesign decision, not
+  evidence that the scale is supported.
 - Autonomous captures and tests must disable player input from scene startup.
 - Project scripts must remain cross-platform Python where external scripting is
   needed; no tracked PowerShell workflow scripts.

@@ -1,18 +1,18 @@
 # World Transvoxel Sandbox
 
 Visual, gameplay, and scale validation for the qualified World Transvoxel
-1.0.2 MIT-backed addon. This repository is deliberately a sandbox before it
+1.0.3 MIT-backed addon. This repository is deliberately a sandbox before it
 becomes a game.
 
 World Transvoxel 1.0.0 is rejected and withdrawn. This sandbox exposed its
 incorrect Godot render/collision winding, incomplete convex mixed-LOD corner
 deformation, and inadequate one-chunk acceptance tests. Version 1.0.1 is also
 superseded because moving-viewer LOD changes could remove old chunks before
-their replacements were applied. Version 1.0.2 is the current baseline; it is
+their replacements were applied. Version 1.0.3 is the current baseline; it is
 not a claim that the sandbox is a finished terrain product or game.
 
 The vendored addon is the exact Windows x86-64 release from
-`world-transvoxel` commit `50f3a6d`. Its mixed 0BSD/MIT scope and release
+`world-transvoxel` commit `eb2a2ed`. Its mixed 0BSD/MIT scope and release
 manifest are retained at the repository root.
 
 Dynamic mixed-LOD streaming is not yet visually seamless. It remains covered
@@ -29,6 +29,11 @@ recorded in
 [`docs/TERRAIN_ACCEPTANCE_STANDARD.md`](docs/TERRAIN_ACCEPTANCE_STANDARD.md).
 The current active milestone and next finite task are tracked in
 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md).
+
+Automated L4 / 2048 terrain evidence now exists for bounded generation,
+staged runtime, edit/remesh, and static visual capture. Human visual acceptance,
+dynamic seamless LOD movement, fast travel, and game-scale feature systems are
+still separate unfinished gates.
 
 ## Run
 

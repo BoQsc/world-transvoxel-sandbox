@@ -1,10 +1,10 @@
 {
   "artifact": {
-    "bytes": 6205353,
-    "content_sha256": "c76273f0c8730fd46c29ebcf393d1c1a25e672b6111a66ddc1671589ce08fff3",
+    "bytes": 6212268,
+    "content_sha256": "5287f31029eff7632daa4b0ccddce1b3cb23b1a7f68708cb625a62c5e75a4ee9",
     "file_count": 147,
     "format": "directory",
-    "name": "world-transvoxel-1.0.2-windows-x86_64"
+    "name": "world-transvoxel-1.0.3-windows-x86_64"
   },
   "backend": {
     "id": "transvoxel_mit_official",
@@ -34,9 +34,9 @@
       "sha256": "11f8fcff254eb168cf438597185961d181b1b017c59933f0119ab804442f1043"
     },
     {
-      "bytes": 3739,
+      "bytes": 4065,
       "path": "addons/world_transvoxel/OPERATING_LIMITS.md",
-      "sha256": "60070b445b2c5138f5665530f21801307d4aec96af66415e64341cf0cf7db018"
+      "sha256": "1aa2785c3654ba6936e1e680bd2a21cbf0a68835df8fd2c1f67fac64b45d7c92"
     },
     {
       "bytes": 4629,
@@ -44,29 +44,29 @@
       "sha256": "228dd8ea492bcfc87ff12f692bc885621cc02823f40f933e09fd8891b08d9399"
     },
     {
-      "bytes": 3050,
+      "bytes": 3200,
       "path": "addons/world_transvoxel/README.md",
-      "sha256": "9eb28a2065cdc85b7c9f0323da8960dc39deb48356ea1de23731bea5d1f6c340"
+      "sha256": "97932d8d038c90f7d3eeedd392fdc43eb0c40eaf70920d384c8eee04cd8c8e2c"
     },
     {
       "bytes": 1654272,
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
-      "sha256": "736e72258005357c9d6dece0a91a86ad2cdbc57eaf02a2a67b996e29271f014b"
+      "sha256": "42cef8f59ccb0e88fa68b61bfe0ed4fb8473987598b56191a9b34d194bcee6a4"
     },
     {
       "bytes": 1605632,
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
-      "sha256": "32dc498dc2e42d58baf42de1c18127a49ec76fa50279fe63c9165e715647084b"
+      "sha256": "2fcb71c00abf30b320165c4e74676765fe09d599bd3f4a5ec290387e766d7a2d"
     },
     {
-      "bytes": 561664,
+      "bytes": 564736,
       "path": "addons/world_transvoxel/bin/wt_bake_tool.windows.template_debug.x86_64.exe",
-      "sha256": "9a20ab2258d072611412ac4b5e86c62d4dc20b2ef00e13ad69d1e19798ff3d55"
+      "sha256": "714d8ba4eced2b5e94c7951147f9027468e31f01276187a50d867fab3a0f14c1"
     },
     {
-      "bytes": 561664,
+      "bytes": 564736,
       "path": "addons/world_transvoxel/bin/wt_bake_tool.windows.template_release.x86_64.exe",
-      "sha256": "9a20ab2258d072611412ac4b5e86c62d4dc20b2ef00e13ad69d1e19798ff3d55"
+      "sha256": "714d8ba4eced2b5e94c7951147f9027468e31f01276187a50d867fab3a0f14c1"
     },
     {
       "bytes": 574976,
@@ -101,7 +101,7 @@
     {
       "bytes": 188,
       "path": "addons/world_transvoxel/plugin.cfg",
-      "sha256": "9cf07739f2f458cd4d94907d082812373034d1a5ff28b7f59e9a12689081b63c"
+      "sha256": "2be16948933affd8dc570945ad0b20fb2782d49adde8ec0aab0d71d2b086ea0a"
     },
     {
       "bytes": 2492,
@@ -261,7 +261,7 @@
     {
       "bytes": 180,
       "path": "addons/world_transvoxel/src/core/wt_version.h",
-      "sha256": "ae9b0972ecc3a7dae622b2da7356396b466f0dd71ddae8a158856d54d58154ad"
+      "sha256": "becf3d45ecc0b0afa98ff5cb2d17c75d10a5a889cfa34a51ebe0d9c867fbc7c3"
     },
     {
       "bytes": 8668,
@@ -729,9 +729,9 @@
       "sha256": "fb0d8ce7f8807970d31fb0c4f85d9ca2d830c2e5df234d14c10a11ede4e12261"
     },
     {
-      "bytes": 5631,
+      "bytes": 5926,
       "path": "addons/world_transvoxel/tools/wt_bake.py",
-      "sha256": "1c9ce16a59f3e0b450ce01fc7a43ed7c47cc706bfe234cc0755c2328368e6211"
+      "sha256": "7f812d06d079d00b78152c26d3c93a1bb15d793211e43e8c2fb74d886d6a331d"
     },
     {
       "bytes": 2900,
@@ -769,5 +769,5 @@
     "godot_cpp_revision": "e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77",
     "zig": "0.16.0"
   },
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

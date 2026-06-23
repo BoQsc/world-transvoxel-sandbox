@@ -72,12 +72,16 @@ def main() -> int:
         "tests/terrain_l2_runtime_audit.gd.uid",
         "tests/terrain_l3_runtime_audit.gd",
         "tests/terrain_l3_runtime_audit.gd.uid",
+        "tests/terrain_l4_runtime_audit.gd",
+        "tests/terrain_l4_runtime_audit.gd.uid",
         "tests/terrain_l1_visual_capture.gd",
         "tests/terrain_l1_visual_capture.gd.uid",
         "tests/terrain_l2_visual_capture.gd",
         "tests/terrain_l2_visual_capture.gd.uid",
         "tests/terrain_l3_visual_capture.gd",
         "tests/terrain_l3_visual_capture.gd.uid",
+        "tests/terrain_l4_visual_capture.gd",
+        "tests/terrain_l4_visual_capture.gd.uid",
         "tests/terrain_volumetric_audit.gd",
         "tests/terrain_motion_audit.gd",
         "tests/terrain_seam_audit.gd",
@@ -168,7 +172,7 @@ def main() -> int:
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
-            "S2 - chunked generation and scale ladder",
+            "S1 - visual acceptance and dynamic mixed-LOD quality",
             "S2.1 - Python scale-ladder generation proof is complete",
             "S2.2 - L1 runtime acceptance path is complete",
             "S2.3 - L1 visual capture and artifact classification is complete",
@@ -179,8 +183,9 @@ def main() -> int:
             "S2.8 - L3 runtime budget planning is complete",
             "S2.9 - L3 runtime acceptance is complete",
             "S2.10 - L3 visual capture and artifact classification is complete",
-            "S2.11 - L4 dense-generation feasibility gate is complete",
-            "S2.12 - bounded L4 source and native bake proof",
+            "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
+            "S1.1 - dynamic mixed-LOD visual popping classification and fix plan",
+            "L4 accepted runtime budget: staged movement",
             "docs/TERRAIN_RUNTIME_BUDGETS.md",
             "GDScript is glue",
             "Deferred by rule",
@@ -203,22 +208,46 @@ def main() -> int:
 
     generator = (ROOT / "tools" / "generate_world.py").read_text(encoding="utf-8")
     scale_ladder = (ROOT / "tools" / "scale_ladder.py").read_text(encoding="utf-8")
+    scale_runtime = (ROOT / "tools" / "scale_runtime.py").read_text(encoding="utf-8")
+    scale_visual = (ROOT / "tools" / "scale_visual.py").read_text(encoding="utf-8")
     for phrase in (
         '"L4": ScaleProfile(',
-        '"bounded_required"',
-        "rejects whole-volume source generation",
+        '"bounded"',
+        "requires scale-ladder resource preflight",
+        "--resource-preflight-approved",
+        "source_generation_mode",
+        "streamed_x_rows",
     ):
         if phrase not in generator:
             errors.append(f"L4 generation guard is missing phrase: {phrase}")
     for phrase in (
-        "DENSE_SOURCE_LIMIT_BYTES",
+        "BOUNDED_BAKE_SOURCE_CACHE_BYTES",
         "estimated_bake_working_set_bytes",
+        "generator_memory_basis",
+        "bounded_bake_memory_basis",
+        "estimated_peak_memory_bytes",
         "required_available_memory_bytes",
         "--estimate-only",
-        "reject_dense_generation",
+        "allow_bounded_generation",
     ):
         if phrase not in scale_ladder:
             errors.append(f"L4 feasibility gate is missing phrase: {phrase}")
+    for phrase in (
+        '"L4": "res://tests/terrain_l4_runtime_audit.gd"',
+        '"WT_SANDBOX_L4_RUNTIME_PASS"',
+        '"L4": 900',
+        '"active_chunk_capacity": 1024',
+    ):
+        if phrase not in scale_runtime:
+            errors.append(f"L4 runtime runner is missing phrase: {phrase}")
+    for phrase in (
+        '"L4": "res://tests/terrain_l4_visual_capture.gd"',
+        '"WT_SANDBOX_L4_VISUAL_CAPTURE_PASS"',
+        '"WT_SANDBOX_L4_BOUNDARY_PASS"',
+        '"L4": 420',
+    ):
+        if phrase not in scale_visual:
+            errors.append(f"L4 visual runner is missing phrase: {phrase}")
     try:
         from scale_ladder import resource_estimate
 
@@ -226,9 +255,12 @@ def main() -> int:
         if (
             estimate["estimated_source_bytes"] != 1_744_930_926
             or estimate["expected_pages"] != 73_728
-            or estimate["estimated_bake_working_set_bytes"] != 7_113_740_508
-            or estimate["dense_generation_feasible"]
-            or not blockers
+            or estimate["estimated_generator_working_set_bytes"] != 68_160_000
+            or estimate["estimated_bake_working_set_bytes"] != 77_840_384
+            or estimate["estimated_peak_memory_bytes"] != 77_840_384
+            or estimate["required_available_memory_bytes"] != 614_711_296
+            or estimate["generation_mode"] != "bounded"
+            or any("unsupported generation mode" in blocker for blocker in blockers)
         ):
             errors.append(f"L4 feasibility estimate drifted: {estimate}")
     except (ImportError, KeyError, TypeError, ValueError) as error:
