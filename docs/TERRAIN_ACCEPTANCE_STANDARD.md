@@ -30,6 +30,10 @@ repository work remain secondary until the terrain itself is proven at scale.
   untracked visual artifacts may be accepted as normal.
 - Human playtesting must use the stable accepted mode, not an experimental mode
   with known popping.
+- Human review is final qualitative confirmation. It does not block technical
+  milestone progress, and it cannot replace automated gates, deterministic
+  captures, measured runtime evidence, native audits, or direct technical
+  inspection.
 - Dynamic LOD popping remains a blocker until fixed or explicitly demoted by a
   documented standard. The current reference mitigation is native
   fade-in/fade-out with `render_apply_budget = 1`; higher render-apply bursts
@@ -37,20 +41,22 @@ repository work remain secondary until the terrain itself is proven at scale.
 - Normal sandbox/playtest defaults are conservative: fixed-center LOD0 reference
   mode with `radius_chunks = 4`, `maximum_lod = 0`, and
   `streaming_follows_viewer = false`. Dynamic mixed LOD remains
-  diagnostic/experimental until human visual acceptance or a native mitigation
-  closes the remaining visual-quality gap.
+  diagnostic/experimental until technical visual acceptance or a native
+  mitigation closes the remaining visual-quality gap. Human review remains
+  final qualitative confirmation.
 - LOD-debug captures are diagnostic only. Dynamic LOD visual acceptance requires
   surface-mode transition evidence, and still-image evidence cannot by itself
-  prove temporal seamlessness; video/human review or a stricter automated
-  temporal criterion is required before accepting the default policy. The
-  current automated gross-pop and region-bounds gates cover six deterministic
-  surface-mode LOD anchors in the primary view plus the front/side/diagonal multi-view harness.
+  prove temporal seamlessness; video/capture review, direct technical
+  inspection, or a stricter automated temporal criterion is required before
+  accepting the default policy. The current automated gross-pop and region-bounds
+  gates cover six deterministic surface-mode LOD anchors in the primary view plus the front/side/diagonal multi-view harness.
   The gross-pop gate fails if more than 0.5% of visible
   pixels change between adjacent temporal surface frames or if mean RGB delta
   exceeds 0.2%. The region-bounds gate fails if more than 4,096 visible pixels
   change in one adjacent-frame pair or if the changed bounding box exceeds 20%
   of the visible terrain area. These gates catch large swaps and broad-region
-  pops but do not replace human acceptance.
+  pops but do not replace final qualitative confirmation, and final qualitative
+  confirmation does not replace technical correctness.
 - Settled terrain must stay cold: no hidden streaming, meshing, recovery, or
   regeneration work while nothing changed.
 - Runtime budgets are part of acceptance. Each accepted scale must follow
@@ -122,8 +128,10 @@ Every artifact gets classified before feature work continues:
 - camera/test harness misunderstanding;
 - accepted limitation with documented bounds.
 
-Artifacts are not closed by assumption. They close by test, capture, or an
-explicit human playtest note tied to the current accepted mode.
+Artifacts are not closed by assumption. They close by test, capture, measured
+evidence, or direct technical inspection. Human playtest notes confirm
+appearance/game feel for the current accepted mode; they do not prove topology
+or replace technical evidence.
 
 ## Standard-first feature policy
 

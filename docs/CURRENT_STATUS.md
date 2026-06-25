@@ -19,8 +19,10 @@ storage, recovery, fluids, or stability algorithms should live.
 S1/S3 controlled baseline.
 
 S0 is complete for the 128 baseline. S1 is not complete: dynamic mixed LOD
-remains a primary implementation blocker until human visual acceptance or a
-native mitigation closes the visual-quality gap. S1.7 is containment, not
+remains a primary implementation blocker until technical visual acceptance or a
+native mitigation closes the visual-quality gap. Human review remains final
+qualitative confirmation; it does not block technical milestone progress or
+replace automated/capture-based correctness. S1.7 is containment, not
 completion: normal sandbox/playtest paths use fixed-center LOD0 reference mode,
 while dynamic mixed LOD remains diagnostic/experimental. S2 automated
 scale-ladder evidence is complete through L4 / 2048 for bounded generation,
@@ -32,8 +34,8 @@ workload budgets and remaining visual blockers are explicitly resolved.
 
 ## Unresolved blockers kept visible
 
-- dynamic mixed-LOD seamless visual acceptance, all camera angles, all movement
-  speeds, and geomorphing/native mitigation remain open;
+- dynamic mixed-LOD technical seamless visual acceptance, all camera angles, all
+  movement speeds, and geomorphing/native mitigation remain open;
 - S3 production workload budgets are not yet measured for idle CPU/GPU/memory,
   active movement, repeated mining, restoration latency, I/O, physics, or
   edit-journal growth;
@@ -93,8 +95,8 @@ Result:
   bounded, keep queues/probes stable, and stay under the automated gross-pop
   and region-bounds thresholds in the deterministic single-view and multi-view
   captures;
-- not proven: seamless dynamic LOD appearance, human visual acceptance, all
-  camera angles, all movement speeds, or geomorphing.
+- not proven: seamless dynamic LOD appearance, final human qualitative
+  confirmation, all camera angles, all movement speeds, or geomorphing.
 
 Surface-mode still evidence:
 
@@ -109,8 +111,9 @@ Surface-mode still evidence:
   massing across the baseline and transition captures, with no hard hole,
   missing backside, upside-down terrain, diagonal ridge, or full chunk
   disappearance visible in the inspected surface stills;
-- not proven: temporal seamlessness. Still images do not replace video/human
-  review for accepting the default dynamic LOD policy.
+- not proven: temporal seamlessness. Still images do not replace video/capture
+  review, direct technical inspection, or stricter automated temporal criteria
+  for accepting the default dynamic LOD policy.
 
 Single-view temporal surface evidence:
 
@@ -143,8 +146,8 @@ Single-view temporal surface evidence:
   silhouette/edge changes only, with no hard hole, missing backside,
   upside-down terrain, or full chunk disappearance visible in the worst
   measured pairs;
-- not proven: human visual acceptance, all camera angles, all movement speeds,
-  or geomorphing.
+- not proven: final human qualitative confirmation, all camera angles, all
+  movement speeds, or geomorphing.
 
 Multi-view temporal surface evidence:
 
@@ -176,8 +179,8 @@ Multi-view temporal surface evidence:
   localized silhouette/edge changes only, with no hard hole, missing backside,
   upside-down terrain, or full chunk disappearance visible in the worst measured
   pairs;
-- not proven: human visual acceptance, all camera angles, all movement speeds,
-  or geomorphing.
+- not proven: final human qualitative confirmation, all camera angles, all
+  movement speeds, or geomorphing.
 
 S1.7 - conservative default dynamic LOD containment is complete.
 
@@ -265,9 +268,9 @@ Result:
 - proven: L4 bounded generation, storage validation, Godot startup, staged
   movement render/collision coverage, one edit/remesh, clean shutdown, and
   static visual capture;
-- not proven: human visual acceptance, dynamic seamless LOD appearance, fast
-  travel/disjoint teleport movement, target-hardware gameplay workload,
-  water/lava, planets, structural collapse, or scale beyond L4.
+- not proven: final human qualitative confirmation, dynamic seamless LOD
+  appearance, fast travel/disjoint teleport movement, target-hardware gameplay
+  workload, water/lava, planets, structural collapse, or scale beyond L4.
 
 S2.10 - L3 visual capture and artifact classification is complete for
 automated static visual and targeted boundary evidence.
@@ -299,8 +302,8 @@ Result:
 - proven: nonblank representative L3 static captures, closed targeted boundary
   collision, staged runtime coverage on the corrected artifact, and no
   regression in the full L0 test matrix;
-- not proven: human visual acceptance, dynamic seamless LOD appearance, fast
-  travel/disjoint teleport movement, or L4 2048 support.
+- not proven: final human qualitative confirmation, dynamic seamless LOD
+  appearance, fast travel/disjoint teleport movement, or L4 2048 support.
 
 S2.9 - L3 runtime acceptance is complete for headless runtime evidence.
 
@@ -403,8 +406,9 @@ Result:
 - classified: underground tunnel is visible after centerline reframing;
 - proven: representative L2 static visual captures were produced and every
   capture had nonblank viewport range;
-- not proven: human visual acceptance, dynamic seamless LOD appearance, fast
-  travel or disjoint teleport movement, or 1024/2048 scale support.
+- not proven: final human qualitative confirmation, dynamic seamless LOD
+  appearance, fast travel or disjoint teleport movement, or 1024/2048 scale
+  support.
 
 S2.5 - L2 runtime acceptance path is complete for headless runtime evidence.
 
@@ -489,8 +493,8 @@ Result:
   so debug UI now reads active world bounds;
 - classified: finite boundary shell is expected in boundary captures;
 - classified: LOD color partitioning is expected in LOD debug captures;
-- not proven: human visual acceptance, dynamic seamless LOD appearance, or
-  512/1024/2048 scale support.
+- not proven: final human qualitative confirmation, dynamic seamless LOD
+  appearance, or 512/1024/2048 scale support.
 
 S2.2 - L1 runtime acceptance path is complete for headless runtime evidence.
 
@@ -559,7 +563,8 @@ Exit:
 
 - the conservative LOD0 workload baseline meets documented budgets without
   visible holes, uncontrolled resource growth, or unexplained runtime work while
-  idle. This exit does not close dynamic mixed-LOD visual acceptance.
+  idle. This exit does not close dynamic mixed-LOD visual acceptance or final
+  human qualitative confirmation.
 
 ## Next finite steps
 

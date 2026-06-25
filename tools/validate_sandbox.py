@@ -34,6 +34,10 @@ def tracked_files() -> list[str]:
     return [line.replace("\\", "/") for line in result.stdout.splitlines()]
 
 
+def has_phrase(text: str, phrase: str) -> bool:
+    return phrase in text or phrase in " ".join(text.split())
+
+
 def main() -> int:
     errors: list[str] = []
     required = (
@@ -161,8 +165,20 @@ def main() -> int:
             "fluid_equilibrium",
             "settled terrain must stay cold",
         ):
-            if phrase not in text:
+            if not has_phrase(text, phrase):
                 errors.append(f"recovery contract is missing phrase: {phrase}")
+
+    readme = ROOT / "README.md"
+    if readme.is_file():
+        text = readme.read_text(encoding="utf-8")
+        for phrase in (
+            "Dynamic LOD technical acceptance is still open",
+            "Human review is final qualitative confirmation",
+            "not for deciding technical correctness",
+            "final human qualitative confirmation",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"readme is missing phrase: {phrase}")
 
     standard = ROOT / "docs" / "TERRAIN_ACCEPTANCE_STANDARD.md"
     if standard.is_file():
@@ -176,6 +192,11 @@ def main() -> int:
             "current automated gross-pop and region-bounds gates",
             "front/side/diagonal multi-view harness",
             "render_apply_budget = 1",
+            "Human review is final qualitative confirmation",
+            "does not block technical",
+            "cannot replace automated gates",
+            "technical visual acceptance",
+            "final qualitative confirmation does not replace technical correctness",
             "Settled terrain must stay cold",
             "Finite boundary guards",
             "Generation preflight must account",
@@ -185,8 +206,30 @@ def main() -> int:
             "Decision tracking",
             "Containment is not completion",
         ):
-            if phrase not in text:
+            if not has_phrase(text, phrase):
                 errors.append(f"terrain standard is missing phrase: {phrase}")
+
+    roadmap = ROOT / "docs" / "ROADMAP.md"
+    if roadmap.is_file():
+        text = roadmap.read_text(encoding="utf-8")
+        for phrase in (
+            "technical acceptance of dynamic mixed LOD remains open",
+            "human review remains",
+            "final human qualitative confirmation",
+            "S1 technical visual acceptance",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"roadmap is missing phrase: {phrase}")
+
+    budgets = ROOT / "docs" / "TERRAIN_RUNTIME_BUDGETS.md"
+    if budgets.is_file():
+        text = budgets.read_text(encoding="utf-8")
+        for phrase in (
+            "final human qualitative confirmation",
+            "dynamic seamless LOD appearance",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"runtime budgets are missing phrase: {phrase}")
 
     status = ROOT / "docs" / "CURRENT_STATUS.md"
     if status.is_file():
@@ -196,6 +239,11 @@ def main() -> int:
             "S1 is not complete",
             "S3 may proceed only for the conservative LOD0 workload baseline",
             "Unresolved blockers kept visible",
+            "technical visual acceptance",
+            "Human review remains final",
+            "does not block technical milestone progress",
+            "replace automated/capture-based correctness",
+            "final human qualitative confirmation",
             "S2.1 - Python scale-ladder generation proof is complete",
             "S2.2 - L1 runtime acceptance path is complete",
             "S2.3 - L1 visual capture and artifact classification is complete",
@@ -245,7 +293,7 @@ def main() -> int:
             "GDScript is glue",
             "Deferred by rule",
         ):
-            if phrase not in text:
+            if not has_phrase(text, phrase):
                 errors.append(f"current status is missing phrase: {phrase}")
 
     lab = ROOT / "scripts" / "terrain_lab.gd"
@@ -256,7 +304,7 @@ def main() -> int:
             "var maximum_lod := 0",
             "var streaming_follows_viewer := false",
         ):
-            if phrase not in text:
+            if not has_phrase(text, phrase):
                 errors.append(f"terrain lab default is missing phrase: {phrase}")
 
     scene = ROOT / "scenes" / "terrain_lab.tscn"
@@ -267,7 +315,7 @@ def main() -> int:
             "maximum_lod = 0",
             "streaming_follows_viewer = false",
         ):
-            if phrase not in text:
+            if not has_phrase(text, phrase):
                 errors.append(f"terrain lab scene default is missing phrase: {phrase}")
 
     overlay = ROOT / "scripts" / "terrain_overlay.gd"
@@ -278,7 +326,7 @@ def main() -> int:
             "fixed LOD0 reference",
             "fixed mixed-LOD diagnostic",
         ):
-            if phrase not in text:
+            if not has_phrase(text, phrase):
                 errors.append(f"terrain overlay is missing phrase: {phrase}")
 
     budget_check = subprocess.run(

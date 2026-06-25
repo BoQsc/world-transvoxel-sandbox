@@ -47,7 +47,8 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 Status: reference-scene stability defaults, a one-chunk render-apply budget,
 single-view plus multi-view temporal gross-pop and region-bounds gates, and the
 conservative fixed-center LOD0 sandbox default are in place. S1 is not complete:
-human acceptance of dynamic mixed LOD remains open.
+technical acceptance of dynamic mixed LOD remains open; human review remains
+final qualitative confirmation.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
   the 1.0.9 native fade-in/fade-out and budget-1 temporal evidence;
@@ -62,16 +63,18 @@ human acceptance of dynamic mixed LOD remains open.
   acceptance;
 - S1.3 native fade-out transition smoothing in World Transvoxel 1.0.5 proved
   the fade path was active, but still left the temporal surface gate too narrow
-  and did not prove human visual acceptance or geomorphing;
+  and did not prove technical visual acceptance, final human qualitative
+  confirmation, or geomorphing;
 - S1.4 adds surface-mode dynamic transition captures because LOD-debug captures
   are diagnostic only; the surface stills show no hard hole or obvious large
-  terrain swap, but temporal/human acceptance remains open;
+  terrain swap, but temporal technical acceptance and final human qualitative
+  confirmation remain open;
 - S1.5 native fade-in/fade-out transition smoothing in World Transvoxel 1.0.6
   records six deterministic anchors and 540 temporal surface frames; it passes
   the automated gross-pop gate with maximum visible changed ratio 0.004353
   against limit 0.005 and maximum mean RGB delta 0.000872 against limit 0.002;
-  this still does not prove human visual acceptance, all camera angles, or
-  geomorphing;
+  this still does not prove technical visual acceptance, final human qualitative
+  confirmation, all camera angles, or geomorphing;
 - S1.6 locks `render_apply_budget = 1` for the reference dynamic mixed-LOD
   policy and adds a three-view temporal harness. With World Transvoxel 1.0.9,
   single-view temporal evidence passes with maximum visible changed ratio
@@ -79,12 +82,13 @@ human acceptance of dynamic mixed LOD remains open.
   changed bounding-box visible ratio 0.034371; multi-view evidence passes with
   maximum visible changed ratio 0.004534, maximum mean RGB delta 0.000845,
   2,381 changed visible pixels, and changed bounding-box visible ratio 0.150831.
-  This still does not prove human visual acceptance, all camera angles, all
-  movement speeds, or geomorphing;
+  This still does not prove technical visual acceptance, final human qualitative
+  confirmation, all camera angles, all movement speeds, or geomorphing;
 - S1.7 applies containment, not completion: normal sandbox/playtest paths use
   fixed-center LOD0 reference mode, while dynamic mixed LOD remains
-  diagnostic/experimental until human acceptance or a native mitigation closes
-  the visual-quality gap;
+  diagnostic/experimental until technical acceptance or a native mitigation
+  closes the visual-quality gap; final human review confirms appearance/game
+  feel but does not replace technical evidence;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -108,7 +112,8 @@ Exit: no visible correctness blocker remains in the test gallery.
 Status: automated scale-ladder evidence is complete through L4 / 2048. L0
 remains the default accepted human playtest world. L1, L2, L3, and L4 have
 generation, headless runtime, and automated static visual evidence. None of
-the larger mixed-LOD levels are yet human or dynamically visually accepted.
+the larger mixed-LOD levels are yet technically or dynamically visually
+accepted; final human qualitative confirmation also remains open.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -147,8 +152,8 @@ the larger mixed-LOD levels are yet human or dynamically visually accepted.
   no old side-band symptom but remains low-detail with the flat procedural
   palette, boundary shell is expected, and LOD color partitioning is expected
   in debug view;
-- L2 still not proven: human visual acceptance, dynamic seamless LOD
-  appearance, fast travel or disjoint teleport movement, or larger-scale
+- L2 still not proven: final human qualitative confirmation, dynamic seamless
+  LOD appearance, fast travel or disjoint teleport movement, or larger-scale
   runtime/visual support;
 - L3 generated artifact evidence: 18,432 pages, 764,449,679 stable payload
   bytes, 504.486 generation seconds, 73,060,029 source samples, 141,327
@@ -170,8 +175,8 @@ the larger mixed-LOD levels are yet human or dynamically visually accepted.
   collision rays located a cave immediately behind a one-sample wall, and the
   three-sample source guard closed it. A permanent outside-in ray now requires
   the first collision at x=0.500 in the affected region;
-- L3 not yet proven: human visual acceptance, dynamic seamless LOD appearance,
-  or fast travel/disjoint teleport movement;
+- L3 not yet proven: final human qualitative confirmation, dynamic seamless LOD
+  appearance, or fast travel/disjoint teleport movement;
 - L4 bounded generation evidence: 290,821,821 samples, 1,744,930,926 source
   bytes, 73,728 pages, 3,057,795,983 stable payload bytes, 2,651.646
   generation seconds, 562,862 volumetric columns, no scale-ladder warnings,
@@ -189,22 +194,22 @@ the larger mixed-LOD levels are yet human or dynamically visually accepted.
 - L4 visual evidence: seven Godot 4.7 captures covering overview, material,
   LOD, top, underground tunnel, closed boundary, and boundary materials; the
   permanent outside-in ray requires the first collision at x=0.500;
-- L4 not yet proven: human visual acceptance, dynamic seamless LOD appearance,
-  fast travel/disjoint teleport movement, target-hardware gameplay workload,
-  or scale support beyond 2048;
+- L4 not yet proven: final human qualitative confirmation, dynamic seamless LOD
+  appearance, fast travel/disjoint teleport movement, target-hardware gameplay
+  workload, or scale support beyond 2048;
 - set the supported vertical range and target hardware profile before claiming
   game-readiness beyond this reference machine.
 
 Exit: the automated 2K scale-ladder claim is accepted for bounded generation,
-staged runtime, edit/remesh, and static visual capture. Human visual
-acceptance, dynamic seamless LOD movement, and gameplay workload acceptance
+staged runtime, edit/remesh, and static visual capture. Final human qualitative
+confirmation, dynamic seamless LOD movement, and gameplay workload acceptance
 remain outside S2.
 
 ## S3 - Visibility and production workload
 
 Status: limited active after S1.7 conservative default-policy containment. S3
 may measure the fixed-center LOD0 workload baseline only; mixed-LOD gameplay
-readiness remains blocked by S1 visual acceptance.
+readiness remains blocked by S1 technical visual acceptance.
 
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;

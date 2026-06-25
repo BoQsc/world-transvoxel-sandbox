@@ -105,5 +105,5 @@ The profile passed Godot 4.6.3 and 4.7 with seven staged positions, 35
 render/collision probes, minimum render/collision coverage 210 / 195, one
 active-window edit/remesh, and clean shutdown. It is accepted for staged
 movement only. It
-does not prove fast travel, disjoint teleport movement, human visual acceptance,
-dynamic seamless LOD appearance, or support beyond L4.
+does not prove fast travel, disjoint teleport movement, final human qualitative
+confirmation, dynamic seamless LOD appearance, or support beyond L4.

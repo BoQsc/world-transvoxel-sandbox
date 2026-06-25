@@ -24,10 +24,12 @@ mixed 0BSD/MIT scope and release manifest are retained at the repository root.
 Dynamic mixed-LOD streaming now passes the automated six-anchor surface
 temporal gross-pop gate in both the primary view and the three-camera
 multi-view harness. The reference dynamic LOD policy is native fade-in/fade-out
-plus `render_apply_budget = 1` to avoid large visual bursts. Human visual
-acceptance is still open, so the normal human playtest uses a fixed, complete
-LOD0 map and must not be presented as proof that dynamic LOD appearance is
-finished.
+plus `render_apply_budget = 1` to avoid large visual bursts. Dynamic LOD
+technical acceptance is still open, so the normal playtest uses a fixed,
+complete LOD0 map and must not be presented as proof that dynamic LOD
+appearance is finished. Human review is final qualitative confirmation, not a
+blocker that halts technical milestones or replaces automated/capture-based
+correctness.
 
 The project is standards-first. Larger terrain without artifacts, holes,
 upside-down behavior, uncontrolled background work, or unexplained visual
@@ -39,9 +41,9 @@ The current active milestone and next finite task are tracked in
 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md).
 
 Automated L4 / 2048 terrain evidence now exists for bounded generation,
-staged runtime, edit/remesh, and static visual capture. Human visual acceptance,
-dynamic seamless LOD movement, fast travel, and game-scale feature systems are
-still separate unfinished gates.
+staged runtime, edit/remesh, and static visual capture. Dynamic seamless LOD
+movement, fast travel, game-scale feature systems, and final human qualitative
+confirmation are still separate unfinished gates.
 
 ## Run
 
@@ -159,7 +161,9 @@ Nine deterministic captures cover surface, material, LOD, top, unshadowed
 top, top LOD, a lit underground tunnel inspection, and surface/material views
 of the closed boundary. Capture contrast is measured outside the overlay, so a
 blank terrain viewport cannot pass from UI contrast alone. Human review is for
-appearance and game feel, not for proving Transvoxel topology.
+appearance and game feel confirmation, not for proving Transvoxel topology and
+not for deciding technical correctness in place of tests, captures, and
+measured evidence.
 
 This does not yet prove a 2K map, GPU compute, water, lava, planetary terrain,
 or structural stability. Those gates are finite and recorded in
