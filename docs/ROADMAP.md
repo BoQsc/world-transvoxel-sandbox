@@ -9,10 +9,11 @@ The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.3.
+Status: revalidated against World Transvoxel 1.0.4.
 
-- vendored and locked World Transvoxel 1.0.3 release; 1.0.0 is withdrawn and
-  1.0.1 is superseded for premature moving-viewer chunk retirement;
+- vendored and locked World Transvoxel 1.0.4 release; 1.0.0 is withdrawn,
+  1.0.1 is superseded for premature moving-viewer chunk retirement, and 1.0.3
+  is superseded for one-frame bulk retirement during dynamic mixed-LOD motion;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
@@ -42,12 +43,17 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 Status: reference-scene stability defaults are in place; human
 appearance/playtest review remains.
 
-- dynamic mixed-LOD replacement popping remains an explicit visual blocker;
+- dynamic mixed-LOD replacement popping remains an explicit visual blocker
+  after the 1.0.4 retirement-smoothing evidence;
 - S1.1 dynamic evidence classifies the current blocker as
   `lod_transition_visual_swap_without_geomorph`: fixed-camera demand-anchor
   movement observed 39 render-set replacement frames, maximum staged
   retirements 36, maximum render-set delta 61, no render/collision probe loss,
   and no render/collision queue backlog;
+- S1.2 native retirement smoothing in World Transvoxel 1.0.4 reduced maximum
+  one-frame render-set delta from 61 to 8, but replacement frames increased to
+  79 and staged retirements to 92; this is an improvement, not visual
+  acceptance;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -58,9 +64,9 @@ appearance/playtest review remains.
 - inspect mixed-LOD appearance separately using the existing audit/debug views;
 - decide whether visible LOD popping requires geomorphing, cross-fading,
   stronger hysteresis, larger prefetch rings, or a different default policy;
-- first attempted fix is native staged-retirement smoothing; if it does not
-  reduce the measured visual delta enough, escalate to native render cross-fade
-  or geomorphing;
+- next attempted fix is native render cross-fade, geomorphing, or an explicit
+  default-policy decision; do not switch to broad feature work while this visual
+  blocker is still active;
 - add real texture-array/triplanar assets after the procedural palette is
   accepted;
 - record representative screenshots and identified defects;

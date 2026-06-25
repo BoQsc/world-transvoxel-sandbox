@@ -1,10 +1,10 @@
 {
   "schema": "world-transvoxel-sandbox.vendor-lock.v1",
   "world_transvoxel": {
-    "commit": "eb2a2ed",
-    "directory_sha256": "2be871467877f918e47be8c70b78cd8868f961139a246f214f8f71b484a4005b",
-    "manifest_sha256": "8fbf219cc7d378c15e1daadb735121d0a6feb09174903769dcbbb257b591d6b7",
+    "commit": "601c148",
+    "directory_sha256": "86c88cac01c65ee96e7ca7ea1c8fb6b9faff2d20b8c27621aaed8a7aba457b91",
+    "manifest_sha256": "b6f403a086ff60a80e7f23bed8f6fae201a88abf87fa46ec3dae8467aa0b2288",
     "platform": "windows-x86_64",
-    "version": "1.0.3"
+    "version": "1.0.4"
   }
 }

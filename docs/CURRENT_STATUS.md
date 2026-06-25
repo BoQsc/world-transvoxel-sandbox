@@ -28,7 +28,7 @@ demoted by standard.
 
 ## Latest evidence
 
-S1.1 - dynamic mixed-LOD popping classification is complete.
+S1.2 - native dynamic LOD retirement smoothing is complete.
 
 Command:
 
@@ -41,21 +41,26 @@ Result:
 - diagnostic mode: fixed camera, LOD-color debug view, autonomous input
   disabled, and native terrain demand anchor moved independently of camera
   motion;
+- vendored addon: World Transvoxel 1.0.4 from upstream commit `601c148`;
 - anchors: 6;
-- replacement frames observed: 39;
+- replacement frames observed: 79;
 - saved diagnostic captures: 12 under `artifacts/dynamic_lod`;
 - report: `artifacts/dynamic_lod/dynamic_lod_report.json`;
-- maximum staged retirements: 36;
-- maximum render-set delta in one observed frame: 61;
+- maximum staged retirements: 92;
+- maximum render-set delta in one observed frame: 8;
 - maximum queued render/collision backlog: 0 / 0;
 - center render/collision probe stayed present during replacements;
 - classification: `lod_transition_visual_swap_without_geomorph`;
-- proven: the visible problem is a dynamic LOD transition/render-set swap, not
-  a terrain hole, collision gap, source-generation bug, material/shading bug,
-  or queue backlog;
-- fix plan: first implement native chunk-retirement smoothing so old render
-  chunks are not removed in one large frame; if the measured visual delta
-  remains unacceptable, escalate to native render cross-fade or geomorphing.
+- comparison against S1.1 baseline: improved from 61 to 8 maximum one-frame
+  render-set delta, while replacement frames increased from 39 to 79 and
+  staged retirements increased from 36 to 92 because old chunks are now removed
+  across several frames;
+- proven: retirement smoothing reduces the harsh one-frame LOD swap and keeps
+  queues/probes stable;
+- not proven: seamless dynamic LOD appearance. The remaining classification is
+  still `lod_transition_visual_swap_without_geomorph`, so the next fix must be
+  native transition visual smoothing such as cross-fade or geomorphing, or an
+  explicitly accepted default policy change.
 
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
@@ -371,32 +376,35 @@ Result:
 
 ## Current active task
 
-S1.2 - native dynamic LOD retirement smoothing.
+S1.3 - native dynamic LOD visual transition smoothing.
 
 Scope:
 
-- implement the smallest native/runtime policy change that reduces the
-  measured dynamic LOD swap: cap how many staged chunk retirements are removed
-  per frame;
-- apply the fix in the upstream World Transvoxel addon, then package and
-  vendor a tested release into the sandbox;
-- rerun `tools/capture_lod_popping.py` and compare replacement-frame severity
-  against the S1.1 baseline;
+- design and implement the smallest native visual transition policy for dynamic
+  mixed-LOD replacement that addresses the remaining
+  `lod_transition_visual_swap_without_geomorph` classification;
+- prefer a bounded render cross-fade or geomorphing path that does not move hot
+  terrain logic into GDScript;
+- keep the existing capture harness as the regression metric and compare
+  against both S1.1 and S1.2 baselines;
 - keep GDScript limited to diagnostic capture/scaffolding.
 
 Exit:
 
-- the native retirement policy is implemented, built, and vendored;
-- dynamic LOD evidence is rerun and records whether maximum render-set delta
-  improves from the S1.1 baseline of 61;
-- if retirement smoothing is insufficient, the next task is explicitly
-  escalated to native cross-fade or geomorphing rather than broad feature work.
+- a native transition policy is implemented, built, released, and vendored;
+- dynamic LOD evidence is rerun and records whether replacement visibility is
+  improved beyond the S1.2 baseline of maximum render-set delta 8 and 79
+  replacement frames;
+- if cross-fade/geomorphing is rejected, the rejection is documented with a
+  default-policy decision rather than silently accepting popping.
 
 ## Next finite steps
 
-1. Patch upstream `WorldTransvoxelTerrain::flush_ready_chunk_retirements`.
-2. Build/test/package the addon release and vendor it into the sandbox.
-3. Rerun dynamic LOD evidence and the relevant L0/L4 gates.
+1. Inspect the native render/removal path and choose cross-fade, geomorphing,
+   or a documented default-policy alternative.
+2. Implement the selected native policy upstream and release a tested addon.
+3. Vendor the release and rerun dynamic LOD, L0 matrix/static visual, and L4
+   runtime gates.
 
 ## Deferred by rule
 
