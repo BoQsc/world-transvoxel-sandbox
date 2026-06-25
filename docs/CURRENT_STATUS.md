@@ -107,24 +107,35 @@ replacement anchors frame-by-frame:
 
 ```console
 python tools/capture_lod_temporal.py
+python tools/review_lod_temporal.py
 ```
 
 Result:
 
 - frames captured: 540 under `artifacts/dynamic_lod_temporal`;
 - preview: `artifacts/dynamic_lod_temporal/temporal_preview.gif`;
+- top-change review sheet:
+  `artifacts/dynamic_lod_temporal/temporal_top_change_pairs_review.png`;
+- per-anchor transition review sheet:
+  `artifacts/dynamic_lod_temporal/temporal_anchor_transition_review.png`;
 - report: `artifacts/dynamic_lod_temporal/dynamic_lod_temporal_report.json`;
 - maximum render-set delta: 8;
 - maximum native fading resources: 34;
 - fade frames observed: 83;
 - maximum visible changed ratio between adjacent frames: 0.004353;
 - maximum mean RGB delta between adjacent frames: 0.000872;
+- maximum-change pair: `anchor_02_frame_031.png` to
+  `anchor_02_frame_032.png`;
 - gross-pop gate: passed across six anchors against visible-ratio limit 0.005
   and mean-RGB limit 0.002;
 - classification:
   `temporal_surface_gross_pop_gate_pass_pending_human_review`;
 - proven: these deterministic surface transitions do not produce a large
   measured frame-to-frame image swap under the automated gross-pop gate;
+- AI visual pre-review of the generated review sheets found localized
+  silhouette/edge changes only, with no hard hole, missing backside,
+  upside-down terrain, or full chunk disappearance visible in the worst
+  measured pairs;
 - not proven: human visual acceptance, all camera angles, all movement speeds,
   or geomorphing.
 
@@ -466,8 +477,10 @@ Exit:
 
 ## Next finite steps
 
-1. Human-review `artifacts/dynamic_lod_temporal/temporal_preview.gif` and the
-   surface stills.
+1. Human-review `artifacts/dynamic_lod_temporal/temporal_preview.gif`,
+   `artifacts/dynamic_lod_temporal/temporal_top_change_pairs_review.png`,
+   `artifacts/dynamic_lod_temporal/temporal_anchor_transition_review.png`, and
+   the surface stills.
 2. Decide whether 1.0.6 native fade-in/fade-out is accepted or whether S1.5 requires
    geomorphing/prefetch/default-policy changes.
 3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default
