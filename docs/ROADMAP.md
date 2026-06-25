@@ -9,14 +9,15 @@ The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.6.
+Status: revalidated against World Transvoxel 1.0.9.
 
-- vendored and locked World Transvoxel 1.0.6 release; 1.0.0 is withdrawn,
+- vendored and locked World Transvoxel 1.0.9 release; 1.0.0 is withdrawn,
   1.0.1 is superseded for premature moving-viewer chunk retirement, and 1.0.3
   is superseded for one-frame bulk retirement during dynamic mixed-LOD motion;
   1.0.5 adds a bounded native render fade-out for retiring chunks after
   replacement application, and 1.0.6 adds a bounded native render fade-in for
-  newly introduced chunks;
+  newly introduced chunks; 1.0.9 exposes the native `wt_fade_opacity` shader
+  parameter, but the reference sandbox terrain material remains opaque;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
@@ -43,11 +44,12 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 
 ## S1 - Visual acceptance
 
-Status: reference-scene stability defaults and the six-anchor temporal
-gross-pop gate are in place; human appearance/playtest review remains.
+Status: reference-scene stability defaults, a one-chunk render-apply budget,
+and the single-view plus multi-view temporal gross-pop gates are in place;
+human appearance/playtest review remains.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
-  the 1.0.6 native fade-in/fade-out evidence;
+  the 1.0.9 native fade-in/fade-out and budget-1 temporal evidence;
 - S1.1 dynamic evidence classifies the current blocker as
   `lod_transition_visual_swap_without_geomorph`: fixed-camera demand-anchor
   movement observed 39 render-set replacement frames, maximum staged
@@ -69,6 +71,13 @@ gross-pop gate are in place; human appearance/playtest review remains.
   against limit 0.005 and maximum mean RGB delta 0.000872 against limit 0.002;
   this still does not prove human visual acceptance, all camera angles, or
   geomorphing;
+- S1.6 locks `render_apply_budget = 1` for the reference dynamic mixed-LOD
+  policy and adds a three-view temporal harness. With World Transvoxel 1.0.9,
+  single-view temporal evidence passes with maximum visible changed ratio
+  0.002314 and maximum mean RGB delta 0.000471; multi-view evidence passes with
+  maximum visible changed ratio 0.004534 and maximum mean RGB delta 0.000845.
+  This still does not prove human visual acceptance, all camera angles, all
+  movement speeds, or geomorphing;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;

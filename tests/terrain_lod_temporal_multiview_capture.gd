@@ -1,20 +1,18 @@
 extends SceneTree
 
-const OUTPUT_ROOT := "res://artifacts/dynamic_lod_surface"
+const OUTPUT_ROOT := "res://artifacts/dynamic_lod_temporal_multiview"
 const TIMEOUT_FRAMES := 1800
-const TRANSITION_OBSERVE_FRAMES := 180
+const CAPTURE_FRAMES := 60
 const VIEWER_ID := 1
 const RADIUS_CHUNKS := 3
 const MAXIMUM_LOD := 1
 
 var _scene_root: Node
-var _last_signature := ""
-var _replacement_frames := 0
-var _capture_count := 0
-var _max_render_delta := 0
 var _max_render_fading := 0
 var _fade_frames := 0
+var _max_render_delta := 0
 var _last_render_count := 0
+var _captured_frames := 0
 
 
 func _initialize() -> void:
@@ -22,6 +20,40 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var views: Array[Dictionary] = [
+		{"name": "front", "camera": Vector3(64, 78, 118)},
+		{"name": "side", "camera": Vector3(118, 78, 64)},
+		{"name": "diagonal", "camera": Vector3(104, 84, 104)},
+	]
+	var anchors: Array[Vector3] = [
+		Vector3(24, 56, 64),
+		Vector3(40, 56, 64),
+		Vector3(56, 56, 64),
+		Vector3(72, 56, 64),
+		Vector3(88, 56, 64),
+		Vector3(104, 56, 64),
+	]
+	for view_index in range(views.size()):
+		if not await _run_view(view_index, views[view_index], anchors):
+			return
+	if _max_render_fading <= 0:
+		return _fail("multi-view temporal capture did not observe native render fade")
+	print(
+		"WT_SANDBOX_LOD_TEMPORAL_MULTIVIEW_CAPTURE_PASS views=%d anchors=%d frames=%d max_render_delta=%d max_render_fading=%d fade_frames=%d classification=%s"
+		% [
+			views.size(),
+			anchors.size(),
+			_captured_frames,
+			_max_render_delta,
+			_max_render_fading,
+			_fade_frames,
+			"temporal_multiview_surface_pending_human_review",
+		]
+	)
+	quit(0)
+
+
+func _run_view(view_index: int, view: Dictionary, anchors: Array[Vector3]) -> bool:
 	var packed := load("res://scenes/terrain_lab.tscn") as PackedScene
 	if packed == null:
 		return _fail("terrain lab scene could not load")
@@ -37,80 +69,79 @@ func _run() -> void:
 	var terrain: Node = _scene_root.get_node("Terrain")
 	var viewer: Node3D = _scene_root.get_node("Viewer")
 	_scene_root.get_node("Visualizer").call("set_debug_mode", 0)
-	viewer.global_position = Vector3(64, 78, 118)
+	viewer.global_position = view["camera"]
 	viewer.look_at(Vector3(64, 28, 64), Vector3.UP)
 	if not await _wait_for_world(terrain):
-		return _fail("world did not start")
+		return _fail("world did not start for view " + str(view["name"]))
 	if not await _wait_for_settled_resources(terrain):
-		return _fail("initial terrain did not settle")
-	_last_signature = _render_signature(terrain)
+		return _fail("initial terrain did not settle for view " + str(view["name"]))
 	_last_render_count = terrain.get_rendered_chunk_count()
-	if not await _save_capture("baseline_surface"):
-		return
-	var anchors: Array[Vector3] = [
-		Vector3(24, 56, 64),
-		Vector3(40, 56, 64),
-		Vector3(56, 56, 64),
-		Vector3(72, 56, 64),
-		Vector3(88, 56, 64),
-		Vector3(104, 56, 64),
-	]
-	var revision := 1000
 	for anchor_index in range(anchors.size()):
-		revision += 1
-		if not terrain.call("update_viewer", VIEWER_ID, revision, anchors[anchor_index], RADIUS_CHUNKS, MAXIMUM_LOD):
-			return _fail("viewer update rejected at anchor " + str(anchor_index))
-		if not await _observe_transition(terrain, anchor_index):
-			return
-	if not await _wait_for_settled_resources(terrain):
-		return _fail("terrain did not settle after dynamic surface capture")
-	if _replacement_frames <= 0:
-		return _fail("surface capture did not observe replacements")
-	if _max_render_fading <= 0:
-		return _fail("surface capture did not observe native render fade")
-	print(
-		"WT_SANDBOX_LOD_SURFACE_CAPTURE_PASS anchors=%d replacement_frames=%d captures=%d max_render_delta=%d max_render_fading=%d fade_frames=%d classification=%s"
-		% [
-			anchors.size(),
-			_replacement_frames,
-			_capture_count,
-			_max_render_delta,
-			_max_render_fading,
-			_fade_frames,
-			"surface_transition_pending_visual_acceptance",
-		]
-	)
+		if not terrain.call(
+			"update_viewer",
+			VIEWER_ID,
+			1001 + view_index * 100 + anchor_index,
+			anchors[anchor_index],
+			RADIUS_CHUNKS,
+			MAXIMUM_LOD
+		):
+			return _fail("viewer update rejected for view " + str(view["name"]))
+		if not await _capture_anchor(
+			terrain,
+			view_index,
+			str(view["name"]),
+			anchor_index
+		):
+			return false
 	if terrain.is_world_running():
 		terrain.stop_world()
 	_scene_root.queue_free()
-	quit(0)
+	_scene_root = null
+	await process_frame
+	return true
 
 
-func _observe_transition(terrain: Node, anchor_index: int) -> bool:
-	for frame in range(TRANSITION_OBSERVE_FRAMES):
+func _capture_anchor(
+	terrain: Node,
+	view_index: int,
+	view_name: String,
+	anchor_index: int
+) -> bool:
+	for frame in range(CAPTURE_FRAMES):
 		await process_frame
 		await physics_frame
 		var metrics: Dictionary = terrain.get_runtime_metrics()
 		var render_fading := int(metrics.get("render_fading_resources", 0))
-		_max_render_fading = maxi(_max_render_fading, render_fading)
-		if render_fading > 0:
-			_fade_frames += 1
 		var render_count: int = terrain.get_rendered_chunk_count()
+		_max_render_fading = maxi(_max_render_fading, render_fading)
 		_max_render_delta = maxi(_max_render_delta, absi(render_count - _last_render_count))
 		_last_render_count = render_count
-		var signature := _render_signature(terrain)
-		if signature != _last_signature:
-			_last_signature = signature
-			_replacement_frames += 1
-			print(
-				"WT_SANDBOX_LOD_SURFACE_FRAME anchor=%d frame=%d render=%d collision=%d render_fading=%d"
-				% [anchor_index, frame, render_count, terrain.get_collision_chunk_count(), render_fading]
-			)
-			if _capture_count < 12 and not await _save_capture("anchor_%02d_frame_%02d_surface" % [anchor_index, frame]):
-				return false
-		if frame >= 10 and _is_settled(terrain):
-			return true
-	return _fail("dynamic surface transition did not settle at anchor " + str(anchor_index))
+		if render_fading > 0:
+			_fade_frames += 1
+		var capture_name := "view_%02d_%s_anchor_%02d_frame_%03d" % [
+			view_index,
+			view_name,
+			anchor_index,
+			frame,
+		]
+		if not await _save_capture(capture_name):
+			return false
+		_captured_frames += 1
+		print(
+			"WT_SANDBOX_LOD_TEMPORAL_MULTIVIEW_FRAME view=%d view_name=%s anchor=%d frame=%d render=%d collision=%d render_fading=%d queued_render=%d queued_collision=%d"
+			% [
+				view_index,
+				view_name,
+				anchor_index,
+				frame,
+				render_count,
+				terrain.get_collision_chunk_count(),
+				render_fading,
+				int(metrics.get("queued_render", 0)),
+				int(metrics.get("queued_collision", 0)),
+			]
+		)
+	return true
 
 
 func _wait_for_world(terrain: Node) -> bool:
@@ -144,15 +175,6 @@ func _is_settled(terrain: Node) -> bool:
 		int(metrics.get("pending_chunk_retirements", 0)) == 0
 
 
-func _render_signature(terrain: Node) -> String:
-	var names: PackedStringArray = []
-	for child in terrain.get_children():
-		if child is MeshInstance3D and child.name.begins_with("WT_Render_"):
-			names.append(str(child.name))
-	names.sort()
-	return "|".join(names)
-
-
 func _save_capture(name: String) -> bool:
 	await RenderingServer.frame_post_draw
 	var image := root.get_viewport().get_texture().get_image()
@@ -162,13 +184,12 @@ func _save_capture(name: String) -> bool:
 	DirAccess.make_dir_recursive_absolute(absolute_root)
 	var output := absolute_root.path_join(name + ".png")
 	if image.save_png(output) != OK:
-		return _fail("could not save dynamic surface capture: " + output)
-	_capture_count += 1
+		return _fail("could not save multi-view temporal capture: " + output)
 	return true
 
 
 func _fail(message: String) -> bool:
-	push_error("WT_SANDBOX_LOD_SURFACE_CAPTURE_FAIL: " + message)
+	push_error("WT_SANDBOX_LOD_TEMPORAL_MULTIVIEW_CAPTURE_FAIL: " + message)
 	if _scene_root != null:
 		_scene_root.queue_free()
 	quit(1)

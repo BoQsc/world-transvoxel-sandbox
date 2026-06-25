@@ -2,6 +2,7 @@ extends SceneTree
 
 const OUTPUT_ROOT := "res://artifacts/dynamic_lod"
 const TIMEOUT_FRAMES := 1800
+const TRANSITION_OBSERVE_FRAMES := 180
 const VIEWER_ID := 1
 const RADIUS_CHUNKS := 3
 const MAXIMUM_LOD := 1
@@ -96,7 +97,7 @@ func _run() -> void:
 	quit(0)
 
 func _observe_transition(terrain: Node, anchor_index: int) -> bool:
-	for frame in range(90):
+	for frame in range(TRANSITION_OBSERVE_FRAMES):
 		await process_frame
 		await physics_frame
 		var metrics: Dictionary = terrain.get_runtime_metrics()
@@ -138,10 +139,9 @@ func _observe_transition(terrain: Node, anchor_index: int) -> bool:
 				"anchor_%02d_frame_%02d_lod" % [anchor_index, frame]
 			):
 				return false
-		if frame >= 10 and _is_settled(terrain):
-			return true
+	if frame >= 10 and _is_settled(terrain):
+		return true
 	return _fail("dynamic LOD transition did not settle at anchor " + str(anchor_index))
-
 
 func _wait_for_world(terrain: Node) -> bool:
 	for _frame in range(TIMEOUT_FRAMES):

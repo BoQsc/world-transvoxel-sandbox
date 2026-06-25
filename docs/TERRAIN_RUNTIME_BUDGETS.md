@@ -20,6 +20,7 @@ The profile must include:
 - `radius_chunks`;
 - `maximum_lod`;
 - `active_chunk_capacity`;
+- `render_apply_budget`;
 - inherited cache budgets or explicit cache overrides;
 - minimum observed render/collision coverage;
 - what movement is not proven by the profile.
@@ -29,13 +30,13 @@ marker, the runtime report, and this document.
 
 ## Accepted and provisional profiles
 
-| Level | Horizontal cells | Movement class | Radius | Max LOD | Active capacity | Min render/collision | Status |
-| --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
-| L0 | 128 | fixed-center LOD0 reference | 4 | 0 | 512 | full reference world | accepted baseline |
-| L1 | 256 | staged movement | 3 | 1 | 512 | 97 / 97 | accepted runtime |
-| L2 | 512 | staged movement | 3 | 1 | 1024 | 176 / 176 | accepted runtime |
-| L3 | 1024 | staged movement | 3 | 1 | 1024 | 201 / 201 | accepted runtime |
-| L4 | 2048 | staged movement | 3 | 1 | 1024 | 195 / 195 | accepted runtime |
+| Level | Horizontal cells | Movement class | Radius | Max LOD | Active capacity | Render apply | Min render/collision | Status |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| L0 | 128 | fixed-center LOD0 reference | 4 | 0 | 512 | 1 | full reference world | accepted baseline |
+| L1 | 256 | staged movement | 3 | 1 | 512 | 1 | 97 / 97 | accepted runtime |
+| L2 | 512 | staged movement | 3 | 1 | 1024 | 1 | 176 / 176 | accepted runtime |
+| L3 | 1024 | staged movement | 3 | 1 | 1024 | 1 | 201 / 201 | accepted runtime |
+| L4 | 2048 | staged movement | 3 | 1 | 1024 | 1 | 210 / 195 | accepted runtime |
 
 ## L2 capacity classification
 
@@ -78,9 +79,11 @@ A conservative full replacement bound is therefore 616 records. Active chunk
 capacity 1,024 leaves 408 records above that bound.
 
 L3 inherits storage, encoded/decoded page, mesh, render, collision, byte, and
-apply budgets from `config/terrain_config.tres`. Its only scale-specific
-override is `active_chunk_capacity = 1024`, matching the derived local replacement
-bound rather than copying world size.
+apply budgets from `config/terrain_config.tres`. The accepted visual/runtime
+default is `render_apply_budget = 1`; this intentionally spreads dynamic
+surface replacement over more frames. Its only scale-specific override is
+`active_chunk_capacity = 1024`, matching the derived local replacement bound
+rather than copying world size.
 
 The profile passed Godot 4.6.3 and 4.7 with seven staged positions, 35
 render/collision probes, minimum 201 render/collision chunks, one active-window
@@ -93,12 +96,14 @@ L4 support.
 L4 keeps radius 3 and maximum LOD 1. The world storage is much larger, but the
 local planner window remains bounded by the same runtime budget knobs.
 
-L4 therefore uses the same active chunk capacity as L3: 1,024 records. This is
-not inherited silently; it is locked because the L4 audit passed with that
-explicit capacity.
+L4 therefore uses the same active chunk capacity as L3: 1,024 records and the
+same accepted render-apply budget: 1 chunk per frame. These are not inherited
+silently; they are locked because the L4 audit passed with those explicit
+budgets.
 
 The profile passed Godot 4.6.3 and 4.7 with seven staged positions, 35
-render/collision probes, minimum 195 render/collision chunks, one active-window
-edit/remesh, and clean shutdown. It is accepted for staged movement only. It
+render/collision probes, minimum render/collision coverage 210 / 195, one
+active-window edit/remesh, and clean shutdown. It is accepted for staged
+movement only. It
 does not prove fast travel, disjoint teleport movement, human visual acceptance,
 dynamic seamless LOD appearance, or support beyond L4.

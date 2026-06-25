@@ -19,6 +19,7 @@ class RuntimeBudgetProfile:
     radius_chunks: int
     maximum_lod: int
     active_chunk_capacity: int
+    render_apply_budget: int
     min_render: int
     min_collision: int
     status: str
@@ -26,23 +27,23 @@ class RuntimeBudgetProfile:
 
 PROFILES = {
     "L0": RuntimeBudgetProfile(
-        "L0", 128, "fixed-center LOD0 reference", 4, 0, 512, 0, 0,
+        "L0", 128, "fixed-center LOD0 reference", 4, 0, 512, 1, 0, 0,
         "accepted baseline",
     ),
     "L1": RuntimeBudgetProfile(
-        "L1", 256, "staged movement", 3, 1, 512, 97, 97,
+        "L1", 256, "staged movement", 3, 1, 512, 1, 97, 97,
         "accepted runtime",
     ),
     "L2": RuntimeBudgetProfile(
-        "L2", 512, "staged movement", 3, 1, 1024, 176, 176,
+        "L2", 512, "staged movement", 3, 1, 1024, 1, 176, 176,
         "accepted runtime",
     ),
     "L3": RuntimeBudgetProfile(
-        "L3", 1024, "staged movement", 3, 1, 1024, 201, 201,
+        "L3", 1024, "staged movement", 3, 1, 1024, 1, 201, 201,
         "accepted runtime",
     ),
     "L4": RuntimeBudgetProfile(
-        "L4", 2048, "staged movement", 3, 1, 1024, 195, 195,
+        "L4", 2048, "staged movement", 3, 1, 1024, 1, 210, 195,
         "accepted runtime",
     ),
 }
@@ -70,10 +71,10 @@ def validate() -> list[str]:
     for phrase in (
         "Runtime budgets are part of terrain correctness",
         "Every accepted runtime scale must declare its budget profile",
-        "| L2 | 512 | staged movement | 3 | 1 | 1024 | 176 / 176",
+        "| L2 | 512 | staged movement | 3 | 1 | 1024 | 1 | 176 / 176",
         "Fast travel is not proven by L2 runtime acceptance",
-        "| L3 | 1024 | staged movement | 3 | 1 | 1024 | 201 / 201",
-        "| L4 | 2048 | staged movement | 3 | 1 | 1024 | 195 / 195",
+        "| L3 | 1024 | staged movement | 3 | 1 | 1024 | 1 | 201 / 201",
+        "| L4 | 2048 | staged movement | 3 | 1 | 1024 | 1 | 210 / 195",
         "A conservative full replacement bound is therefore 616 records",
         "Its only scale-specific",
         "The profile passed Godot 4.6.3 and 4.7",
@@ -90,6 +91,7 @@ def validate() -> list[str]:
         require(status, phrase, "current status", errors)
 
     require(config, "active_chunk_capacity = 512", "default config", errors)
+    require(config, "render_apply_budget = 1", "default config", errors)
     require(
         l2_audit,
         "const ACTIVE_CHUNK_CAPACITY := 1024",
@@ -97,6 +99,7 @@ def validate() -> list[str]:
         errors,
     )
     require(l2_audit, "active_capacity=%d", "L2 runtime audit", errors)
+    require(l2_audit, "render_apply_budget=%d", "L2 runtime audit", errors)
     require(
         l3_audit,
         "const ACTIVE_CHUNK_CAPACITY := 1024",
@@ -104,6 +107,7 @@ def validate() -> list[str]:
         errors,
     )
     require(l3_audit, "active_capacity=%d", "L3 runtime audit", errors)
+    require(l3_audit, "render_apply_budget=%d", "L3 runtime audit", errors)
     require(
         l4_audit,
         "const ACTIVE_CHUNK_CAPACITY := 1024",
@@ -111,6 +115,7 @@ def validate() -> list[str]:
         errors,
     )
     require(l4_audit, "active_capacity=%d", "L4 runtime audit", errors)
+    require(l4_audit, "render_apply_budget=%d", "L4 runtime audit", errors)
     require(runtime_tool, '"L2": {', "scale runtime tool", errors)
     require(runtime_tool, '"L3": {', "scale runtime tool", errors)
     require(runtime_tool, '"L4": {', "scale runtime tool", errors)
@@ -128,6 +133,7 @@ def print_profiles() -> None:
             f"radius={profile.radius_chunks} "
             f"max_lod={profile.maximum_lod} "
             f"active_capacity={profile.active_chunk_capacity} "
+            f"render_apply_budget={profile.render_apply_budget} "
             f"min_render={profile.min_render} "
             f"min_collision={profile.min_collision} "
             f"status={profile.status!r}"

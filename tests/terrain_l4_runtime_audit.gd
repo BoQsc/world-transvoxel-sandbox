@@ -4,6 +4,7 @@ const WORLD_PATH := WORLD_ROOT + "/world.wtworld"
 const JOURNAL_PATH := WORLD_ROOT + "/world.wtedit"
 const TIMEOUT_FRAMES := 3600
 const ACTIVE_CHUNK_CAPACITY := 1024
+const RENDER_APPLY_BUDGET := 1
 var _scene_root: Node
 var _terrain: Node
 var _samples: Dictionary = {}
@@ -30,6 +31,7 @@ func _run() -> void:
 	var terrain_node: Node = _scene_root.get_node("Terrain")
 	var config: Resource = terrain_node.get("configuration").duplicate(true)
 	config.set("active_chunk_capacity", ACTIVE_CHUNK_CAPACITY)
+	config.set("render_apply_budget", RENDER_APPLY_BUDGET)
 	terrain_node.set("configuration", config)
 	var viewer: Node3D = _scene_root.get_node("Viewer")
 	viewer.set("input_enabled", false)
@@ -91,7 +93,7 @@ func _run() -> void:
 	for _frame in range(TIMEOUT_FRAMES):
 		if terrain.get_world_state_name() == "stopped":
 			print(
-				"WT_SANDBOX_L4_RUNTIME_PASS startup_ms=%d settle_ms=%d positions=%d probes=%d min_render=%d min_collision=%d edit_ms=%d edit_delta=%.1f max_retiring=%d active_capacity=%d"
+				"WT_SANDBOX_L4_RUNTIME_PASS startup_ms=%d settle_ms=%d positions=%d probes=%d min_render=%d min_collision=%d edit_ms=%d edit_delta=%.1f max_retiring=%d active_capacity=%d render_apply_budget=%d"
 				% [
 					startup_ms,
 					settle_ms,
@@ -103,6 +105,7 @@ func _run() -> void:
 					edit_delta,
 					max_retiring,
 					ACTIVE_CHUNK_CAPACITY,
+					RENDER_APPLY_BUDGET,
 				]
 			)
 			_scene_root.queue_free()
@@ -241,8 +244,7 @@ func _on_sample_failed(request_id: int, error: String) -> void:
 	_sample_failures[request_id] = error
 func _fail(message: String) -> void:
 	push_error("WT_SANDBOX_L4_RUNTIME_FAIL: " + message)
-	if _terrain != null:
-		print("WT_SANDBOX_L4_RUNTIME_METRICS " + str(_terrain.get_runtime_metrics()))
+	if _terrain != null: print("WT_SANDBOX_L4_RUNTIME_METRICS " + str(_terrain.get_runtime_metrics()))
 	if _scene_root != null:
 		_scene_root.queue_free()
 	quit(1)

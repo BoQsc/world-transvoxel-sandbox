@@ -1,7 +1,7 @@
 # World Transvoxel Sandbox
 
 Visual, gameplay, and scale validation for the qualified World Transvoxel
-1.0.6 MIT-backed addon. This repository is deliberately a sandbox before it
+1.0.9 MIT-backed addon. This repository is deliberately a sandbox before it
 becomes a game.
 
 World Transvoxel 1.0.0 is rejected and withdrawn. This sandbox exposed its
@@ -12,18 +12,22 @@ their replacements were applied. Version 1.0.3 is superseded because dynamic
 mixed-LOD movement could retire a large ready replacement set in one frame.
 Version 1.0.5 adds a bounded native render fade-out for retiring chunks after
 replacement application. Version 1.0.6 also fades newly introduced render
-chunks through a bounded native window. It is the current baseline; it is not a
-claim that the sandbox is a finished terrain product or game.
+chunks through a bounded native window. Version 1.0.9 is the current sandbox
+baseline and exposes the native `wt_fade_opacity` shader parameter, but this
+reference terrain material remains opaque because transparent alpha blending
+created worse patch/sorting artifacts in surface mode.
 
 The vendored addon is the exact Windows x86-64 release from
-`world-transvoxel` commit `f99c4fb6ed3bc9d5f25310c8eeab43663ddbae00`. Its
+`world-transvoxel` commit `c0ef66b77a40c2c0891e8b063109eb111cd47457`. Its
 mixed 0BSD/MIT scope and release manifest are retained at the repository root.
 
 Dynamic mixed-LOD streaming now passes the automated six-anchor surface
-temporal gross-pop gate against the 1.0.6 native fade-in/fade-out baseline, but
-human visual acceptance is still open. The normal human playtest therefore uses
-a fixed, complete LOD0 map and must not be presented as proof that dynamic LOD
-appearance is finished.
+temporal gross-pop gate in both the primary view and the three-camera
+multi-view harness. The reference dynamic LOD policy is native fade-in/fade-out
+plus `render_apply_budget = 1` to avoid large visual bursts. Human visual
+acceptance is still open, so the normal human playtest uses a fixed, complete
+LOD0 map and must not be presented as proof that dynamic LOD appearance is
+finished.
 
 The project is standards-first. Larger terrain without artifacts, holes,
 upside-down behavior, uncontrolled background work, or unexplained visual

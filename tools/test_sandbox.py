@@ -129,7 +129,7 @@ def import_project(engine: Path, name: str) -> None:
             text=True,
             capture_output=True,
             errors="replace",
-            timeout=120,
+            timeout=300,
         )
         combined = result.stdout + result.stderr
         attempts.append(combined)

@@ -129,16 +129,20 @@ func _run() -> void:
 
 
 func _mesh_hash(terrain: Node) -> int:
+	var records: Array = []
 	var value := 0
 	for child in terrain.get_children():
 		if child is MeshInstance3D and child.name.begins_with("WT_Render_"):
+			if str(child.name).contains("_retiring_"):
+				continue
 			var arrays: Array = child.mesh.surface_get_arrays(0)
-			value = hash([
-				value,
-				child.name,
-				arrays[Mesh.ARRAY_VERTEX],
-				arrays[Mesh.ARRAY_INDEX],
+			records.append([
+				str(child.name),
+				hash([arrays[Mesh.ARRAY_VERTEX], arrays[Mesh.ARRAY_INDEX]]),
 			])
+	records.sort()
+	for record in records:
+		value = hash([value, record])
 	return value
 
 
@@ -176,7 +180,8 @@ func _wait_for_settled_resources(terrain: Node) -> bool:
 				int(metrics.get("mesh_completions", -1)) and \
 				int(metrics.get("fully_ready_chunk_records", -1)) == \
 				int(metrics.get("active_chunk_records", 0)) and \
-				int(metrics.get("pending_chunk_retirements", 0)) == 0:
+				int(metrics.get("pending_chunk_retirements", 0)) == 0 and \
+				int(metrics.get("render_fading_resources", 0)) == 0:
 			await process_frame
 			return true
 		await process_frame

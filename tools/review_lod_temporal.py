@@ -8,6 +8,12 @@ from pathlib import Path
 
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
+from capture_lod_temporal import (
+    FRAME_MARKER,
+    analyze_images,
+    parse_fields,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_ROOT = ROOT / "artifacts" / "dynamic_lod_temporal"
@@ -17,6 +23,23 @@ ANCHOR_REVIEW = OUTPUT_ROOT / "temporal_anchor_transition_review.png"
 THUMBNAIL_SIZE = (320, 180)
 LABEL_HEIGHT = 42
 PADDING = 8
+
+
+def report_from_capture() -> dict[str, object]:
+    capture_log = OUTPUT_ROOT / "capture.log"
+    if not capture_log.is_file():
+        raise RuntimeError(f"missing temporal report and capture log: {REPORT_PATH}")
+    frames: list[dict[str, str]] = []
+    for line in capture_log.read_text(encoding="utf-8", errors="replace").splitlines():
+        if FRAME_MARKER in line:
+            frames.append(parse_fields(line))
+    images = sorted(OUTPUT_ROOT.glob("anchor_*_frame_*.png"))
+    if not frames or len(images) < 2:
+        raise RuntimeError(f"missing temporal report and usable capture: {REPORT_PATH}")
+    return {
+        "frames": frames,
+        "image_analysis": analyze_images(images),
+    }
 
 
 def draw_label(
@@ -143,9 +166,11 @@ def main() -> None:
     )
     parser.add_argument("--top-pairs", type=int, default=8)
     arguments = parser.parse_args()
-    if not REPORT_PATH.is_file():
-        raise RuntimeError(f"missing temporal report: {REPORT_PATH}")
-    report = json.loads(REPORT_PATH.read_text(encoding="utf-8"))
+    report = (
+        json.loads(REPORT_PATH.read_text(encoding="utf-8"))
+        if REPORT_PATH.is_file()
+        else report_from_capture()
+    )
     top_change = write_top_change_review(report, max(1, arguments.top_pairs))
     anchor = write_anchor_review(report)
     maximum = report["image_analysis"]["maximum_change_pair"]

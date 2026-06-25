@@ -21,96 +21,80 @@ S1 - visual acceptance and dynamic mixed-LOD quality.
 S0 is complete for the 128 baseline. S2 automated scale-ladder evidence is
 complete through L4 / 2048 for bounded generation, staged runtime,
 edit/remesh, and static visual capture. S1 still has a visual gate: dynamic
-mixed-LOD now passes the automated six-anchor surface temporal gross-pop gate,
-but it is not accepted as a default seamless play mode until human visual
-review accepts the result or the standard is explicitly changed. We are not
-starting GPU compute,
-water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement work before the visual-quality blocker is resolved or explicitly
-demoted by standard.
+mixed-LOD now passes the automated six-anchor single-view and three-view
+surface temporal gross-pop gates, but it is not accepted as a default seamless
+play mode until human visual review accepts the result or the standard is
+explicitly changed. We are not starting GPU compute, water/lava, planets,
+structural collapse, a game repository, or 0BSD backend replacement work before
+the visual-quality blocker is resolved or explicitly demoted by standard.
 
 ## Latest evidence
 
-S1.5 - native fade-in/fade-out dynamic LOD smoothing is complete.
+S1.6 - dynamic LOD visual-burst budget and multi-view temporal gate are complete.
 
-Command:
+Commands:
 
 ```console
 python tools/capture_lod_popping.py
+python tools/capture_lod_surface.py
+python tools/capture_lod_temporal.py
+python tools/capture_lod_temporal_multiview.py
+python tools/review_lod_temporal.py
 ```
 
 Result:
 
+- vendored addon: World Transvoxel 1.0.9 from upstream commit
+  `c0ef66b77a40c2c0891e8b063109eb111cd47457`;
+- `render_apply_budget = 1` is now the locked reference runtime/visual policy
+  for dynamic mixed-LOD captures; budget 2 passed the single-view temporal gate
+  but still failed the multi-view gate, and budget 1 passed both without
+  loosening thresholds;
+- the sandbox terrain material remains opaque. World Transvoxel 1.0.9 exposes
+  native `wt_fade_opacity`, but consuming it as transparent alpha in this
+  terrain material created worse patch/sorting artifacts and is not the
+  accepted surface-mode policy;
 - diagnostic mode: fixed camera, LOD-color debug view, autonomous input
   disabled, and native terrain demand anchor moved independently of camera
   motion;
-- vendored addon: World Transvoxel 1.0.6 from upstream commit
-  `f99c4fb6ed3bc9d5f25310c8eeab43663ddbae00`;
 - anchors: 6;
-- replacement frames observed: 75;
+- replacement frames observed: 140;
 - saved diagnostic captures: 12 under `artifacts/dynamic_lod`;
 - report: `artifacts/dynamic_lod/dynamic_lod_report.json`;
 - maximum staged retirements: 92;
 - maximum render-set delta in one observed frame: 7;
-- maximum native fading resources: 34;
-- fade frames observed: 142;
+- maximum native fading resources: 59;
+- fade frames observed: 295;
 - maximum queued render/collision backlog: 0 / 0;
 - center render/collision probe stayed present during replacements;
 - classification:
   `lod_transition_native_fade_without_geomorph_pending_visual_acceptance`;
 - comparison against S1.1 baseline: improved from 61 to 7 maximum one-frame
   render-set delta; S1.2 previously observed 79 replacement frames with the
-  same render-set delta, S1.3 proved native fade-out activity, and S1.5 now
-  proves native fade-in/fade-out activity during those replacements;
+  same render-set delta, S1.3 proved native fade-out activity, S1.5 proved
+  native fade-in/fade-out activity, and S1.6 locks a one-chunk render-apply
+  budget plus multi-view temporal measurement;
 - proven: retirement smoothing and native render fade-in/fade-out are active,
-  bounded, and keep queues/probes stable;
-- not proven: seamless dynamic LOD appearance, human visual acceptance, or
-  geomorphing.
+  bounded, keep queues/probes stable, and stay under the automated gross-pop
+  thresholds in the deterministic single-view and multi-view captures;
+- not proven: seamless dynamic LOD appearance, human visual acceptance, all
+  camera angles, all movement speeds, or geomorphing.
 
-Post-vendor gates passed against 1.0.6:
+Surface-mode still evidence:
 
-```console
-python tools/validate_sandbox.py
-python tools/test_sandbox.py
-python tools/capture_visuals.py
-python tools/scale_runtime.py --level L4
-```
-
-The L0 smoke/idle/geometry/interaction/volumetric/motion/seam matrix passed on
-Godot 4.6.3 and 4.7 with both debug and release binaries. Static visual capture
-again produced 9 images. L4 runtime passed on both supported engines with
-active capacity 1024 and `max_retiring=0`.
-
-S1.4/S1.5 surface-mode dynamic evidence was added because LOD-debug captures
-intentionally exaggerate transition visibility:
-
-```console
-python tools/capture_lod_surface.py
-```
-
-Result:
-
-- replacement frames observed: 74;
+- replacement frames observed: 140;
 - saved surface captures: 12 under `artifacts/dynamic_lod_surface`;
 - report: `artifacts/dynamic_lod_surface/dynamic_lod_surface_report.json`;
-- maximum render-set delta in one observed frame: 8;
-- maximum native fading resources: 34;
-- fade frames observed: 141;
+- maximum render-set delta in one observed frame: 7;
+- maximum native fading resources: 59;
+- fade frames observed: 294;
 - classification: `surface_transition_pending_visual_acceptance`;
 - AI inspection of the generated still-image contact sheet found no hard hole,
   missing backside, or obvious large one-frame terrain swap in surface mode;
 - not proven: temporal seamlessness. Still images do not replace video/human
   review for accepting the default dynamic LOD policy.
 
-S1.5 temporal surface evidence now covers six deterministic mixed-LOD
-replacement anchors frame-by-frame:
-
-```console
-python tools/capture_lod_temporal.py
-python tools/review_lod_temporal.py
-```
-
-Result:
+Single-view temporal surface evidence:
 
 - frames captured: 540 under `artifacts/dynamic_lod_temporal`;
 - preview: `artifacts/dynamic_lod_temporal/temporal_preview.gif`;
@@ -119,13 +103,13 @@ Result:
 - per-anchor transition review sheet:
   `artifacts/dynamic_lod_temporal/temporal_anchor_transition_review.png`;
 - report: `artifacts/dynamic_lod_temporal/dynamic_lod_temporal_report.json`;
-- maximum render-set delta: 8;
-- maximum native fading resources: 34;
-- fade frames observed: 83;
-- maximum visible changed ratio between adjacent frames: 0.004353;
-- maximum mean RGB delta between adjacent frames: 0.000872;
-- maximum-change pair: `anchor_02_frame_031.png` to
-  `anchor_02_frame_032.png`;
+- maximum render-set delta: 19;
+- maximum native fading resources: 59;
+- fade frames observed: 136;
+- maximum visible changed ratio between adjacent frames: 0.002314;
+- maximum mean RGB delta between adjacent frames: 0.000471;
+- maximum-change pair: `anchor_00_frame_049.png` to
+  `anchor_00_frame_050.png`;
 - gross-pop gate: passed across six anchors against visible-ratio limit 0.005
   and mean-RGB limit 0.002;
 - classification:
@@ -138,6 +122,52 @@ Result:
   measured pairs;
 - not proven: human visual acceptance, all camera angles, all movement speeds,
   or geomorphing.
+
+Multi-view temporal surface evidence:
+
+- views: front, side, and diagonal;
+- frames captured: 1,080 under `artifacts/dynamic_lod_temporal_multiview`;
+- preview:
+  `artifacts/dynamic_lod_temporal_multiview/temporal_multiview_preview.gif`;
+- top-change review sheet:
+  `artifacts/dynamic_lod_temporal_multiview/temporal_multiview_top_change_pairs_review.png`;
+- report:
+  `artifacts/dynamic_lod_temporal_multiview/dynamic_lod_temporal_multiview_report.json`;
+- maximum render-set delta: 8;
+- maximum native fading resources: 59;
+- fade frames observed: 490;
+- maximum visible changed ratio between adjacent frames: 0.004534;
+- maximum mean RGB delta between adjacent frames: 0.000845;
+- maximum-change pair:
+  `view_02_diagonal_anchor_02_frame_041.png` to
+  `view_02_diagonal_anchor_02_frame_042.png`;
+- gross-pop gate: passed across three views and six anchors against
+  visible-ratio limit 0.005 and mean-RGB limit 0.002;
+- classification:
+  `temporal_multiview_gross_pop_gate_pass_pending_human_review`;
+- not proven: human visual acceptance, all camera angles, all movement speeds,
+  or geomorphing.
+
+Post-vendor 1.0.9 verification passed:
+
+```console
+python tools/validate_sandbox.py
+python -m py_compile tools/capture_lod_temporal.py tools/capture_lod_temporal_multiview.py tools/review_lod_temporal.py tools/test_sandbox.py tools/validate_sandbox.py tools/runtime_budget_profiles.py
+python tools/test_sandbox.py
+python tools/capture_visuals.py
+python tools/scale_runtime.py --level L4
+```
+
+Result:
+
+- repository validation: `WT_SANDBOX_VALIDATION_PASS vendored_files=147
+  project_files=228`;
+- sandbox matrix: `WT_SANDBOX_MATRIX_PASS engines=2 configurations=2 tests=7
+  cases=28`;
+- visual capture: `WT_SANDBOX_VISUAL_EVIDENCE_PASS images=9`;
+- L4 runtime: `WT_SANDBOX_SCALE_RUNTIME_PASS level=L4 engines=2`, with
+  active chunk capacity 1,024, `render_apply_budget=1`, minimum render 210,
+  minimum collision 195, and max pending retirements 0.
 
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
@@ -166,10 +196,10 @@ Result:
 - direct L4 source/generation remains guarded: it requires scale-ladder
   resource preflight and `--resource-preflight-approved`;
 - L4 accepted runtime budget: staged movement, radius 3, maximum LOD 1, active
-  chunk capacity 1,024, inherited cache budgets;
+  chunk capacity 1,024, render-apply budget 1, inherited cache budgets;
 - runtime evidence: Godot 4.6.3 and 4.7, seven staged positions, 35
-  render/collision probes, minimum 195 render/collision chunks, one
-  active-window edit/remesh, clean shutdown, and max pending retirements 0;
+  render/collision probes, latest minimum render/collision coverage 210 / 195,
+  one active-window edit/remesh, clean shutdown, and max pending retirements 0;
 - visual evidence: seven Godot 4.7 captures under
   `artifacts/scale_ladder/L4/visual`, all nonblank, covering overview,
   material, LOD, top, underground tunnel, closed boundary, and boundary
@@ -453,26 +483,27 @@ Result:
 
 ## Current active task
 
-S1.5 - visual acceptance and default dynamic LOD policy decision.
+S1.6 - human visual review of the budget-1 dynamic LOD policy.
 
 Scope:
 
-- inspect the 1.0.6 six-anchor temporal preview and surface captures and decide
-  whether native fade-in/fade-out is acceptable as the default dynamic LOD
-  transition policy;
+- inspect the 1.0.9 six-anchor single-view and three-view temporal previews,
+  review sheets, and surface captures and decide whether native
+  fade-in/fade-out plus `render_apply_budget = 1` is acceptable as the default
+  dynamic LOD transition policy;
 - if visual acceptance still fails, choose the next bounded native policy:
   geomorphing, stronger hysteresis, larger prefetch rings, or defaulting the
   normal playtest/game path to LOD0/fixed-center until mixed LOD is accepted;
-- keep the existing capture harness as the regression metric and preserve the
-  S1.1/S1.2/S1.3/S1.5 comparison;
+- keep the single-view and multi-view capture harnesses as regression metrics
+  and preserve the S1.1/S1.2/S1.3/S1.5/S1.6 comparison;
 - keep GDScript limited to diagnostic capture/scaffolding.
 
 Exit:
 
-- S1.5 dynamic LOD captures are visually inspected or a stricter automated
+- S1.6 dynamic LOD captures are visually inspected or a stricter automated
   criterion is added;
 - any accepted default policy is documented in `docs/TERRAIN_ACCEPTANCE_STANDARD.md`;
-- if S1.5 is not visually accepted, the next native mitigation is implemented
+- if S1.6 is not visually accepted, the next native mitigation is implemented
   before broad gameplay features resume.
 
 ## Next finite steps
@@ -480,9 +511,12 @@ Exit:
 1. Human-review `artifacts/dynamic_lod_temporal/temporal_preview.gif`,
    `artifacts/dynamic_lod_temporal/temporal_top_change_pairs_review.png`,
    `artifacts/dynamic_lod_temporal/temporal_anchor_transition_review.png`, and
-   the surface stills.
-2. Decide whether 1.0.6 native fade-in/fade-out is accepted or whether S1.5 requires
-   geomorphing/prefetch/default-policy changes.
+   `artifacts/dynamic_lod_temporal_multiview/temporal_multiview_preview.gif`,
+   `artifacts/dynamic_lod_temporal_multiview/temporal_multiview_top_change_pairs_review.png`,
+   and the surface stills.
+2. Decide whether 1.0.9 native fade-in/fade-out plus `render_apply_budget = 1`
+   is accepted or whether S1.6 requires geomorphing/prefetch/default-policy
+   changes.
 3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default
    dynamic LOD policy boundary.
 

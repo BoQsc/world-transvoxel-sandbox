@@ -1,6 +1,7 @@
 .godot/
 .generated/
 world/
-artifacts/
+artifacts/*
+!artifacts/.gdignore
 __pycache__/
 *.pyc

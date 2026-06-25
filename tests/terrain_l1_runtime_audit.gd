@@ -1,10 +1,9 @@
 extends SceneTree
-
 const WORLD_ROOT := "res://artifacts/scale_ladder/L1/world"
 const WORLD_PATH := WORLD_ROOT + "/world.wtworld"
 const JOURNAL_PATH := WORLD_ROOT + "/world.wtedit"
 const TIMEOUT_FRAMES := 2400
-
+const RENDER_APPLY_BUDGET := 1
 var _scene_root: Node
 var _samples: Dictionary = {}
 var _sample_failures: Dictionary = {}
@@ -29,11 +28,15 @@ func _run() -> void:
 	_scene_root.maximum_lod = 1
 	_scene_root.streaming_update_distance = 0.0
 	_scene_root.streaming_follows_viewer = true
+	var terrain_node: Node = _scene_root.get_node("Terrain")
+	var config: Resource = terrain_node.get("configuration").duplicate(true)
+	config.set("render_apply_budget", RENDER_APPLY_BUDGET)
+	terrain_node.set("configuration", config)
 	var viewer: Node3D = _scene_root.get_node("Viewer")
 	viewer.set("input_enabled", false)
 	viewer.position = Vector3(128.0, 56.0, 128.0)
 	root.add_child(_scene_root)
-	var terrain: Node = _scene_root.get_node("Terrain")
+	var terrain: Node = terrain_node
 	terrain.authoritative_sample_ready.connect(_on_sample_ready)
 	terrain.authoritative_sample_failed.connect(_on_sample_failed)
 	if not await _wait_for_world(terrain):
@@ -88,7 +91,7 @@ func _run() -> void:
 	for _frame in range(TIMEOUT_FRAMES):
 		if terrain.get_world_state_name() == "stopped":
 			print(
-				"WT_SANDBOX_L1_RUNTIME_PASS startup_ms=%d settle_ms=%d positions=%d probes=%d min_render=%d min_collision=%d edit_ms=%d edit_delta=%.1f max_retiring=%d"
+				"WT_SANDBOX_L1_RUNTIME_PASS startup_ms=%d settle_ms=%d positions=%d probes=%d min_render=%d min_collision=%d edit_ms=%d edit_delta=%.1f max_retiring=%d render_apply_budget=%d"
 				% [
 					startup_ms,
 					settle_ms,
@@ -99,6 +102,7 @@ func _run() -> void:
 					edit_ms,
 					edit_delta,
 					max_retiring,
+					RENDER_APPLY_BUDGET,
 				]
 			)
 			_scene_root.queue_free()
