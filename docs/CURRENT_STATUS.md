@@ -89,8 +89,10 @@ Surface-mode still evidence:
 - maximum native fading resources: 59;
 - fade frames observed: 294;
 - classification: `surface_transition_pending_visual_acceptance`;
-- AI inspection of the generated still-image contact sheet found no hard hole,
-  missing backside, or obvious large one-frame terrain swap in surface mode;
+- AI pre-review of the generated still-image contact sheet found stable terrain
+  massing across the baseline and transition captures, with no hard hole,
+  missing backside, upside-down terrain, diagonal ridge, or full chunk
+  disappearance visible in the inspected surface stills;
 - not proven: temporal seamlessness. Still images do not replace video/human
   review for accepting the default dynamic LOD policy.
 
@@ -145,6 +147,10 @@ Multi-view temporal surface evidence:
   visible-ratio limit 0.005 and mean-RGB limit 0.002;
 - classification:
   `temporal_multiview_gross_pop_gate_pass_pending_human_review`;
+- AI visual pre-review of the generated multi-view top-change sheet found
+  localized silhouette/edge changes only, with no hard hole, missing backside,
+  upside-down terrain, or full chunk disappearance visible in the worst measured
+  pairs;
 - not proven: human visual acceptance, all camera angles, all movement speeds,
   or geomorphing.
 
