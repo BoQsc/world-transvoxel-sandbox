@@ -45,8 +45,8 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 ## S1 - Visual acceptance
 
 Status: reference-scene stability defaults, a one-chunk render-apply budget,
-and the single-view plus multi-view temporal gross-pop gates are in place;
-human appearance/playtest review remains.
+and the single-view plus multi-view temporal gross-pop and region-bounds gates
+are in place; human appearance/playtest review remains.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
   the 1.0.9 native fade-in/fade-out and budget-1 temporal evidence;
@@ -74,8 +74,10 @@ human appearance/playtest review remains.
 - S1.6 locks `render_apply_budget = 1` for the reference dynamic mixed-LOD
   policy and adds a three-view temporal harness. With World Transvoxel 1.0.9,
   single-view temporal evidence passes with maximum visible changed ratio
-  0.002314 and maximum mean RGB delta 0.000471; multi-view evidence passes with
-  maximum visible changed ratio 0.004534 and maximum mean RGB delta 0.000845.
+  0.002314, maximum mean RGB delta 0.000471, 1,301 changed visible pixels, and
+  changed bounding-box visible ratio 0.034371; multi-view evidence passes with
+  maximum visible changed ratio 0.004534, maximum mean RGB delta 0.000845,
+  2,381 changed visible pixels, and changed bounding-box visible ratio 0.150831.
   This still does not prove human visual acceptance, all camera angles, all
   movement speeds, or geomorphing;
 - classify every visible artifact as topology/collision, generation,

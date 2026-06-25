@@ -22,7 +22,8 @@ S0 is complete for the 128 baseline. S2 automated scale-ladder evidence is
 complete through L4 / 2048 for bounded generation, staged runtime,
 edit/remesh, and static visual capture. S1 still has a visual gate: dynamic
 mixed-LOD now passes the automated six-anchor single-view and three-view
-surface temporal gross-pop gates, but it is not accepted as a default seamless
+surface temporal gross-pop and region-bounds gates, but it is not accepted as a
+default seamless
 play mode until human visual review accepts the result or the standard is
 explicitly changed. We are not starting GPU compute, water/lava, planets,
 structural collapse, a game repository, or 0BSD backend replacement work before
@@ -30,7 +31,8 @@ the visual-quality blocker is resolved or explicitly demoted by standard.
 
 ## Latest evidence
 
-S1.6 - dynamic LOD visual-burst budget and multi-view temporal gate are complete.
+S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and
+region-bounds gates are complete.
 
 Commands:
 
@@ -76,7 +78,8 @@ Result:
   budget plus multi-view temporal measurement;
 - proven: retirement smoothing and native render fade-in/fade-out are active,
   bounded, keep queues/probes stable, and stay under the automated gross-pop
-  thresholds in the deterministic single-view and multi-view captures;
+  and region-bounds thresholds in the deterministic single-view and multi-view
+  captures;
 - not proven: seamless dynamic LOD appearance, human visual acceptance, all
   camera angles, all movement speeds, or geomorphing.
 
@@ -105,19 +108,24 @@ Single-view temporal surface evidence:
 - per-anchor transition review sheet:
   `artifacts/dynamic_lod_temporal/temporal_anchor_transition_review.png`;
 - report: `artifacts/dynamic_lod_temporal/dynamic_lod_temporal_report.json`;
-- maximum render-set delta: 19;
+- maximum render-set delta: 8;
 - maximum native fading resources: 59;
-- fade frames observed: 136;
+- fade frames observed: 164;
 - maximum visible changed ratio between adjacent frames: 0.002314;
 - maximum mean RGB delta between adjacent frames: 0.000471;
+- maximum visible changed pixels between adjacent frames: 1,301;
+- maximum changed bounding-box visible ratio between adjacent frames: 0.034371;
 - maximum-change pair: `anchor_00_frame_049.png` to
   `anchor_00_frame_050.png`;
 - gross-pop gate: passed across six anchors against visible-ratio limit 0.005
   and mean-RGB limit 0.002;
+- region-bounds gate: passed across six anchors against changed-pixel limit
+  4,096 and changed bounding-box visible-ratio limit 0.20;
 - classification:
   `temporal_surface_gross_pop_gate_pass_pending_human_review`;
 - proven: these deterministic surface transitions do not produce a large
-  measured frame-to-frame image swap under the automated gross-pop gate;
+  measured frame-to-frame image swap under the automated gross-pop and
+  region-bounds gates;
 - AI visual pre-review of the generated review sheets found localized
   silhouette/edge changes only, with no hard hole, missing backside,
   upside-down terrain, or full chunk disappearance visible in the worst
@@ -140,11 +148,15 @@ Multi-view temporal surface evidence:
 - fade frames observed: 490;
 - maximum visible changed ratio between adjacent frames: 0.004534;
 - maximum mean RGB delta between adjacent frames: 0.000845;
+- maximum visible changed pixels between adjacent frames: 2,381;
+- maximum changed bounding-box visible ratio between adjacent frames: 0.150831;
 - maximum-change pair:
   `view_02_diagonal_anchor_02_frame_041.png` to
   `view_02_diagonal_anchor_02_frame_042.png`;
 - gross-pop gate: passed across three views and six anchors against
   visible-ratio limit 0.005 and mean-RGB limit 0.002;
+- region-bounds gate: passed across three views and six anchors against
+  changed-pixel limit 4,096 and changed bounding-box visible-ratio limit 0.20;
 - classification:
   `temporal_multiview_gross_pop_gate_pass_pending_human_review`;
 - AI visual pre-review of the generated multi-view top-change sheet found
@@ -489,42 +501,40 @@ Result:
 
 ## Current active task
 
-S1.6 - human visual review of the budget-1 dynamic LOD policy.
+S1.7 - default dynamic LOD policy or native mitigation decision.
 
 Scope:
 
-- inspect the 1.0.9 six-anchor single-view and three-view temporal previews,
-  review sheets, and surface captures and decide whether native
-  fade-in/fade-out plus `render_apply_budget = 1` is acceptable as the default
-  dynamic LOD transition policy;
-- if visual acceptance still fails, choose the next bounded native policy:
-  geomorphing, stronger hysteresis, larger prefetch rings, or defaulting the
-  normal playtest/game path to LOD0/fixed-center until mixed LOD is accepted;
+- treat S1.6 as stronger automated evidence, not default seamless acceptance:
+  the one-chunk budget, gross-pop gate, and region-bounds gate pass, but human
+  visual acceptance and geomorphing remain not proven;
+- choose the bounded next policy before broad gameplay work resumes:
+  documented conservative LOD0/fixed-center default for normal playtest/game
+  paths, or a native mixed-LOD mitigation such as geomorphing, stronger
+  hysteresis, or larger prefetch rings;
 - keep the single-view and multi-view capture harnesses as regression metrics
   and preserve the S1.1/S1.2/S1.3/S1.5/S1.6 comparison;
 - keep GDScript limited to diagnostic capture/scaffolding.
 
 Exit:
 
-- S1.6 dynamic LOD captures are visually inspected or a stricter automated
-  criterion is added;
-- any accepted default policy is documented in `docs/TERRAIN_ACCEPTANCE_STANDARD.md`;
-- if S1.6 is not visually accepted, the next native mitigation is implemented
-  before broad gameplay features resume.
+- the accepted default playtest/game policy is documented in
+  `docs/TERRAIN_ACCEPTANCE_STANDARD.md` and reflected by the sandbox defaults,
+  or the next native mixed-LOD mitigation is implemented and rerun through the
+  S1.6 single-view and multi-view gates;
+- no compute, water/lava, planets, structural stability, or game-repository work
+  starts before this boundary is closed.
 
 ## Next finite steps
 
-1. Human-review `artifacts/dynamic_lod_temporal/temporal_preview.gif`,
-   `artifacts/dynamic_lod_temporal/temporal_top_change_pairs_review.png`,
-   `artifacts/dynamic_lod_temporal/temporal_anchor_transition_review.png`, and
-   `artifacts/dynamic_lod_temporal_multiview/temporal_multiview_preview.gif`,
-   `artifacts/dynamic_lod_temporal_multiview/temporal_multiview_top_change_pairs_review.png`,
-   and the surface stills.
-2. Decide whether 1.0.9 native fade-in/fade-out plus `render_apply_budget = 1`
-   is accepted or whether S1.6 requires geomorphing/prefetch/default-policy
-   changes.
-3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default
-   dynamic LOD policy boundary.
+1. Choose and apply the conservative default policy unless mixed LOD is visually
+   accepted: normal playtest/game paths use LOD0/fixed-center, while dynamic
+   mixed LOD remains diagnostic/experimental.
+2. If conservative default is rejected, implement one native mitigation
+   candidate before any feature expansion: geomorphing, stronger hysteresis, or
+   larger prefetch rings.
+3. Rerun the single-view and multi-view temporal gates after any default-policy
+   or mitigation change.
 
 ## Deferred by rule
 

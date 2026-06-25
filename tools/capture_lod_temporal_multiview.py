@@ -13,10 +13,12 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from capture_lod_temporal import (
+    MAX_CHANGED_BBOX_VISIBLE_RATIO,
     MAX_MEAN_RGB_DELTA,
+    MAX_VISIBLE_CHANGED_PIXELS,
     MAX_VISIBLE_CHANGED_RATIO,
     parse_fields,
-    visible_changed_ratio,
+    visible_change_metrics,
 )
 from scale_visual import discover_engine
 
@@ -67,18 +69,20 @@ def analyze_groups(groups: dict[tuple[int, str, int], list[Path]]) -> dict[str, 
         for index, path in enumerate(paths):
             current = Image.open(path)
             if previous is not None:
-                mean_delta, changed_ratio = visible_changed_ratio(previous, current)
+                metrics = visible_change_metrics(previous, current)
                 pair = {
                     "view": view,
                     "view_name": view_name,
                     "anchor": anchor,
                     "from": paths[index - 1].name,
                     "to": path.name,
-                    "mean_rgb_delta": mean_delta,
-                    "visible_changed_ratio": changed_ratio,
+                    **metrics,
                 }
                 pairs.append(pair)
-                if max_pair is None or changed_ratio > max_pair["visible_changed_ratio"]:
+                if (
+                    max_pair is None or
+                    pair["visible_changed_ratio"] > max_pair["visible_changed_ratio"]
+                ):
                     max_pair = pair
             previous = current
     if max_pair is None:
@@ -87,7 +91,22 @@ def analyze_groups(groups: dict[tuple[int, str, int], list[Path]]) -> dict[str, 
         "frame_pairs": pairs,
         "max_visible_changed_ratio": max_pair["visible_changed_ratio"],
         "max_mean_rgb_delta": max(pair["mean_rgb_delta"] for pair in pairs),
+        "max_visible_changed_pixels": max(
+            pair["visible_changed_pixels"] for pair in pairs
+        ),
+        "max_changed_bbox_pixels": max(pair["changed_bbox_pixels"] for pair in pairs),
+        "max_changed_bbox_visible_ratio": max(
+            pair["changed_bbox_visible_ratio"] for pair in pairs
+        ),
         "maximum_change_pair": max_pair,
+        "maximum_changed_pixels_pair": max(
+            pairs,
+            key=lambda pair: pair["visible_changed_pixels"],
+        ),
+        "maximum_changed_bbox_pair": max(
+            pairs,
+            key=lambda pair: pair["changed_bbox_visible_ratio"],
+        ),
     }
 
 
@@ -134,7 +153,9 @@ def write_top_change_review(analysis: dict[str, object], limit: int = 8) -> Path
             (
                 "diff x8 "
                 f"ratio={pair['visible_changed_ratio']:.6f} "
-                f"mean={pair['mean_rgb_delta']:.6f}"
+                f"mean={pair['mean_rgb_delta']:.6f} "
+                f"px={int(pair.get('visible_changed_pixels', 0))} "
+                f"bbox={float(pair.get('changed_bbox_visible_ratio', 0.0)):.6f}"
             ),
         ]
         images = [
@@ -210,10 +231,18 @@ def main() -> None:
     analysis = analyze_groups(groups)
     review = write_top_change_review(analysis)
     preview = write_preview(images)
-    passed = (
+    gross_passed = (
         analysis["max_visible_changed_ratio"] <= MAX_VISIBLE_CHANGED_RATIO
         and analysis["max_mean_rgb_delta"] <= MAX_MEAN_RGB_DELTA
     )
+    region_passed = (
+        analysis["max_visible_changed_pixels"] <= MAX_VISIBLE_CHANGED_PIXELS
+        and (
+            analysis["max_changed_bbox_visible_ratio"] <=
+            MAX_CHANGED_BBOX_VISIBLE_RATIO
+        )
+    )
+    passed = gross_passed and region_passed
     classification = CLASSIFICATION if passed else FAILURE_CLASSIFICATION
     report = {
         "schema": "world-transvoxel-sandbox.dynamic-lod-temporal-multiview.v1",
@@ -224,7 +253,12 @@ def main() -> None:
         "gross_pop_gate": {
             "max_mean_rgb_delta": MAX_MEAN_RGB_DELTA,
             "max_visible_changed_ratio": MAX_VISIBLE_CHANGED_RATIO,
-            "passed": passed,
+            "passed": gross_passed,
+        },
+        "region_bounds_gate": {
+            "max_changed_bbox_visible_ratio": MAX_CHANGED_BBOX_VISIBLE_RATIO,
+            "max_visible_changed_pixels": MAX_VISIBLE_CHANGED_PIXELS,
+            "passed": region_passed,
         },
         "raw_capture_classification": pass_fields["classification"],
         "summary": pass_fields,
@@ -247,19 +281,27 @@ def main() -> None:
             "geomorphing",
         ],
     }
-    if passed:
+    if gross_passed:
         report["proven"].append(
             "automated gross-pop threshold passed for these deterministic views"
         )
     else:
         report["not_proven"].append(
-            "automated gross-pop threshold passed for these deterministic views"
+            "automated gross-pop threshold did not pass for these deterministic views"
+        )
+    if region_passed:
+        report["proven"].append(
+            "automated region-bounds threshold passed for these deterministic views"
+        )
+    else:
+        report["not_proven"].append(
+            "automated region-bounds threshold did not pass for these deterministic views"
         )
     report_path = OUTPUT_ROOT / "dynamic_lod_temporal_multiview_report.json"
     report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     if not passed:
         raise RuntimeError(
-            "multi-view temporal gross-pop gate failed; "
+            "multi-view temporal visual gate failed; "
             f"report={report_path.relative_to(ROOT).as_posix()} "
             f"review={review.relative_to(ROOT).as_posix()}"
         )

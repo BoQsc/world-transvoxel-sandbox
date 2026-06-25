@@ -21,6 +21,8 @@ PASS_MARKER = "WT_SANDBOX_LOD_TEMPORAL_CAPTURE_PASS"
 FRAME_MARKER = "WT_SANDBOX_LOD_TEMPORAL_FRAME"
 MAX_VISIBLE_CHANGED_RATIO = 0.005
 MAX_MEAN_RGB_DELTA = 0.002
+MAX_VISIBLE_CHANGED_PIXELS = 4096
+MAX_CHANGED_BBOX_VISIBLE_RATIO = 0.2
 CLASSIFICATION = "temporal_surface_gross_pop_gate_pass_pending_human_review"
 
 
@@ -33,7 +35,7 @@ def parse_fields(line: str) -> dict[str, str]:
     return fields
 
 
-def visible_changed_ratio(left: Image.Image, right: Image.Image) -> tuple[float, float]:
+def visible_change_metrics(left: Image.Image, right: Image.Image) -> dict[str, object]:
     left_rgb = left.convert("RGB")
     right_rgb = right.convert("RGB")
     diff = ImageChops.difference(left_rgb, right_rgb)
@@ -44,10 +46,47 @@ def visible_changed_ratio(left: Image.Image, right: Image.Image) -> tuple[float,
     )
     changed = diff_gray.point(lambda value: 255 if value > 8 else 0)
     visible_count = visible.histogram()[255]
+    changed_visible = ImageChops.multiply(changed, visible)
+    changed_visible_count = changed_visible.histogram()[255]
+    bbox = changed_visible.getbbox()
+    bbox_pixels = 0
+    if bbox is not None:
+        bbox_pixels = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+    bbox_record = (
+        None
+        if bbox is None
+        else {
+            "x_min": bbox[0],
+            "y_min": bbox[1],
+            "x_max": bbox[2],
+            "y_max": bbox[3],
+        }
+    )
     if visible_count == 0:
-        return mean_delta, 0.0
-    changed_visible = ImageChops.multiply(changed, visible).histogram()[255]
-    return mean_delta, changed_visible / visible_count
+        return {
+            "mean_rgb_delta": mean_delta,
+            "visible_changed_ratio": 0.0,
+            "visible_changed_pixels": 0,
+            "changed_bbox_pixels": bbox_pixels,
+            "changed_bbox_visible_ratio": 0.0,
+            "changed_bbox": bbox_record,
+        }
+    return {
+        "mean_rgb_delta": mean_delta,
+        "visible_changed_ratio": changed_visible_count / visible_count,
+        "visible_changed_pixels": changed_visible_count,
+        "changed_bbox_pixels": bbox_pixels,
+        "changed_bbox_visible_ratio": bbox_pixels / visible_count,
+        "changed_bbox": bbox_record,
+    }
+
+
+def visible_changed_ratio(left: Image.Image, right: Image.Image) -> tuple[float, float]:
+    metrics = visible_change_metrics(left, right)
+    return (
+        float(metrics["mean_rgb_delta"]),
+        float(metrics["visible_changed_ratio"]),
+    )
 
 
 def analyze_images(paths: list[Path]) -> dict[str, object]:
@@ -57,15 +96,17 @@ def analyze_images(paths: list[Path]) -> dict[str, object]:
     for index, path in enumerate(paths):
         current = Image.open(path)
         if previous is not None:
-            mean_delta, changed_ratio = visible_changed_ratio(previous, current)
+            metrics = visible_change_metrics(previous, current)
             pair = {
                 "from": paths[index - 1].name,
                 "to": path.name,
-                "mean_rgb_delta": mean_delta,
-                "visible_changed_ratio": changed_ratio,
+                **metrics,
             }
             pairs.append(pair)
-            if max_pair is None or changed_ratio > max_pair["visible_changed_ratio"]:
+            if (
+                max_pair is None or
+                pair["visible_changed_ratio"] > max_pair["visible_changed_ratio"]
+            ):
                 max_pair = pair
         previous = current
     if max_pair is None:
@@ -74,7 +115,22 @@ def analyze_images(paths: list[Path]) -> dict[str, object]:
         "frame_pairs": pairs,
         "max_visible_changed_ratio": max_pair["visible_changed_ratio"],
         "max_mean_rgb_delta": max(pair["mean_rgb_delta"] for pair in pairs),
+        "max_visible_changed_pixels": max(
+            pair["visible_changed_pixels"] for pair in pairs
+        ),
+        "max_changed_bbox_pixels": max(pair["changed_bbox_pixels"] for pair in pairs),
+        "max_changed_bbox_visible_ratio": max(
+            pair["changed_bbox_visible_ratio"] for pair in pairs
+        ),
         "maximum_change_pair": max_pair,
+        "maximum_changed_pixels_pair": max(
+            pairs,
+            key=lambda pair: pair["visible_changed_pixels"],
+        ),
+        "maximum_changed_bbox_pair": max(
+            pairs,
+            key=lambda pair: pair["changed_bbox_visible_ratio"],
+        ),
     }
 
 
@@ -142,6 +198,10 @@ def main() -> None:
         raise RuntimeError("temporal visible changed ratio exceeded gross-pop gate")
     if analysis["max_mean_rgb_delta"] > MAX_MEAN_RGB_DELTA:
         raise RuntimeError("temporal mean RGB delta exceeded gross-pop gate")
+    if analysis["max_visible_changed_pixels"] > MAX_VISIBLE_CHANGED_PIXELS:
+        raise RuntimeError("temporal changed-pixel count exceeded region gate")
+    if analysis["max_changed_bbox_visible_ratio"] > MAX_CHANGED_BBOX_VISIBLE_RATIO:
+        raise RuntimeError("temporal changed bounding box exceeded region gate")
     preview = write_preview(images)
     report = {
         "schema": "world-transvoxel-sandbox.dynamic-lod-temporal-evidence.v1",
@@ -152,6 +212,11 @@ def main() -> None:
         "gross_pop_gate": {
             "max_mean_rgb_delta": MAX_MEAN_RGB_DELTA,
             "max_visible_changed_ratio": MAX_VISIBLE_CHANGED_RATIO,
+            "passed": True,
+        },
+        "region_bounds_gate": {
+            "max_changed_bbox_visible_ratio": MAX_CHANGED_BBOX_VISIBLE_RATIO,
+            "max_visible_changed_pixels": MAX_VISIBLE_CHANGED_PIXELS,
             "passed": True,
         },
         "raw_capture_classification": pass_fields["classification"],
@@ -166,6 +231,7 @@ def main() -> None:
             "native render retirement fade was active during the sequence",
             "frame-to-frame visible image deltas were measured",
             "automated gross-pop threshold passed for this deterministic view",
+            "automated region-bounds threshold passed for this deterministic view",
         ],
         "not_proven": [
             "human visual acceptance",

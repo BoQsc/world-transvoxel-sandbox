@@ -42,6 +42,15 @@ def report_from_capture() -> dict[str, object]:
     }
 
 
+def ensure_region_metrics(report: dict[str, object]) -> None:
+    pairs = report.get("image_analysis", {}).get("frame_pairs", [])
+    if pairs and "visible_changed_pixels" in pairs[0]:
+        return
+    images = sorted(OUTPUT_ROOT.glob("anchor_*_frame_*.png"))
+    if len(images) >= 2:
+        report["image_analysis"] = analyze_images(images)
+
+
 def draw_label(
     canvas: Image.Image,
     position: tuple[int, int],
@@ -95,7 +104,9 @@ def write_top_change_review(report: dict[str, object], limit: int) -> Path:
             (
                 "diff x8 "
                 f"ratio={pair['visible_changed_ratio']:.6f} "
-                f"mean={pair['mean_rgb_delta']:.6f}"
+                f"mean={pair['mean_rgb_delta']:.6f} "
+                f"px={int(pair.get('visible_changed_pixels', 0))} "
+                f"bbox={float(pair.get('changed_bbox_visible_ratio', 0.0)):.6f}"
             ),
         ]
         images = [
@@ -171,6 +182,7 @@ def main() -> None:
         if REPORT_PATH.is_file()
         else report_from_capture()
     )
+    ensure_region_metrics(report)
     top_change = write_top_change_review(report, max(1, arguments.top_pairs))
     anchor = write_anchor_review(report)
     maximum = report["image_analysis"]["maximum_change_pair"]
