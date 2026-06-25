@@ -1,7 +1,7 @@
 # World Transvoxel Sandbox
 
 Visual, gameplay, and scale validation for the qualified World Transvoxel
-1.0.4 MIT-backed addon. This repository is deliberately a sandbox before it
+1.0.5 MIT-backed addon. This repository is deliberately a sandbox before it
 becomes a game.
 
 World Transvoxel 1.0.0 is rejected and withdrawn. This sandbox exposed its
@@ -10,18 +10,19 @@ deformation, and inadequate one-chunk acceptance tests. Version 1.0.1 is also
 superseded because moving-viewer LOD changes could remove old chunks before
 their replacements were applied. Version 1.0.3 is superseded because dynamic
 mixed-LOD movement could retire a large ready replacement set in one frame.
-Version 1.0.4 is the current baseline; it is
-not a claim that the sandbox is a finished terrain product or game.
+Version 1.0.5 adds a bounded native render fade-out for retiring chunks after
+replacement application. It is the current baseline; it is not a claim that the
+sandbox is a finished terrain product or game.
 
 The vendored addon is the exact Windows x86-64 release from
-`world-transvoxel` commit `601c148`. Its mixed 0BSD/MIT scope and release
+`world-transvoxel` commit `ec9d91b`. Its mixed 0BSD/MIT scope and release
 manifest are retained at the repository root.
 
 Dynamic mixed-LOD streaming is not yet visually seamless. It remains covered
-by topology, render/collision continuity, and motion stress tests, but visible
-LOD replacement popping is an open visual-quality blocker. The normal human
-playtest therefore uses a fixed, complete LOD0 map and must not be presented
-as proof that dynamic LOD appearance is finished.
+by topology, render/collision continuity, motion stress tests, and native fade
+metrics, but human visual acceptance is still open. The normal human playtest
+therefore uses a fixed, complete LOD0 map and must not be presented as proof
+that dynamic LOD appearance is finished.
 
 The project is standards-first. Larger terrain without artifacts, holes,
 upside-down behavior, uncontrolled background work, or unexplained visual

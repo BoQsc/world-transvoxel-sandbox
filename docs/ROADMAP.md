@@ -9,11 +9,13 @@ The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.4.
+Status: revalidated against World Transvoxel 1.0.5.
 
-- vendored and locked World Transvoxel 1.0.4 release; 1.0.0 is withdrawn,
+- vendored and locked World Transvoxel 1.0.5 release; 1.0.0 is withdrawn,
   1.0.1 is superseded for premature moving-viewer chunk retirement, and 1.0.3
   is superseded for one-frame bulk retirement during dynamic mixed-LOD motion;
+  1.0.5 adds a bounded native render fade-out for retiring chunks after
+  replacement application;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
@@ -43,8 +45,8 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 Status: reference-scene stability defaults are in place; human
 appearance/playtest review remains.
 
-- dynamic mixed-LOD replacement popping remains an explicit visual blocker
-  after the 1.0.4 retirement-smoothing evidence;
+- dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
+  the 1.0.5 native fade evidence;
 - S1.1 dynamic evidence classifies the current blocker as
   `lod_transition_visual_swap_without_geomorph`: fixed-camera demand-anchor
   movement observed 39 render-set replacement frames, maximum staged
@@ -54,6 +56,10 @@ appearance/playtest review remains.
   one-frame render-set delta from 61 to 8, but replacement frames increased to
   79 and staged retirements to 92; this is an improvement, not visual
   acceptance;
+- S1.3 native visual transition smoothing in World Transvoxel 1.0.5 observed
+  74 replacement frames, maximum render-set delta 8, maximum staged retirements
+  92, maximum native fading resources 30, and 101 fade frames; this proves the
+  fade path is active, but not human visual acceptance or geomorphing;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -62,11 +68,9 @@ appearance/playtest review remains.
 - inspect surfaces, caves, and interaction feel using the conservative LOD0
   reference scene;
 - inspect mixed-LOD appearance separately using the existing audit/debug views;
-- decide whether visible LOD popping requires geomorphing, cross-fading,
-  stronger hysteresis, larger prefetch rings, or a different default policy;
-- next attempted fix is native render cross-fade, geomorphing, or an explicit
-  default-policy decision; do not switch to broad feature work while this visual
-  blocker is still active;
+- decide whether the native fade is acceptable as the default policy or whether
+  visible LOD transitions still require geomorphing, stronger hysteresis, larger
+  prefetch rings, or a different default policy;
 - add real texture-array/triplanar assets after the procedural palette is
   accepted;
 - record representative screenshots and identified defects;

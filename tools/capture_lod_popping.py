@@ -72,6 +72,9 @@ def main() -> None:
     replacement_frames = int(pass_fields["replacement_frames"])
     if replacement_frames <= 0:
         raise RuntimeError("dynamic LOD capture did not observe replacements")
+    max_render_fading = int(pass_fields.get("max_render_fading", "0"))
+    if max_render_fading <= 0:
+        raise RuntimeError("dynamic LOD capture did not observe native render fade")
     images = sorted(
         path.name
         for path in OUTPUT_ROOT.glob("*.png")
@@ -92,11 +95,13 @@ def main() -> None:
         "proven": [
             "fixed-camera dynamic demand updates produce render-set replacement frames",
             "render and collision stay present at the center probe during replacements",
-            "the observed artifact is an LOD transition visual swap, not a hard hole",
+            "native render retirement fade is active during dynamic replacements",
+            "the observed artifact is not a hard hole",
         ],
         "not_proven": [
             "human visual acceptance",
-            "geomorphing or cross-fading",
+            "seamless dynamic LOD appearance",
+            "geomorphing",
             "fast travel or disjoint teleport policy",
         ],
     }
@@ -107,6 +112,7 @@ def main() -> None:
     print(
         "WT_SANDBOX_DYNAMIC_LOD_CAPTURE_PASS "
         f"replacement_frames={replacement_frames} "
+        f"max_render_fading={max_render_fading} "
         f"captures={pass_fields['captures']} "
         f"classification={pass_fields['classification']} "
         f"report={(OUTPUT_ROOT / 'dynamic_lod_report.json').relative_to(ROOT).as_posix()}"

@@ -14,12 +14,12 @@ var _max_retiring := 0
 var _max_queued_render := 0
 var _max_queued_collision := 0
 var _max_render_delta := 0
+var _max_render_fading := 0
+var _fade_frames := 0
 var _last_render_count := 0
-
 
 func _initialize() -> void:
 	call_deferred("_run")
-
 
 func _run() -> void:
 	var packed := load("res://scenes/terrain_lab.tscn") as PackedScene
@@ -72,9 +72,11 @@ func _run() -> void:
 			return
 	if not await _wait_for_settled_resources(terrain):
 		return _fail("terrain did not settle after dynamic LOD capture")
-	var classification := "lod_transition_visual_swap_without_geomorph"
+	if _max_render_fading <= 0:
+		return _fail("dynamic LOD capture did not observe native render fade")
+	var classification := "lod_transition_native_fade_without_geomorph_pending_visual_acceptance"
 	print(
-		"WT_SANDBOX_LOD_POP_EVIDENCE_PASS anchors=%d replacement_frames=%d captures=%d max_retiring=%d max_queued_render=%d max_queued_collision=%d max_render_delta=%d classification=%s"
+		"WT_SANDBOX_LOD_POP_EVIDENCE_PASS anchors=%d replacement_frames=%d captures=%d max_retiring=%d max_queued_render=%d max_queued_collision=%d max_render_delta=%d max_render_fading=%d fade_frames=%d classification=%s"
 		% [
 			anchors.size(),
 			_replacement_frames,
@@ -83,6 +85,8 @@ func _run() -> void:
 			_max_queued_render,
 			_max_queued_collision,
 			_max_render_delta,
+			_max_render_fading,
+			_fade_frames,
 			classification,
 		]
 	)
@@ -90,7 +94,6 @@ func _run() -> void:
 		terrain.stop_world()
 	_scene_root.queue_free()
 	quit(0)
-
 
 func _observe_transition(terrain: Node, anchor_index: int) -> bool:
 	for frame in range(90):
@@ -100,6 +103,10 @@ func _observe_transition(terrain: Node, anchor_index: int) -> bool:
 		_max_retiring = maxi(_max_retiring, int(metrics.get("pending_chunk_retirements", 0)))
 		_max_queued_render = maxi(_max_queued_render, int(metrics.get("queued_render", 0)))
 		_max_queued_collision = maxi(_max_queued_collision, int(metrics.get("queued_collision", 0)))
+		var render_fading := int(metrics.get("render_fading_resources", 0))
+		_max_render_fading = maxi(_max_render_fading, render_fading)
+		if render_fading > 0:
+			_fade_frames += 1
 		if not _probe_render_and_collision(terrain, Vector3(64, 60, 64), Vector3.DOWN):
 			return _fail("center render/collision probe failed during dynamic LOD")
 		var render_count: int = terrain.get_rendered_chunk_count()
@@ -111,7 +118,7 @@ func _observe_transition(terrain: Node, anchor_index: int) -> bool:
 			_replacement_frames += 1
 			var counts: Dictionary = _lod_counts(terrain)
 			print(
-				"WT_SANDBOX_LOD_POP_FRAME anchor=%d frame=%d render=%d collision=%d active=%d ready=%d retiring=%d queued_render=%d queued_collision=%d lod0=%d lod1=%d"
+				"WT_SANDBOX_LOD_POP_FRAME anchor=%d frame=%d render=%d collision=%d active=%d ready=%d retiring=%d render_fading=%d queued_render=%d queued_collision=%d lod0=%d lod1=%d"
 				% [
 					anchor_index,
 					frame,
@@ -120,6 +127,7 @@ func _observe_transition(terrain: Node, anchor_index: int) -> bool:
 					int(metrics.get("active_chunk_records", 0)),
 					int(metrics.get("fully_ready_chunk_records", 0)),
 					int(metrics.get("pending_chunk_retirements", 0)),
+					render_fading,
 					int(metrics.get("queued_render", 0)),
 					int(metrics.get("queued_collision", 0)),
 					int(counts.get(0, 0)),

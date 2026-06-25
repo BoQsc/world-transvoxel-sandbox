@@ -20,15 +20,16 @@ S1 - visual acceptance and dynamic mixed-LOD quality.
 
 S0 is complete for the 128 baseline. S2 automated scale-ladder evidence is
 complete through L4 / 2048 for bounded generation, staged runtime,
-edit/remesh, and static visual capture. S1 still has a visual blocker: dynamic
-mixed-LOD popping is not accepted as seamless. We are not starting GPU compute,
+edit/remesh, and static visual capture. S1 still has a visual gate: dynamic
+mixed-LOD appearance is not accepted as seamless from automated evidence alone.
+We are not starting GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement work before the visual-quality blocker is resolved or explicitly
 demoted by standard.
 
 ## Latest evidence
 
-S1.2 - native dynamic LOD retirement smoothing is complete.
+S1.3 - native dynamic LOD visual transition smoothing is complete.
 
 Command:
 
@@ -41,26 +42,41 @@ Result:
 - diagnostic mode: fixed camera, LOD-color debug view, autonomous input
   disabled, and native terrain demand anchor moved independently of camera
   motion;
-- vendored addon: World Transvoxel 1.0.4 from upstream commit `601c148`;
+- vendored addon: World Transvoxel 1.0.5 from upstream commit `ec9d91b`;
 - anchors: 6;
-- replacement frames observed: 79;
+- replacement frames observed: 74;
 - saved diagnostic captures: 12 under `artifacts/dynamic_lod`;
 - report: `artifacts/dynamic_lod/dynamic_lod_report.json`;
 - maximum staged retirements: 92;
 - maximum render-set delta in one observed frame: 8;
+- maximum native fading resources: 30;
+- fade frames observed: 101;
 - maximum queued render/collision backlog: 0 / 0;
 - center render/collision probe stayed present during replacements;
-- classification: `lod_transition_visual_swap_without_geomorph`;
+- classification:
+  `lod_transition_native_fade_without_geomorph_pending_visual_acceptance`;
 - comparison against S1.1 baseline: improved from 61 to 8 maximum one-frame
-  render-set delta, while replacement frames increased from 39 to 79 and
-  staged retirements increased from 36 to 92 because old chunks are now removed
-  across several frames;
-- proven: retirement smoothing reduces the harsh one-frame LOD swap and keeps
-  queues/probes stable;
-- not proven: seamless dynamic LOD appearance. The remaining classification is
-  still `lod_transition_visual_swap_without_geomorph`, so the next fix must be
-  native transition visual smoothing such as cross-fade or geomorphing, or an
-  explicitly accepted default policy change.
+  render-set delta; S1.2 previously observed 79 replacement frames with the
+  same render-set delta, and S1.3 now proves native fade activity during those
+  replacements;
+- proven: retirement smoothing and native render fade are active, bounded, and
+  keep queues/probes stable;
+- not proven: seamless dynamic LOD appearance, human visual acceptance, or
+  geomorphing.
+
+Post-vendor gates passed against 1.0.5:
+
+```console
+python tools/validate_sandbox.py
+python tools/test_sandbox.py
+python tools/capture_visuals.py
+python tools/scale_runtime.py --level L4
+```
+
+The L0 smoke/idle/geometry/interaction/volumetric/motion/seam matrix passed on
+Godot 4.6.3 and 4.7 with both debug and release binaries. Static visual capture
+again produced 9 images. L4 runtime passed on both supported engines with
+active capacity 1024 and `max_retiring=0`.
 
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
@@ -376,35 +392,34 @@ Result:
 
 ## Current active task
 
-S1.3 - native dynamic LOD visual transition smoothing.
+S1.4 - visual acceptance and default dynamic LOD policy decision.
 
 Scope:
 
-- design and implement the smallest native visual transition policy for dynamic
-  mixed-LOD replacement that addresses the remaining
-  `lod_transition_visual_swap_without_geomorph` classification;
-- prefer a bounded render cross-fade or geomorphing path that does not move hot
-  terrain logic into GDScript;
-- keep the existing capture harness as the regression metric and compare
-  against both S1.1 and S1.2 baselines;
+- inspect the S1.3 captures and decide whether native fade is acceptable as the
+  default dynamic LOD transition policy;
+- if visual acceptance still fails, choose the next bounded native policy:
+  geomorphing, stronger hysteresis, larger prefetch rings, or defaulting the
+  normal playtest/game path to LOD0/fixed-center until mixed LOD is accepted;
+- keep the existing capture harness as the regression metric and preserve the
+  S1.1/S1.2/S1.3 comparison;
 - keep GDScript limited to diagnostic capture/scaffolding.
 
 Exit:
 
-- a native transition policy is implemented, built, released, and vendored;
-- dynamic LOD evidence is rerun and records whether replacement visibility is
-  improved beyond the S1.2 baseline of maximum render-set delta 8 and 79
-  replacement frames;
-- if cross-fade/geomorphing is rejected, the rejection is documented with a
-  default-policy decision rather than silently accepting popping.
+- S1.3 dynamic LOD captures are visually inspected or a stricter automated
+  criterion is added;
+- any accepted default policy is documented in `docs/TERRAIN_ACCEPTANCE_STANDARD.md`;
+- if S1.3 is not visually accepted, the next native mitigation is implemented
+  before broad gameplay features resume.
 
 ## Next finite steps
 
-1. Inspect the native render/removal path and choose cross-fade, geomorphing,
-   or a documented default-policy alternative.
-2. Implement the selected native policy upstream and release a tested addon.
-3. Vendor the release and rerun dynamic LOD, L0 matrix/static visual, and L4
-   runtime gates.
+1. Inspect `artifacts/dynamic_lod/` captures for remaining visible popping.
+2. Decide whether S1.3 native fade is accepted or whether S1.4 requires
+   geomorphing/prefetch/default-policy changes.
+3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default
+   dynamic LOD policy boundary.
 
 ## Deferred by rule
 

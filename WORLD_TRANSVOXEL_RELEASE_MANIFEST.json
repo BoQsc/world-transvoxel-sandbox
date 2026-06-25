@@ -1,10 +1,10 @@
 {
   "artifact": {
-    "bytes": 6213908,
-    "content_sha256": "06fc8d956473c2dbaeba752cb1cfbbcc9ad2195c9ea9f4860e57c8b32caa8938",
+    "bytes": 6239717,
+    "content_sha256": "019fd6f507e1b39cf915be684046020dadb55dddacfdd8b75a5f865f555c3213",
     "file_count": 147,
     "format": "directory",
-    "name": "world-transvoxel-1.0.4-windows-x86_64"
+    "name": "world-transvoxel-1.0.5-windows-x86_64"
   },
   "backend": {
     "id": "transvoxel_mit_official",
@@ -34,9 +34,9 @@
       "sha256": "11f8fcff254eb168cf438597185961d181b1b017c59933f0119ab804442f1043"
     },
     {
-      "bytes": 4276,
+      "bytes": 4500,
       "path": "addons/world_transvoxel/OPERATING_LIMITS.md",
-      "sha256": "3e583ac4ad8140ff80f759c299e3b809d1a6e169b9a1e67d9db96bdf5d22fc6b"
+      "sha256": "01391f55d5fba2af47a58af0ee0bc13b8c998254cbba4a962205bec1b52bfb26"
     },
     {
       "bytes": 4629,
@@ -44,19 +44,19 @@
       "sha256": "228dd8ea492bcfc87ff12f692bc885621cc02823f40f933e09fd8891b08d9399"
     },
     {
-      "bytes": 3332,
+      "bytes": 3440,
       "path": "addons/world_transvoxel/README.md",
-      "sha256": "bc403b3c98560bdf2082194bbcc56e1cae8a4a4a28299786bd84c1f304b6f0a0"
+      "sha256": "0a397dd83064b8865ee052488ec6561213f84201aeec8fae940494964df42492"
     },
     {
-      "bytes": 1654784,
+      "bytes": 1668096,
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
-      "sha256": "234323e6e40777e81a2bfee51e76c01c09b8188f9544156573510cf20fd23f31"
+      "sha256": "779c4b4803c50343d6f0c7d578b058b49db1166e7e044b5eb4f40a63acc6d6b2"
     },
     {
-      "bytes": 1606144,
+      "bytes": 1616384,
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
-      "sha256": "2107c59fe44f3924caa82804a032177982e64a642a7d3d2b3206358d9d96ee36"
+      "sha256": "6d509b512168d116ab929ffec129007fc3c94679fc5f14e68be58afc0575f867"
     },
     {
       "bytes": 564736,
@@ -101,7 +101,7 @@
     {
       "bytes": 188,
       "path": "addons/world_transvoxel/plugin.cfg",
-      "sha256": "aa3bbfec6f85ce8299473fd49c8d63dd1f7dc14a7b37bc2ce45ae6a72b251151"
+      "sha256": "5d49d82f588f724043c73bcf128e0b4b6146a0a521056f02e4e2f1f0a0b4c141"
     },
     {
       "bytes": 2492,
@@ -159,9 +159,9 @@
       "sha256": "e32b7619f310bc6788ebfc7dd76b40e1c03773431c012dae05627be5977263cf"
     },
     {
-      "bytes": 4046,
+      "bytes": 4186,
       "path": "addons/world_transvoxel/src/api/world_transvoxel_terrain_metrics.cpp",
-      "sha256": "22c71e1b1452e9a55677a49826e1c353e20274615d6b58022c333c2556c0e842"
+      "sha256": "6e71a02c9418aee447afb5fbb089f88fd695d7a2565ad72b3867f69afa8ff155"
     },
     {
       "bytes": 4546,
@@ -169,9 +169,9 @@
       "sha256": "390eb49c6eefc3c26e0abe5eeca58826d3c00909d6552b2c6afb7472b44053cc"
     },
     {
-      "bytes": 9120,
+      "bytes": 9168,
       "path": "addons/world_transvoxel/src/api/world_transvoxel_terrain_streaming.cpp",
-      "sha256": "477c841a3c5390e24c98f2cb97b795500a9b2b0d67a5188e96fc384e0feb4e5f"
+      "sha256": "1edbe0badf0658ca1ce7f6c28522951d8d454a970ab42cf4383140daa9cba8dd"
     },
     {
       "bytes": 232,
@@ -261,7 +261,7 @@
     {
       "bytes": 180,
       "path": "addons/world_transvoxel/src/core/wt_version.h",
-      "sha256": "2806a993620aff5278757c2bfa25a57c656d2de69fdd9d5230401f2ddb773c5c"
+      "sha256": "5ac13d4726e16873367ee4f827601599506b856d0bd40a8e8167f24d1d4edcb1"
     },
     {
       "bytes": 8668,
@@ -389,14 +389,14 @@
       "sha256": "3d2d0bc14b95b00e57503e5c58bfec97ddef3b828a874e8341d4e9248c966930"
     },
     {
-      "bytes": 4715,
+      "bytes": 6243,
       "path": "addons/world_transvoxel/src/render/wt_godot_render_sink.cpp",
-      "sha256": "c008e22f9e2d1f27542d992bb439d8a1a709d5ee2fc451549c0bdd33aa09c0f9"
+      "sha256": "095b854479e5246985d6f151c1f656c1f0f0892ca89af70a6a3fa99452a446da"
     },
     {
-      "bytes": 852,
+      "bytes": 1061,
       "path": "addons/world_transvoxel/src/render/wt_godot_render_sink.h",
-      "sha256": "afc6f8fb4254df50a997078470781055cf7a39df45079e75b1ee81681afc289c"
+      "sha256": "758f050d8fdb90d1b3247bb83faf23241bd9e2ad5a547a877cbd204fa2ca91b1"
     },
     {
       "bytes": 822,
@@ -769,5 +769,5 @@
     "godot_cpp_revision": "e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77",
     "zig": "0.16.0"
   },
-  "version": "1.0.4"
+  "version": "1.0.5"
 }
