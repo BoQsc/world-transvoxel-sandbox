@@ -63,6 +63,10 @@ appearance/playtest review remains.
 - S1.4 adds surface-mode dynamic transition captures because LOD-debug captures
   are diagnostic only; the surface stills show no hard hole or obvious large
   terrain swap, but temporal/human acceptance remains open;
+- S1.4 temporal surface capture records 90 consecutive frames for one
+  deterministic transition and passes the automated gross-pop gate with maximum
+  visible changed ratio 0.002314 against limit 0.005; this still does not prove
+  human visual acceptance, all camera angles, or geomorphing;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;

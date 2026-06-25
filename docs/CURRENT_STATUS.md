@@ -99,6 +99,32 @@ Result:
 - not proven: temporal seamlessness. Still images do not replace video/human
   review for accepting the default dynamic LOD policy.
 
+S1.4 temporal surface evidence now covers one deterministic mixed-LOD
+replacement sequence frame-by-frame:
+
+```console
+python tools/capture_lod_temporal.py
+```
+
+Result:
+
+- frames captured: 90 under `artifacts/dynamic_lod_temporal`;
+- preview: `artifacts/dynamic_lod_temporal/temporal_preview.gif`;
+- report: `artifacts/dynamic_lod_temporal/dynamic_lod_temporal_report.json`;
+- maximum render-set delta: 8;
+- maximum native fading resources: 27;
+- fade frames observed: 22;
+- maximum visible changed ratio between adjacent frames: 0.002314;
+- maximum mean RGB delta between adjacent frames: 0.000471;
+- gross-pop gate: passed against visible-ratio limit 0.005 and mean-RGB limit
+  0.002;
+- classification:
+  `temporal_surface_gross_pop_gate_pass_pending_human_review`;
+- proven: this deterministic surface transition does not produce a large
+  measured frame-to-frame image swap;
+- not proven: human visual acceptance, all camera angles, all movement speeds,
+  or geomorphing.
+
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
 Commands:
@@ -436,7 +462,8 @@ Exit:
 
 ## Next finite steps
 
-1. Produce or inspect temporal/video evidence for `artifacts/dynamic_lod_surface/`.
+1. Human-review `artifacts/dynamic_lod_temporal/temporal_preview.gif` and the
+   surface stills.
 2. Decide whether S1.3 native fade is accepted or whether S1.4 requires
    geomorphing/prefetch/default-policy changes.
 3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default
