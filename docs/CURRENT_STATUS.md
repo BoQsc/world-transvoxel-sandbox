@@ -78,6 +78,27 @@ Godot 4.6.3 and 4.7 with both debug and release binaries. Static visual capture
 again produced 9 images. L4 runtime passed on both supported engines with
 active capacity 1024 and `max_retiring=0`.
 
+S1.4 surface-mode dynamic evidence was added because LOD-debug captures
+intentionally exaggerate transition visibility:
+
+```console
+python tools/capture_lod_surface.py
+```
+
+Result:
+
+- replacement frames observed: 75;
+- saved surface captures: 12 under `artifacts/dynamic_lod_surface`;
+- report: `artifacts/dynamic_lod_surface/dynamic_lod_surface_report.json`;
+- maximum render-set delta in one observed frame: 7;
+- maximum native fading resources: 30;
+- fade frames observed: 102;
+- classification: `surface_transition_pending_visual_acceptance`;
+- AI inspection of the generated still-image contact sheet found no hard hole,
+  missing backside, or obvious large one-frame terrain swap in surface mode;
+- not proven: temporal seamlessness. Still images do not replace video/human
+  review for accepting the default dynamic LOD policy.
+
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
 Commands:
@@ -415,7 +436,7 @@ Exit:
 
 ## Next finite steps
 
-1. Inspect `artifacts/dynamic_lod/` captures for remaining visible popping.
+1. Produce or inspect temporal/video evidence for `artifacts/dynamic_lod_surface/`.
 2. Decide whether S1.3 native fade is accepted or whether S1.4 requires
    geomorphing/prefetch/default-policy changes.
 3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default

@@ -60,6 +60,9 @@ appearance/playtest review remains.
   74 replacement frames, maximum render-set delta 8, maximum staged retirements
   92, maximum native fading resources 30, and 101 fade frames; this proves the
   fade path is active, but not human visual acceptance or geomorphing;
+- S1.4 adds surface-mode dynamic transition captures because LOD-debug captures
+  are diagnostic only; the surface stills show no hard hole or obvious large
+  terrain swap, but temporal/human acceptance remains open;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;

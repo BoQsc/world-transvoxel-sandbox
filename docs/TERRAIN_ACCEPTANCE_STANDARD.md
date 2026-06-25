@@ -32,6 +32,10 @@ repository work remain secondary until the terrain itself is proven at scale.
   with known popping.
 - Dynamic LOD popping remains a blocker until fixed or explicitly demoted by a
   documented standard.
+- LOD-debug captures are diagnostic only. Dynamic LOD visual acceptance requires
+  surface-mode transition evidence, and still-image evidence cannot by itself
+  prove temporal seamlessness; video/human review or a stricter automated
+  temporal criterion is required before accepting the default policy.
 - Settled terrain must stay cold: no hidden streaming, meshing, recovery, or
   regeneration work while nothing changed.
 - Runtime budgets are part of acceptance. Each accepted scale must follow
