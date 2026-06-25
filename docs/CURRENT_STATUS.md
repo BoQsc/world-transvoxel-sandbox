@@ -21,15 +21,17 @@ S1 - visual acceptance and dynamic mixed-LOD quality.
 S0 is complete for the 128 baseline. S2 automated scale-ladder evidence is
 complete through L4 / 2048 for bounded generation, staged runtime,
 edit/remesh, and static visual capture. S1 still has a visual gate: dynamic
-mixed-LOD appearance is not accepted as seamless from automated evidence alone.
-We are not starting GPU compute,
+mixed-LOD now passes the automated six-anchor surface temporal gross-pop gate,
+but it is not accepted as a default seamless play mode until human visual
+review accepts the result or the standard is explicitly changed. We are not
+starting GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement work before the visual-quality blocker is resolved or explicitly
 demoted by standard.
 
 ## Latest evidence
 
-S1.3 - native dynamic LOD visual transition smoothing is complete.
+S1.5 - native fade-in/fade-out dynamic LOD smoothing is complete.
 
 Command:
 
@@ -42,29 +44,30 @@ Result:
 - diagnostic mode: fixed camera, LOD-color debug view, autonomous input
   disabled, and native terrain demand anchor moved independently of camera
   motion;
-- vendored addon: World Transvoxel 1.0.5 from upstream commit `ec9d91b`;
+- vendored addon: World Transvoxel 1.0.6 from upstream commit
+  `f99c4fb6ed3bc9d5f25310c8eeab43663ddbae00`;
 - anchors: 6;
-- replacement frames observed: 74;
+- replacement frames observed: 75;
 - saved diagnostic captures: 12 under `artifacts/dynamic_lod`;
 - report: `artifacts/dynamic_lod/dynamic_lod_report.json`;
 - maximum staged retirements: 92;
-- maximum render-set delta in one observed frame: 8;
-- maximum native fading resources: 30;
-- fade frames observed: 101;
+- maximum render-set delta in one observed frame: 7;
+- maximum native fading resources: 34;
+- fade frames observed: 142;
 - maximum queued render/collision backlog: 0 / 0;
 - center render/collision probe stayed present during replacements;
 - classification:
   `lod_transition_native_fade_without_geomorph_pending_visual_acceptance`;
-- comparison against S1.1 baseline: improved from 61 to 8 maximum one-frame
+- comparison against S1.1 baseline: improved from 61 to 7 maximum one-frame
   render-set delta; S1.2 previously observed 79 replacement frames with the
-  same render-set delta, and S1.3 now proves native fade activity during those
-  replacements;
-- proven: retirement smoothing and native render fade are active, bounded, and
-  keep queues/probes stable;
+  same render-set delta, S1.3 proved native fade-out activity, and S1.5 now
+  proves native fade-in/fade-out activity during those replacements;
+- proven: retirement smoothing and native render fade-in/fade-out are active,
+  bounded, and keep queues/probes stable;
 - not proven: seamless dynamic LOD appearance, human visual acceptance, or
   geomorphing.
 
-Post-vendor gates passed against 1.0.5:
+Post-vendor gates passed against 1.0.6:
 
 ```console
 python tools/validate_sandbox.py
@@ -78,7 +81,7 @@ Godot 4.6.3 and 4.7 with both debug and release binaries. Static visual capture
 again produced 9 images. L4 runtime passed on both supported engines with
 active capacity 1024 and `max_retiring=0`.
 
-S1.4 surface-mode dynamic evidence was added because LOD-debug captures
+S1.4/S1.5 surface-mode dynamic evidence was added because LOD-debug captures
 intentionally exaggerate transition visibility:
 
 ```console
@@ -87,20 +90,20 @@ python tools/capture_lod_surface.py
 
 Result:
 
-- replacement frames observed: 75;
+- replacement frames observed: 74;
 - saved surface captures: 12 under `artifacts/dynamic_lod_surface`;
 - report: `artifacts/dynamic_lod_surface/dynamic_lod_surface_report.json`;
-- maximum render-set delta in one observed frame: 7;
-- maximum native fading resources: 30;
-- fade frames observed: 102;
+- maximum render-set delta in one observed frame: 8;
+- maximum native fading resources: 34;
+- fade frames observed: 141;
 - classification: `surface_transition_pending_visual_acceptance`;
 - AI inspection of the generated still-image contact sheet found no hard hole,
   missing backside, or obvious large one-frame terrain swap in surface mode;
 - not proven: temporal seamlessness. Still images do not replace video/human
   review for accepting the default dynamic LOD policy.
 
-S1.4 temporal surface evidence now covers one deterministic mixed-LOD
-replacement sequence frame-by-frame:
+S1.5 temporal surface evidence now covers six deterministic mixed-LOD
+replacement anchors frame-by-frame:
 
 ```console
 python tools/capture_lod_temporal.py
@@ -108,20 +111,20 @@ python tools/capture_lod_temporal.py
 
 Result:
 
-- frames captured: 90 under `artifacts/dynamic_lod_temporal`;
+- frames captured: 540 under `artifacts/dynamic_lod_temporal`;
 - preview: `artifacts/dynamic_lod_temporal/temporal_preview.gif`;
 - report: `artifacts/dynamic_lod_temporal/dynamic_lod_temporal_report.json`;
 - maximum render-set delta: 8;
-- maximum native fading resources: 27;
-- fade frames observed: 22;
-- maximum visible changed ratio between adjacent frames: 0.002314;
-- maximum mean RGB delta between adjacent frames: 0.000471;
-- gross-pop gate: passed against visible-ratio limit 0.005 and mean-RGB limit
-  0.002;
+- maximum native fading resources: 34;
+- fade frames observed: 83;
+- maximum visible changed ratio between adjacent frames: 0.004353;
+- maximum mean RGB delta between adjacent frames: 0.000872;
+- gross-pop gate: passed across six anchors against visible-ratio limit 0.005
+  and mean-RGB limit 0.002;
 - classification:
   `temporal_surface_gross_pop_gate_pass_pending_human_review`;
-- proven: this deterministic surface transition does not produce a large
-  measured frame-to-frame image swap;
+- proven: these deterministic surface transitions do not produce a large
+  measured frame-to-frame image swap under the automated gross-pop gate;
 - not proven: human visual acceptance, all camera angles, all movement speeds,
   or geomorphing.
 
@@ -439,32 +442,33 @@ Result:
 
 ## Current active task
 
-S1.4 - visual acceptance and default dynamic LOD policy decision.
+S1.5 - visual acceptance and default dynamic LOD policy decision.
 
 Scope:
 
-- inspect the S1.3 captures and decide whether native fade is acceptable as the
-  default dynamic LOD transition policy;
+- inspect the 1.0.6 six-anchor temporal preview and surface captures and decide
+  whether native fade-in/fade-out is acceptable as the default dynamic LOD
+  transition policy;
 - if visual acceptance still fails, choose the next bounded native policy:
   geomorphing, stronger hysteresis, larger prefetch rings, or defaulting the
   normal playtest/game path to LOD0/fixed-center until mixed LOD is accepted;
 - keep the existing capture harness as the regression metric and preserve the
-  S1.1/S1.2/S1.3 comparison;
+  S1.1/S1.2/S1.3/S1.5 comparison;
 - keep GDScript limited to diagnostic capture/scaffolding.
 
 Exit:
 
-- S1.3 dynamic LOD captures are visually inspected or a stricter automated
+- S1.5 dynamic LOD captures are visually inspected or a stricter automated
   criterion is added;
 - any accepted default policy is documented in `docs/TERRAIN_ACCEPTANCE_STANDARD.md`;
-- if S1.3 is not visually accepted, the next native mitigation is implemented
+- if S1.5 is not visually accepted, the next native mitigation is implemented
   before broad gameplay features resume.
 
 ## Next finite steps
 
 1. Human-review `artifacts/dynamic_lod_temporal/temporal_preview.gif` and the
    surface stills.
-2. Decide whether S1.3 native fade is accepted or whether S1.4 requires
+2. Decide whether 1.0.6 native fade-in/fade-out is accepted or whether S1.5 requires
    geomorphing/prefetch/default-policy changes.
 3. If accepted, update `docs/TERRAIN_ACCEPTANCE_STANDARD.md` with the default
    dynamic LOD policy boundary.

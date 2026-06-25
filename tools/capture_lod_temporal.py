@@ -80,7 +80,7 @@ def analyze_images(paths: list[Path]) -> dict[str, object]:
 
 def write_preview(paths: list[Path]) -> Path:
     frames: list[Image.Image] = []
-    for path in paths[::2]:
+    for path in paths[::6]:
         frame = Image.open(path).convert("P", palette=Image.Palette.ADAPTIVE)
         frame = frame.resize((480, 270))
         frames.append(frame)
@@ -121,7 +121,7 @@ def main() -> None:
         text=True,
         capture_output=True,
         errors="replace",
-        timeout=300,
+        timeout=600,
     )
     combined = result.stdout + result.stderr
     (OUTPUT_ROOT / "capture.log").write_text(combined, encoding="utf-8")
@@ -131,12 +131,12 @@ def main() -> None:
         "",
     )
     frame_lines = [line for line in combined.splitlines() if FRAME_MARKER in line]
-    if result.returncode != 0 or not pass_line or len(frame_lines) < 30:
+    if result.returncode != 0 or not pass_line or len(frame_lines) < 180:
         raise RuntimeError("temporal dynamic LOD capture failed")
     pass_fields = parse_fields(pass_line)
     if int(pass_fields.get("max_render_fading", "0")) <= 0:
         raise RuntimeError("temporal dynamic LOD capture missed native fade")
-    images = sorted(OUTPUT_ROOT.glob("frame_*.png"))
+    images = sorted(OUTPUT_ROOT.glob("anchor_*_frame_*.png"))
     analysis = analyze_images(images)
     if analysis["max_visible_changed_ratio"] > MAX_VISIBLE_CHANGED_RATIO:
         raise RuntimeError("temporal visible changed ratio exceeded gross-pop gate")

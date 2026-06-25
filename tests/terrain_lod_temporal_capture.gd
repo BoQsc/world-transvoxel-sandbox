@@ -12,6 +12,7 @@ var _max_render_fading := 0
 var _fade_frames := 0
 var _max_render_delta := 0
 var _last_render_count := 0
+var _captured_frames := 0
 
 
 func _initialize() -> void:
@@ -41,8 +42,46 @@ func _run() -> void:
 	if not await _wait_for_settled_resources(terrain):
 		return _fail("initial terrain did not settle")
 	_last_render_count = terrain.get_rendered_chunk_count()
-	if not terrain.call("update_viewer", VIEWER_ID, 1001, Vector3(24, 56, 64), RADIUS_CHUNKS, MAXIMUM_LOD):
-		return _fail("viewer update rejected")
+	var anchors: Array[Vector3] = [
+		Vector3(24, 56, 64),
+		Vector3(40, 56, 64),
+		Vector3(56, 56, 64),
+		Vector3(72, 56, 64),
+		Vector3(88, 56, 64),
+		Vector3(104, 56, 64),
+	]
+	for anchor_index in range(anchors.size()):
+		if not terrain.call(
+			"update_viewer",
+			VIEWER_ID,
+			1001 + anchor_index,
+			anchors[anchor_index],
+			RADIUS_CHUNKS,
+			MAXIMUM_LOD
+		):
+			return _fail("viewer update rejected at anchor " + str(anchor_index))
+		if not await _capture_anchor(terrain, anchor_index):
+			return
+	if _max_render_fading <= 0:
+		return _fail("temporal capture did not observe native render fade")
+	print(
+		"WT_SANDBOX_LOD_TEMPORAL_CAPTURE_PASS anchors=%d frames=%d max_render_delta=%d max_render_fading=%d fade_frames=%d classification=%s"
+		% [
+			anchors.size(),
+			_captured_frames,
+			_max_render_delta,
+			_max_render_fading,
+			_fade_frames,
+			"temporal_surface_pending_human_review",
+		]
+	)
+	if terrain.is_world_running():
+		terrain.stop_world()
+	_scene_root.queue_free()
+	quit(0)
+
+
+func _capture_anchor(terrain: Node, anchor_index: int) -> bool:
 	for frame in range(CAPTURE_FRAMES):
 		await process_frame
 		await physics_frame
@@ -54,11 +93,13 @@ func _run() -> void:
 		_last_render_count = render_count
 		if render_fading > 0:
 			_fade_frames += 1
-		if not await _save_capture("frame_%03d" % frame):
-			return
+		if not await _save_capture("anchor_%02d_frame_%03d" % [anchor_index, frame]):
+			return false
+		_captured_frames += 1
 		print(
-			"WT_SANDBOX_LOD_TEMPORAL_FRAME frame=%d render=%d collision=%d render_fading=%d queued_render=%d queued_collision=%d"
+			"WT_SANDBOX_LOD_TEMPORAL_FRAME anchor=%d frame=%d render=%d collision=%d render_fading=%d queued_render=%d queued_collision=%d"
 			% [
+				anchor_index,
 				frame,
 				render_count,
 				terrain.get_collision_chunk_count(),
@@ -67,22 +108,7 @@ func _run() -> void:
 				int(metrics.get("queued_collision", 0)),
 			]
 		)
-	if _max_render_fading <= 0:
-		return _fail("temporal capture did not observe native render fade")
-	print(
-		"WT_SANDBOX_LOD_TEMPORAL_CAPTURE_PASS frames=%d max_render_delta=%d max_render_fading=%d fade_frames=%d classification=%s"
-		% [
-			CAPTURE_FRAMES,
-			_max_render_delta,
-			_max_render_fading,
-			_fade_frames,
-			"temporal_surface_pending_human_review",
-		]
-	)
-	if terrain.is_world_running():
-		terrain.stop_world()
-	_scene_root.queue_free()
-	quit(0)
+	return true
 
 
 func _wait_for_world(terrain: Node) -> bool:

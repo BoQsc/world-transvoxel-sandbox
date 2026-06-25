@@ -77,7 +77,7 @@ func _refresh() -> void:
 		and position.z >= world_min.z and position.z <= world_max.z
 	)
 	_label.text = (
-		"World Transvoxel 1.0.4 Visual Sandbox\n" +
+		"World Transvoxel 1.0.6 Visual Sandbox\n" +
 		"status: %s\n" % _lab.call("get_status") +
 		"aim: %s\n" % _lab.call("get_aim_status") +
 		"fps: %d  approximate frame: %.2f ms\n" % [fps, frame_ms] +

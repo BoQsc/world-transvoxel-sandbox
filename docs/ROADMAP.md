@@ -9,13 +9,14 @@ The short-form tracker is `docs/CURRENT_STATUS.md`.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.5.
+Status: revalidated against World Transvoxel 1.0.6.
 
-- vendored and locked World Transvoxel 1.0.5 release; 1.0.0 is withdrawn,
+- vendored and locked World Transvoxel 1.0.6 release; 1.0.0 is withdrawn,
   1.0.1 is superseded for premature moving-viewer chunk retirement, and 1.0.3
   is superseded for one-frame bulk retirement during dynamic mixed-LOD motion;
   1.0.5 adds a bounded native render fade-out for retiring chunks after
-  replacement application;
+  replacement application, and 1.0.6 adds a bounded native render fade-in for
+  newly introduced chunks;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
@@ -42,11 +43,11 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 
 ## S1 - Visual acceptance
 
-Status: reference-scene stability defaults are in place; human
-appearance/playtest review remains.
+Status: reference-scene stability defaults and the six-anchor temporal
+gross-pop gate are in place; human appearance/playtest review remains.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
-  the 1.0.5 native fade evidence;
+  the 1.0.6 native fade-in/fade-out evidence;
 - S1.1 dynamic evidence classifies the current blocker as
   `lod_transition_visual_swap_without_geomorph`: fixed-camera demand-anchor
   movement observed 39 render-set replacement frames, maximum staged
@@ -56,17 +57,18 @@ appearance/playtest review remains.
   one-frame render-set delta from 61 to 8, but replacement frames increased to
   79 and staged retirements to 92; this is an improvement, not visual
   acceptance;
-- S1.3 native visual transition smoothing in World Transvoxel 1.0.5 observed
-  74 replacement frames, maximum render-set delta 8, maximum staged retirements
-  92, maximum native fading resources 30, and 101 fade frames; this proves the
-  fade path is active, but not human visual acceptance or geomorphing;
+- S1.3 native fade-out transition smoothing in World Transvoxel 1.0.5 proved
+  the fade path was active, but still left the temporal surface gate too narrow
+  and did not prove human visual acceptance or geomorphing;
 - S1.4 adds surface-mode dynamic transition captures because LOD-debug captures
   are diagnostic only; the surface stills show no hard hole or obvious large
   terrain swap, but temporal/human acceptance remains open;
-- S1.4 temporal surface capture records 90 consecutive frames for one
-  deterministic transition and passes the automated gross-pop gate with maximum
-  visible changed ratio 0.002314 against limit 0.005; this still does not prove
-  human visual acceptance, all camera angles, or geomorphing;
+- S1.5 native fade-in/fade-out transition smoothing in World Transvoxel 1.0.6
+  records six deterministic anchors and 540 temporal surface frames; it passes
+  the automated gross-pop gate with maximum visible changed ratio 0.004353
+  against limit 0.005 and maximum mean RGB delta 0.000872 against limit 0.002;
+  this still does not prove human visual acceptance, all camera angles, or
+  geomorphing;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;

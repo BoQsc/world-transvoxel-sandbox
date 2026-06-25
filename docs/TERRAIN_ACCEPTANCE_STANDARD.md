@@ -36,9 +36,10 @@ repository work remain secondary until the terrain itself is proven at scale.
   surface-mode transition evidence, and still-image evidence cannot by itself
   prove temporal seamlessness; video/human review or a stricter automated
   temporal criterion is required before accepting the default policy. The
-  current automated gross-pop gate fails if more than 0.5% of visible pixels
-  change between adjacent temporal surface frames or if mean RGB delta exceeds
-  0.2%; this catches large swaps but does not replace human acceptance.
+  current automated gross-pop gate covers six deterministic surface-mode LOD
+  anchors and fails if more than 0.5% of visible pixels change between adjacent
+  temporal surface frames or if mean RGB delta exceeds 0.2%; this catches large
+  swaps but does not replace human acceptance.
 - Settled terrain must stay cold: no hidden streaming, meshing, recovery, or
   regeneration work while nothing changed.
 - Runtime budgets are part of acceptance. Each accepted scale must follow
