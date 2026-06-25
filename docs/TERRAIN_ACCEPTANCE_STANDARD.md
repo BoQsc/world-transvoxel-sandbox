@@ -74,6 +74,11 @@ repository work remain secondary until the terrain itself is proven at scale.
   offline tooling.
 - Source files should stay small and purpose-prefixed instead of collapsing into
   one large terrain file.
+- Containment is not completion. A conservative default, diagnostic-only mode,
+  or documented workaround must not be described as closing a milestone unless
+  the original exit criteria are actually proven. `docs/CURRENT_STATUS.md` must
+  keep unresolved blockers visible at the top and must distinguish usable
+  baseline evidence from full implementation readiness.
 
 ## Large-terrain ladder
 

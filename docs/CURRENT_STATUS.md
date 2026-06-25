@@ -16,17 +16,31 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S3 - visibility and production workload baseline.
+S1/S3 controlled baseline.
 
-S0 is complete for the 128 baseline. S1 has a conservative default-policy
-closure: normal sandbox/playtest paths use fixed-center LOD0 reference mode,
-while dynamic mixed LOD remains diagnostic/experimental until human visual
-acceptance or a native mitigation closes the gap. S2 automated scale-ladder
-evidence is complete through L4 / 2048 for bounded generation, staged runtime,
-edit/remesh, and static visual capture. We are not starting GPU compute,
-water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement work before S3 establishes the representative production workload
-budgets.
+S0 is complete for the 128 baseline. S1 is not complete: dynamic mixed LOD
+remains a primary implementation blocker until human visual acceptance or a
+native mitigation closes the visual-quality gap. S1.7 is containment, not
+completion: normal sandbox/playtest paths use fixed-center LOD0 reference mode,
+while dynamic mixed LOD remains diagnostic/experimental. S2 automated
+scale-ladder evidence is complete through L4 / 2048 for bounded generation,
+staged runtime, edit/remesh, and static visual capture.
+S3 may proceed only for the conservative LOD0 workload baseline until mixed LOD is accepted.
+We are not starting GPU compute, water/lava, planets, structural collapse, a
+game repository, or 0BSD backend replacement work before the core terrain
+workload budgets and remaining visual blockers are explicitly resolved.
+
+## Unresolved blockers kept visible
+
+- dynamic mixed-LOD seamless visual acceptance, all camera angles, all movement
+  speeds, and geomorphing/native mitigation remain open;
+- S3 production workload budgets are not yet measured for idle CPU/GPU/memory,
+  active movement, repeated mining, restoration latency, I/O, physics, or
+  edit-journal growth;
+- full terrain/game readiness is not proven by the fixed-center LOD0 containment
+  policy;
+- compute shaders and optional systems remain deferred until measured workload
+  evidence justifies them.
 
 ## Latest evidence
 
@@ -165,7 +179,7 @@ Multi-view temporal surface evidence:
 - not proven: human visual acceptance, all camera angles, all movement speeds,
   or geomorphing.
 
-S1.7 - conservative default dynamic LOD policy is complete.
+S1.7 - conservative default dynamic LOD containment is complete.
 
 Commands:
 
@@ -187,7 +201,8 @@ Result:
   playtest mode and marks mixed LOD as diagnostic when enabled;
 - dynamic mixed LOD captures and scale-ladder audits remain explicit opt-in
   diagnostics/tests by setting `maximum_lod = 1`;
-- not proven: dynamic mixed LOD is still not a seamless default play mode.
+- not proven: dynamic mixed LOD is still not a seamless default play mode; S1.7
+  is containment, not mixed-LOD implementation completion.
 
 Post-vendor 1.0.9 verification passed:
 
@@ -524,13 +539,17 @@ Result:
 
 ## Current active task
 
-S3 - visibility and production workload baseline.
+S3a - conservative LOD0 workload budget and audit baseline.
 
 Scope:
 
-- profile Godot frustum culling separately from terrain demand generation;
-- test fast travel, rapid turns, underground movement, and repeated mining
-  against the conservative default and explicit mixed-LOD diagnostics;
+- define finite workload budgets for the conservative fixed-center LOD0 baseline
+  before treating the sandbox as production-ready;
+- profile Godot frustum culling separately from terrain demand generation where
+  it affects the LOD0 baseline;
+- test rapid camera movement, underground movement, and repeated mining against
+  the conservative default; mixed-LOD diagnostics remain separate and do not
+  imply mixed-LOD acceptance;
 - measure restoration capture latency and edit-journal growth before expanding
   recovery systems;
 - establish idle CPU, active CPU, render, physics, I/O, and memory budgets;
@@ -538,15 +557,15 @@ Scope:
 
 Exit:
 
-- the representative small-game terrain workload meets documented budgets
-  without visible holes, uncontrolled resource growth, or unexplained runtime
-  work while idle.
+- the conservative LOD0 workload baseline meets documented budgets without
+  visible holes, uncontrolled resource growth, or unexplained runtime work while
+  idle. This exit does not close dynamic mixed-LOD visual acceptance.
 
 ## Next finite steps
 
-1. Add a finite S3 budget document/table for idle, active movement, repeated
-   mining, restoration, render/collision counts, I/O, memory, and edit-journal
-   growth.
+1. Add a finite S3a budget document/table for the conservative LOD0 baseline:
+   idle, active movement, repeated mining, restoration, render/collision counts,
+   I/O, memory, and edit-journal growth.
 2. Add or extend a Python/Godot audit that records those budgets without player
    input.
 3. Only after measured S3 data exists, decide whether native policy changes or

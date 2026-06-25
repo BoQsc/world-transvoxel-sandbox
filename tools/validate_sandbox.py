@@ -183,6 +183,7 @@ def main() -> int:
             "GDScript is glue",
             "Compute shaders are deferred",
             "Decision tracking",
+            "Containment is not completion",
         ):
             if phrase not in text:
                 errors.append(f"terrain standard is missing phrase: {phrase}")
@@ -191,7 +192,10 @@ def main() -> int:
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
-            "S3 - visibility and production workload baseline",
+            "S1/S3 controlled baseline",
+            "S1 is not complete",
+            "S3 may proceed only for the conservative LOD0 workload baseline",
+            "Unresolved blockers kept visible",
             "S2.1 - Python scale-ladder generation proof is complete",
             "S2.2 - L1 runtime acceptance path is complete",
             "S2.3 - L1 visual capture and artifact classification is complete",
@@ -205,7 +209,9 @@ def main() -> int:
             "S1.2 previously observed 79 replacement frames",
             "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
-            "S1.7 - conservative default dynamic LOD policy is complete",
+            "S1.7 - conservative default dynamic LOD containment is complete",
+            "containment, not mixed-LOD implementation completion",
+            "S3a - conservative LOD0 workload budget and audit baseline",
             "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
             "dynamic mixed LOD remains diagnostic/experimental",
             "lod_transition_native_fade_without_geomorph_pending_visual_acceptance",

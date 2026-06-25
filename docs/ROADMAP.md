@@ -46,8 +46,8 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 
 Status: reference-scene stability defaults, a one-chunk render-apply budget,
 single-view plus multi-view temporal gross-pop and region-bounds gates, and the
-conservative fixed-center LOD0 sandbox default are in place. Human acceptance of
-dynamic mixed LOD remains open.
+conservative fixed-center LOD0 sandbox default are in place. S1 is not complete:
+human acceptance of dynamic mixed LOD remains open.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
   the 1.0.9 native fade-in/fade-out and budget-1 temporal evidence;
@@ -81,7 +81,7 @@ dynamic mixed LOD remains open.
   2,381 changed visible pixels, and changed bounding-box visible ratio 0.150831.
   This still does not prove human visual acceptance, all camera angles, all
   movement speeds, or geomorphing;
-- S1.7 applies the default-policy boundary: normal sandbox/playtest paths use
+- S1.7 applies containment, not completion: normal sandbox/playtest paths use
   fixed-center LOD0 reference mode, while dynamic mixed LOD remains
   diagnostic/experimental until human acceptance or a native mitigation closes
   the visual-quality gap;
@@ -202,7 +202,9 @@ remain outside S2.
 
 ## S3 - Visibility and production workload
 
-Status: active after S1.7 conservative default-policy closure.
+Status: limited active after S1.7 conservative default-policy containment. S3
+may measure the fixed-center LOD0 workload baseline only; mixed-LOD gameplay
+readiness remains blocked by S1 visual acceptance.
 
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;
