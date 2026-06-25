@@ -77,7 +77,7 @@ func _refresh() -> void:
 		and position.z >= world_min.z and position.z <= world_max.z
 	)
 	_label.text = (
-		"World Transvoxel 1.0.6 Visual Sandbox\n" +
+		"World Transvoxel 1.0.9 Visual Sandbox\n" +
 		"status: %s\n" % _lab.call("get_status") +
 		"aim: %s\n" % _lab.call("get_aim_status") +
 		"fps: %d  approximate frame: %.2f ms\n" % [fps, frame_ms] +
@@ -90,7 +90,7 @@ func _refresh() -> void:
 			_lab.call("get_streaming_position").round()
 		) +
 		"streaming policy: %s  max LOD %d  update distance %.1f\n" % [
-			"follow viewer" if _lab.streaming_follows_viewer else "fixed full map",
+			_streaming_policy_label(),
 			_lab.maximum_lod,
 			_lab.streaming_update_distance,
 		] +
@@ -130,3 +130,13 @@ func _refresh() -> void:
 		"Ctrl+Z restore last committed carve at its original brush position\n" +
 		"F1 view | F2 bounds | F3 collisions | F4 overlay | F5 reset camera"
 	)
+
+
+func _streaming_policy_label() -> String:
+	if _lab.streaming_follows_viewer:
+		if _lab.maximum_lod > 0:
+			return "follow viewer diagnostic"
+		return "follow viewer LOD0"
+	if _lab.maximum_lod > 0:
+		return "fixed mixed-LOD diagnostic"
+	return "fixed LOD0 reference"

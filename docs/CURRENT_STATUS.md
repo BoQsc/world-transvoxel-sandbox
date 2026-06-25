@@ -16,18 +16,17 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S1 - visual acceptance and dynamic mixed-LOD quality.
+S3 - visibility and production workload baseline.
 
-S0 is complete for the 128 baseline. S2 automated scale-ladder evidence is
-complete through L4 / 2048 for bounded generation, staged runtime,
-edit/remesh, and static visual capture. S1 still has a visual gate: dynamic
-mixed-LOD now passes the automated six-anchor single-view and three-view
-surface temporal gross-pop and region-bounds gates, but it is not accepted as a
-default seamless
-play mode until human visual review accepts the result or the standard is
-explicitly changed. We are not starting GPU compute, water/lava, planets,
-structural collapse, a game repository, or 0BSD backend replacement work before
-the visual-quality blocker is resolved or explicitly demoted by standard.
+S0 is complete for the 128 baseline. S1 has a conservative default-policy
+closure: normal sandbox/playtest paths use fixed-center LOD0 reference mode,
+while dynamic mixed LOD remains diagnostic/experimental until human visual
+acceptance or a native mitigation closes the gap. S2 automated scale-ladder
+evidence is complete through L4 / 2048 for bounded generation, staged runtime,
+edit/remesh, and static visual capture. We are not starting GPU compute,
+water/lava, planets, structural collapse, a game repository, or 0BSD backend
+replacement work before S3 establishes the representative production workload
+budgets.
 
 ## Latest evidence
 
@@ -165,6 +164,30 @@ Multi-view temporal surface evidence:
   pairs;
 - not proven: human visual acceptance, all camera angles, all movement speeds,
   or geomorphing.
+
+S1.7 - conservative default dynamic LOD policy is complete.
+
+Commands:
+
+```console
+python tools/validate_sandbox.py
+python tools/test_sandbox.py
+```
+
+Result:
+
+- normal sandbox/playtest defaults are fixed-center LOD0 reference mode:
+  `radius_chunks = 4`, `maximum_lod = 0`, and
+  `streaming_follows_viewer = false`;
+- `config/terrain_config.tres` keeps `render_apply_budget = 1`;
+- `scenes/terrain_lab.tscn` already used the conservative scene values, and
+  `scripts/terrain_lab.gd` now uses the same conservative fallback defaults for
+  newly instantiated labs;
+- overlay policy text now reports `fixed LOD0 reference` for the accepted normal
+  playtest mode and marks mixed LOD as diagnostic when enabled;
+- dynamic mixed LOD captures and scale-ladder audits remain explicit opt-in
+  diagnostics/tests by setting `maximum_lod = 1`;
+- not proven: dynamic mixed LOD is still not a seamless default play mode.
 
 Post-vendor 1.0.9 verification passed:
 
@@ -501,40 +524,33 @@ Result:
 
 ## Current active task
 
-S1.7 - default dynamic LOD policy or native mitigation decision.
+S3 - visibility and production workload baseline.
 
 Scope:
 
-- treat S1.6 as stronger automated evidence, not default seamless acceptance:
-  the one-chunk budget, gross-pop gate, and region-bounds gate pass, but human
-  visual acceptance and geomorphing remain not proven;
-- choose the bounded next policy before broad gameplay work resumes:
-  documented conservative LOD0/fixed-center default for normal playtest/game
-  paths, or a native mixed-LOD mitigation such as geomorphing, stronger
-  hysteresis, or larger prefetch rings;
-- keep the single-view and multi-view capture harnesses as regression metrics
-  and preserve the S1.1/S1.2/S1.3/S1.5/S1.6 comparison;
-- keep GDScript limited to diagnostic capture/scaffolding.
+- profile Godot frustum culling separately from terrain demand generation;
+- test fast travel, rapid turns, underground movement, and repeated mining
+  against the conservative default and explicit mixed-LOD diagnostics;
+- measure restoration capture latency and edit-journal growth before expanding
+  recovery systems;
+- establish idle CPU, active CPU, render, physics, I/O, and memory budgets;
+- keep compute shaders deferred until a measured bottleneck justifies S4.
 
 Exit:
 
-- the accepted default playtest/game policy is documented in
-  `docs/TERRAIN_ACCEPTANCE_STANDARD.md` and reflected by the sandbox defaults,
-  or the next native mixed-LOD mitigation is implemented and rerun through the
-  S1.6 single-view and multi-view gates;
-- no compute, water/lava, planets, structural stability, or game-repository work
-  starts before this boundary is closed.
+- the representative small-game terrain workload meets documented budgets
+  without visible holes, uncontrolled resource growth, or unexplained runtime
+  work while idle.
 
 ## Next finite steps
 
-1. Choose and apply the conservative default policy unless mixed LOD is visually
-   accepted: normal playtest/game paths use LOD0/fixed-center, while dynamic
-   mixed LOD remains diagnostic/experimental.
-2. If conservative default is rejected, implement one native mitigation
-   candidate before any feature expansion: geomorphing, stronger hysteresis, or
-   larger prefetch rings.
-3. Rerun the single-view and multi-view temporal gates after any default-policy
-   or mitigation change.
+1. Add a finite S3 budget document/table for idle, active movement, repeated
+   mining, restoration, render/collision counts, I/O, memory, and edit-journal
+   growth.
+2. Add or extend a Python/Godot audit that records those budgets without player
+   input.
+3. Only after measured S3 data exists, decide whether native policy changes or
+   compute acceleration are justified.
 
 ## Deferred by rule
 

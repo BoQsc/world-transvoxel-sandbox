@@ -34,6 +34,11 @@ repository work remain secondary until the terrain itself is proven at scale.
   documented standard. The current reference mitigation is native
   fade-in/fade-out with `render_apply_budget = 1`; higher render-apply bursts
   are not accepted as the default visual policy unless they pass the same gates.
+- Normal sandbox/playtest defaults are conservative: fixed-center LOD0 reference
+  mode with `radius_chunks = 4`, `maximum_lod = 0`, and
+  `streaming_follows_viewer = false`. Dynamic mixed LOD remains
+  diagnostic/experimental until human visual acceptance or a native mitigation
+  closes the remaining visual-quality gap.
 - LOD-debug captures are diagnostic only. Dynamic LOD visual acceptance requires
   surface-mode transition evidence, and still-image evidence cannot by itself
   prove temporal seamlessness; video/human review or a stricter automated

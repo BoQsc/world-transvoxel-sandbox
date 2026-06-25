@@ -14,10 +14,10 @@ const RecoveryPolicy = preload("res://scripts/terrain_recovery_policy.gd")
 @export var viewer_path: NodePath
 @export var camera_path: NodePath
 @export_range(1, 1024, 1) var viewer_id := 1
-@export_range(0, 16, 1) var radius_chunks := 2
-@export_range(0, 20, 1) var maximum_lod := 1
+@export_range(0, 16, 1) var radius_chunks := 4
+@export_range(0, 20, 1) var maximum_lod := 0
 @export_range(0.0, 32.0, 0.25) var streaming_update_distance := 8.0
-@export var streaming_follows_viewer := true
+@export var streaming_follows_viewer := false
 @export var fixed_streaming_position := Vector3(64.0, 32.0, 64.0)
 @export_range(0.25, 16.0, 0.25) var mining_radius := 3.0
 @export_range(1.0, 32.0, 0.5) var mining_strength := 6.0

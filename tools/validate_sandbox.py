@@ -171,6 +171,7 @@ def main() -> int:
             "standards-first",
             "Large-terrain ladder",
             "Dynamic LOD popping remains a blocker",
+            "Normal sandbox/playtest defaults are conservative",
             "LOD-debug captures are diagnostic only",
             "current automated gross-pop and region-bounds gates",
             "front/side/diagonal multi-view harness",
@@ -190,7 +191,7 @@ def main() -> int:
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
-            "S1 - visual acceptance and dynamic mixed-LOD quality",
+            "S3 - visibility and production workload baseline",
             "S2.1 - Python scale-ladder generation proof is complete",
             "S2.2 - L1 runtime acceptance path is complete",
             "S2.3 - L1 visual capture and artifact classification is complete",
@@ -204,7 +205,9 @@ def main() -> int:
             "S1.2 previously observed 79 replacement frames",
             "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
-            "S1.7 - default dynamic LOD policy or native mitigation decision",
+            "S1.7 - conservative default dynamic LOD policy is complete",
+            "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
+            "dynamic mixed LOD remains diagnostic/experimental",
             "lod_transition_native_fade_without_geomorph_pending_visual_acceptance",
             "surface_transition_pending_visual_acceptance",
             "temporal_surface_gross_pop_gate_pass_pending_human_review",
@@ -238,6 +241,39 @@ def main() -> int:
         ):
             if phrase not in text:
                 errors.append(f"current status is missing phrase: {phrase}")
+
+    lab = ROOT / "scripts" / "terrain_lab.gd"
+    if lab.is_file():
+        text = lab.read_text(encoding="utf-8")
+        for phrase in (
+            "var radius_chunks := 4",
+            "var maximum_lod := 0",
+            "var streaming_follows_viewer := false",
+        ):
+            if phrase not in text:
+                errors.append(f"terrain lab default is missing phrase: {phrase}")
+
+    scene = ROOT / "scenes" / "terrain_lab.tscn"
+    if scene.is_file():
+        text = scene.read_text(encoding="utf-8")
+        for phrase in (
+            "radius_chunks = 4",
+            "maximum_lod = 0",
+            "streaming_follows_viewer = false",
+        ):
+            if phrase not in text:
+                errors.append(f"terrain lab scene default is missing phrase: {phrase}")
+
+    overlay = ROOT / "scripts" / "terrain_overlay.gd"
+    if overlay.is_file():
+        text = overlay.read_text(encoding="utf-8")
+        for phrase in (
+            "World Transvoxel 1.0.9 Visual Sandbox",
+            "fixed LOD0 reference",
+            "fixed mixed-LOD diagnostic",
+        ):
+            if phrase not in text:
+                errors.append(f"terrain overlay is missing phrase: {phrase}")
 
     budget_check = subprocess.run(
         [sys.executable, str(ROOT / "tools" / "runtime_budget_profiles.py"), "--check"],
