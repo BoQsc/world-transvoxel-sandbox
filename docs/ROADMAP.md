@@ -43,6 +43,11 @@ Status: reference-scene stability defaults are in place; human
 appearance/playtest review remains.
 
 - dynamic mixed-LOD replacement popping remains an explicit visual blocker;
+- S1.1 dynamic evidence classifies the current blocker as
+  `lod_transition_visual_swap_without_geomorph`: fixed-camera demand-anchor
+  movement observed 39 render-set replacement frames, maximum staged
+  retirements 36, maximum render-set delta 61, no render/collision probe loss,
+  and no render/collision queue backlog;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -53,6 +58,9 @@ appearance/playtest review remains.
 - inspect mixed-LOD appearance separately using the existing audit/debug views;
 - decide whether visible LOD popping requires geomorphing, cross-fading,
   stronger hysteresis, larger prefetch rings, or a different default policy;
+- first attempted fix is native staged-retirement smoothing; if it does not
+  reduce the measured visual delta enough, escalate to native render cross-fade
+  or geomorphing;
 - add real texture-array/triplanar assets after the procedural palette is
   accepted;
 - record representative screenshots and identified defects;

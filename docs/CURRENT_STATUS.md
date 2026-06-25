@@ -28,6 +28,35 @@ demoted by standard.
 
 ## Latest evidence
 
+S1.1 - dynamic mixed-LOD popping classification is complete.
+
+Command:
+
+```console
+python tools/capture_lod_popping.py
+```
+
+Result:
+
+- diagnostic mode: fixed camera, LOD-color debug view, autonomous input
+  disabled, and native terrain demand anchor moved independently of camera
+  motion;
+- anchors: 6;
+- replacement frames observed: 39;
+- saved diagnostic captures: 12 under `artifacts/dynamic_lod`;
+- report: `artifacts/dynamic_lod/dynamic_lod_report.json`;
+- maximum staged retirements: 36;
+- maximum render-set delta in one observed frame: 61;
+- maximum queued render/collision backlog: 0 / 0;
+- center render/collision probe stayed present during replacements;
+- classification: `lod_transition_visual_swap_without_geomorph`;
+- proven: the visible problem is a dynamic LOD transition/render-set swap, not
+  a terrain hole, collision gap, source-generation bug, material/shading bug,
+  or queue backlog;
+- fix plan: first implement native chunk-retirement smoothing so old render
+  chunks are not removed in one large frame; if the measured visual delta
+  remains unacceptable, escalate to native render cross-fade or geomorphing.
+
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 
 Commands:
@@ -342,37 +371,32 @@ Result:
 
 ## Current active task
 
-S1.1 - dynamic mixed-LOD visual popping classification and fix plan.
+S1.2 - native dynamic LOD retirement smoothing.
 
 Scope:
 
-- use the completed L1-L4 automated visual/runtime evidence as the baseline;
-- inspect mixed-LOD replacement behavior separately from the conservative LOD0
-  human playtest scene;
-- classify visible popping as LOD transition, streaming/lifetime, material,
-  shading, or harness behavior;
-- decide whether the default policy needs geomorphing, cross-fading, stronger
-  hysteresis, larger prefetch rings, or a dedicated loading/teleport policy;
-- keep performance-sensitive fixes in native runtime/shader paths, not
-  GDScript.
+- implement the smallest native/runtime policy change that reduces the
+  measured dynamic LOD swap: cap how many staged chunk retirements are removed
+  per frame;
+- apply the fix in the upstream World Transvoxel addon, then package and
+  vendor a tested release into the sandbox;
+- rerun `tools/capture_lod_popping.py` and compare replacement-frame severity
+  against the S1.1 baseline;
+- keep GDScript limited to diagnostic capture/scaffolding.
 
 Exit:
 
-- a representative dynamic mixed-LOD capture/audit exists for the current
-  failure mode;
-- the defect is assigned to a concrete subsystem and tracked with evidence;
-- a fix is implemented and rerun, or the limitation is explicitly demoted by
-  standard with bounded use cases;
-- the fixed or demoted state is documented before compute, water/lava,
-  planets, collapse, or a game repository begins.
+- the native retirement policy is implemented, built, and vendored;
+- dynamic LOD evidence is rerun and records whether maximum render-set delta
+  improves from the S1.1 baseline of 61;
+- if retirement smoothing is insufficient, the next task is explicitly
+  escalated to native cross-fade or geomorphing rather than broad feature work.
 
 ## Next finite steps
 
-1. Run or add a dynamic mixed-LOD visual capture that reproduces popping.
-2. Record whether chunks are created late, retired early, visually swapped
-   without transition, or shaded/materialized inconsistently.
-3. Implement the smallest native/runtime policy change that removes the
-   default visible blocker, then rerun the relevant L0-L4 gates.
+1. Patch upstream `WorldTransvoxelTerrain::flush_ready_chunk_retirements`.
+2. Build/test/package the addon release and vendor it into the sandbox.
+3. Rerun dynamic LOD evidence and the relevant L0/L4 gates.
 
 ## Deferred by rule
 
