@@ -34,9 +34,11 @@ gameplay. S1.10 explicitly rejects/demotes dynamic mixed LOD as the accepted
 default policy; it remains diagnostic-only until stronger evidence or a native
 mitigation closes the visual-quality gap. The normal playtest uses a fixed,
 complete LOD0 map and must not be presented as proof that dynamic LOD
-appearance is finished. Human review is final qualitative confirmation, not a
-blocker that halts technical milestones or replaces automated/capture-based
-correctness.
+appearance is finished. S1.11 adds the accepted fixed-center LOD0 gallery and
+restart-persistence audit (`WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS`), so S1
+technical exit evidence is complete. Human review is final qualitative
+confirmation, not a blocker that halts technical milestones or replaces
+automated/capture-based correctness.
 
 The project is standards-first. Larger terrain without artifacts, holes,
 upside-down behavior, uncontrolled background work, or unexplained visual

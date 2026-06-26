@@ -9,6 +9,8 @@ Follow `docs/TERRAIN_ACCEPTANCE_STANDARD.md`.
 Runtime scale budgets are governed by `docs/TERRAIN_RUNTIME_BUDGETS.md`.
 The conservative LOD0 workload gate is governed by
 `docs/S1_LOD0_WORKLOAD_BASELINE.md`.
+The accepted LOD0 gallery and restart-persistence gate is governed by
+`docs/S1_LOD0_GALLERY_AUDIT.md`.
 
 Milestones are sequential. Do not start later-milestone work while the current
 milestone is incomplete. If a task is required for correct S1 completion, move
@@ -22,8 +24,9 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S1 - visual acceptance, LOD0 interaction correctness, and dynamic mixed-LOD
-default-policy decision.
+S1 technical exit evidence is complete. The next in-order work is S2
+scale-ladder exit review and cleanup; do not start S3/GPU/feature work until S2
+is explicitly exited or the roadmap is intentionally redefined.
 
 S0 is complete for the 128 baseline. S1 now has a technical default-policy
 decision: the accepted playtest path is fixed-center LOD0 reference mode, and
@@ -32,30 +35,61 @@ remains final qualitative confirmation; it does not block technical milestone
 progress or replace automated/capture-based correctness. S1.8 reclassified the
 fixed-center LOD0 workload audit as S1 evidence because interaction feel and
 visible terrain stability belong to S1, and S1.9 moved exact restore capture to
-the native batched path. Previously collected S2 scale-ladder evidence remains
-recorded, but no new S3/S4 work is active until the S1.10 policy gate and
-default-path tests are committed. We are not starting GPU compute, water/lava,
-planets, structural collapse, a game repository, or 0BSD backend replacement
-work before the core terrain workload budgets and remaining visual limitations
-are explicitly tracked.
+the native batched path. S1.11 added an accepted fixed-center LOD0 gallery plus
+restart-persistence audit. Previously collected S2 scale-ladder evidence remains
+recorded, but no new S3/S4 work is active until S2 is explicitly exited. We are
+not starting GPU compute, water/lava, planets, structural collapse, a game
+repository, or 0BSD backend replacement work before the core terrain workload
+budgets and remaining visual limitations are explicitly tracked.
 
 ## Unresolved blockers kept visible
 
 - dynamic mixed-LOD technical seamless visual acceptance, all camera angles, all
   movement speeds, and geomorphing/native mitigation remain open as a
   diagnostic/future limitation, not as accepted default gameplay;
-- production-feel mining latency now has an S1.9 native-batch regression gate.
-  The conservative LOD0 workload evidence covers fixed-anchor movement,
-  repeated mining/restoration, process CPU/RSS sampling, I/O, memory, and idle
-  coldness;
+- production-feel mining latency has an S1.9 native-batch regression gate. The
+  conservative LOD0 workload evidence covers fixed-anchor movement, repeated
+  mining/restoration, process CPU/RSS sampling, I/O, memory, and idle coldness;
+- accepted fixed-center LOD0 gallery and restart persistence now have an S1.11
+  gate. No automated hard gallery blocker is detected; final human qualitative
+  confirmation remains external;
 - graphical GPU/frustum behavior and target hardware remain deferred unless
   they are explicitly moved into S1 exit criteria;
 - full terrain/game readiness still requires later workload and feature gates;
-  S1.10 only closes the default playtest policy decision;
+  S1.11 closes S1 technical exit evidence, not full game readiness;
 - compute shaders and optional systems remain deferred until measured workload
   evidence justifies them.
 
 ## Latest evidence
+
+S1.11 - accepted fixed-center LOD0 gallery and restart-persistence audit are
+complete.
+
+Command:
+
+```console
+python tools/s1_lod0_gallery_audit.py
+```
+
+Result:
+
+- contract: `docs/S1_LOD0_GALLERY_AUDIT.md`;
+- visual runner: `tools/s1_lod0_gallery_audit.py`;
+- persistence audit: `tests/terrain_s1_lod0_persistence_audit.gd`;
+- marker: `WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS images=9 engines=2
+  report=artifacts/s1_lod0_gallery/gallery_report.json`;
+- persistence marker on Godot 4.6.3 and 4.7:
+  `WT_SANDBOX_S1_LOD0_PERSISTENCE_PASS density_delta=8.000
+  journal_bytes=612 restart=exact mesh=stable`;
+- accepted-gallery gates: player input disabled, nine 1280 x 720 nonblank
+  images, closed-boundary render/collision ray agreement, no Godot `ERROR:` or
+  `SCRIPT ERROR`, and exact edited density/mesh restoration after stop/start;
+- S1 technical exit coverage: accepted LOD0 gallery has no automated hard
+  blocker, S1.9 keeps mining latency under the native-batch gate, and S1.10
+  keeps dynamic mixed LOD diagnostic-only instead of default gameplay;
+- still outside this claim: final human qualitative confirmation, real
+  triplanar/texture-array art direction, dynamic mixed-LOD seamless gameplay,
+  water/lava, planets, GPU compute, or full game readiness.
 
 S1.10 - dynamic mixed-LOD default-policy decision and fixed LOD0 default gate
 are complete.

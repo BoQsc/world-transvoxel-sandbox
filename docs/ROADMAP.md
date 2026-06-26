@@ -53,13 +53,15 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 
 ## S1 - Visual acceptance
 
-Status: reference-scene stability defaults, a one-chunk render-apply budget,
-single-view plus multi-view temporal gross-pop and region-bounds gates, native
-batched exact-restore capture, and the S1.10 dynamic mixed-LOD default-policy
-decision are in place. The accepted default playtest path is fixed-center LOD0.
-Dynamic mixed LOD is rejected/demoted as default and remains diagnostic-only
-until a later explicit milestone supplies stronger technical evidence or native
-mitigation. Human review remains final qualitative confirmation.
+Status: S1 technical exit evidence is complete. Reference-scene stability
+defaults, a one-chunk render-apply budget, single-view plus multi-view temporal
+gross-pop and region-bounds gates, native batched exact-restore capture, the
+S1.10 dynamic mixed-LOD default-policy decision, and the S1.11 accepted LOD0
+gallery/restart-persistence audit are in place. The accepted default playtest
+path is fixed-center LOD0. Dynamic mixed LOD is rejected/demoted as default and
+remains diagnostic-only until a later explicit milestone supplies stronger
+technical evidence or native mitigation. Human review remains final qualitative
+confirmation.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
   the 1.0.9 native fade-in/fade-out and budget-1 temporal evidence;
@@ -114,6 +116,15 @@ mitigation. Human review remains final qualitative confirmation.
   diagnostic-only, and is guarded by `docs/S1_DYNAMIC_LOD_POLICY.md`,
   `tests/terrain_s1_default_policy_audit.gd`, and
   `python tools/test_sandbox.py`;
+- S1.11 adds the accepted fixed-center LOD0 gallery and restart-persistence
+  audit. `docs/S1_LOD0_GALLERY_AUDIT.md`,
+  `tools/s1_lod0_gallery_audit.py`, and
+  `tests/terrain_s1_lod0_persistence_audit.gd` pass with
+  `WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS`; the audit captures nine nonblank
+  1280 x 720 gallery images, requires closed-boundary render/collision ray
+  agreement, rejects Godot errors, and proves an edit journal survives
+  stop/start with exact edited density and stable mesh identity on Godot 4.6.3
+  and 4.7;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -129,10 +140,11 @@ mitigation. Human review remains final qualitative confirmation.
 - record representative screenshots and identified defects;
 - confirm editing appearance and persistence after restart.
 
-Technical exit: no visible correctness blocker remains in the accepted
-fixed-center LOD0 test gallery, mining latency is under the S1.9 native-batch
-gate, and dynamic mixed LOD is explicitly rejected/demoted as default gameplay.
-Final human qualitative confirmation remains the last external confirmation.
+Technical exit: complete by S1.11. No automated hard visual blocker remains in
+the accepted fixed-center LOD0 test gallery, mining latency is under the S1.9
+native-batch gate, and dynamic mixed LOD is explicitly rejected/demoted as
+default gameplay. Final human qualitative confirmation remains the last external
+confirmation.
 
 ## S2 - Chunked generation and scale ladder
 
@@ -241,7 +253,7 @@ remain outside S2.
 
 ## S3 - Visibility and production workload
 
-Status: inactive. S3 must not start until S1 exits or the roadmap is explicitly
+Status: inactive. S3 must not start until S2 exits or the roadmap is explicitly
 redefined. The LOD0 workload audit is S1.8 because it affects S1 interaction
 feel and accepted-playtest correctness.
 

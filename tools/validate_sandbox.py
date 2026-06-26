@@ -68,6 +68,7 @@ def main() -> int:
         "tools/scale_runtime.py",
         "tools/scale_visual.py",
         "tools/s1_lod0_workload_audit.py",
+        "tools/s1_lod0_gallery_audit.py",
         "tools/capture_lod_popping.py",
         "tools/capture_lod_surface.py",
         "tools/capture_lod_temporal.py",
@@ -101,6 +102,8 @@ def main() -> int:
         "tests/terrain_s1_default_policy_audit.gd.uid",
         "tests/terrain_s1_lod0_workload_audit.gd",
         "tests/terrain_s1_lod0_workload_audit.gd.uid",
+        "tests/terrain_s1_lod0_persistence_audit.gd",
+        "tests/terrain_s1_lod0_persistence_audit.gd.uid",
         "tests/terrain_lod_pop_capture.gd",
         "tests/terrain_lod_pop_capture.gd.uid",
         "tests/terrain_lod_surface_capture.gd",
@@ -119,6 +122,7 @@ def main() -> int:
         "docs/TERRAIN_RUNTIME_BUDGETS.md",
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "docs/S1_LOD0_WORKLOAD_BASELINE.md",
+        "docs/S1_LOD0_GALLERY_AUDIT.md",
         "docs/S1_DYNAMIC_LOD_POLICY.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
@@ -188,6 +192,7 @@ def main() -> int:
             "Human review is final qualitative confirmation",
             "not for deciding technical correctness",
             "final human qualitative confirmation",
+            "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"readme is missing phrase: {phrase}")
@@ -211,6 +216,8 @@ def main() -> int:
             "stronger evidence or a native mitigation",
             "final qualitative confirmation does not replace technical correctness",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
+            "docs/S1_LOD0_GALLERY_AUDIT.md",
+            "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
             "Do not jump milestones",
             "Settled terrain must stay cold",
             "Finite boundary guards",
@@ -232,9 +239,12 @@ def main() -> int:
             "S1.10 dynamic mixed-LOD default-policy",
             "Dynamic mixed LOD is rejected/demoted as default",
             "tests/terrain_s1_default_policy_audit.gd",
+            "S1.11 adds the accepted fixed-center LOD0 gallery",
+            "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
+            "Technical exit: complete by S1.11",
             "Human review remains",
             "final human qualitative confirmation",
-            "S3 must not start until S1 exits",
+            "S3 must not start until S2 exits",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"roadmap is missing phrase: {phrase}")
@@ -287,40 +297,51 @@ def main() -> int:
             if not has_phrase(text, phrase):
                 errors.append(f"S1 dynamic LOD policy is missing phrase: {phrase}")
 
+    gallery = ROOT / "docs" / "S1_LOD0_GALLERY_AUDIT.md"
+    if gallery.is_file():
+        text = gallery.read_text(encoding="utf-8")
+        for phrase in (
+            "S1.11 Accepted LOD0 Gallery and Persistence Audit",
+            "fixed-center LOD0 reference",
+            "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
+            "tests/terrain_s1_lod0_persistence_audit.gd",
+            "WT_SANDBOX_S1_LOD0_PERSISTENCE_PASS",
+            "closed-boundary render/collision ray probe",
+            "S1 technical exit criteria are now covered by explicit gates",
+            "dynamic mixed LOD remains diagnostic-only by S1.10",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S1 LOD0 gallery audit doc is missing phrase: {phrase}")
+
     status = ROOT / "docs" / "CURRENT_STATUS.md"
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
-            "S1 - visual acceptance",
+            "S1 technical exit evidence is complete",
+            "S2 scale-ladder exit review",
             "S1 now has a technical default-policy decision",
             "Unresolved blockers kept visible",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
+            "docs/S1_LOD0_GALLERY_AUDIT.md",
             "Do not start later-milestone work",
             "dynamic mixed LOD is rejected/demoted as default gameplay by S1.10",
             "Human review remains final",
             "does not block technical milestone progress",
             "replace automated/capture-based correctness",
             "final human qualitative confirmation",
-            "S2.1 - Python scale-ladder generation proof is complete",
-            "S2.2 - L1 runtime acceptance path is complete",
-            "S2.3 - L1 visual capture and artifact classification is complete",
-            "S2.4 - L2 512 generation preflight is complete",
-            "S2.5 - L2 runtime acceptance path",
-            "S2.6 - L2 visual capture and artifact classification is complete",
-            "S2.7 - L3 1024 generation preflight is complete",
-            "S2.8 - L3 runtime budget planning is complete",
-            "S2.9 - L3 runtime acceptance is complete",
-            "S2.10 - L3 visual capture and artifact classification is complete",
-            "S1.2 previously observed 79 replacement frames",
-            "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
             "S2.14 - L4 shader-instance budget and same-key render-node stability fix is complete",
+            "S1.2 previously observed 79 replacement frames",
+            "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "Too many instances using shader instance variables",
             "instance-parameter writes opt-in/default-off because Godot retains",
             "accepted large-scale defaults allocate no per-instance shader fade parameter slots",
             "S1.7 - conservative default dynamic LOD containment is complete",
             "S1.10 later made the default-policy decision",
-            "S1 active task - lock and preserve the accepted default playtest policy",
+            "S1.11 - accepted fixed-center LOD0 gallery and restart-persistence audit",
+            "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
+            "WT_SANDBOX_S1_LOD0_PERSISTENCE_PASS",
+            "No automated hard gallery blocker is detected",
             "S1.10 - dynamic mixed-LOD default-policy decision",
             "WT_SANDBOX_S1_DEFAULT_POLICY_PASS",
             "tests/terrain_s1_default_policy_audit.gd",
@@ -336,27 +357,6 @@ def main() -> int:
             "surface_transition_pending_visual_acceptance",
             "temporal_surface_gross_pop_gate_pass_pending_human_review",
             "temporal_multiview_gross_pop_gate_pass_pending_human_review",
-            "maximum render-set delta in one observed frame: 7",
-            "maximum native fading resources: 59",
-            "fade frames observed: 295",
-            "fade frames observed: 294",
-            "fade frames observed: 164",
-            "fade frames observed: 490",
-            "maximum visible changed ratio between adjacent frames: 0.002314",
-            "maximum visible changed ratio between adjacent frames: 0.004534",
-            "maximum mean RGB delta between adjacent frames: 0.000471",
-            "maximum mean RGB delta between adjacent frames: 0.000845",
-            "maximum visible changed pixels between adjacent frames: 1,301",
-            "maximum visible changed pixels between adjacent frames: 2,381",
-            "maximum changed bounding-box visible ratio between adjacent frames: 0.034371",
-            "maximum changed bounding-box visible ratio between adjacent frames: 0.150831",
-            "maximum-change pair: `anchor_00_frame_049.png`",
-            "view_02_diagonal_anchor_02_frame_041.png",
-            "temporal_top_change_pairs_review.png",
-            "temporal_multiview_top_change_pairs_review.png",
-            "AI visual pre-review",
-            "gross-pop gate: passed across six anchors",
-            "region-bounds gate: passed across three views",
             "improved from 61 to 7",
             "L4 accepted runtime budget: staged movement",
             "docs/TERRAIN_RUNTIME_BUDGETS.md",
@@ -390,6 +390,34 @@ def main() -> int:
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"S1 workload audit is missing phrase: {phrase}")
+
+    gallery_tool = ROOT / "tools" / "s1_lod0_gallery_audit.py"
+    if gallery_tool.is_file():
+        text = gallery_tool.read_text(encoding="utf-8")
+        for phrase in (
+            "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
+            "terrain_s1_lod0_persistence_audit.gd",
+            "WT_SANDBOX_S1_LOD0_PERSISTENCE_PASS",
+            "WT_SANDBOX_BOUNDARY_PROBE",
+            "ERROR/SCRIPT ERROR output is a hard failure",
+            "dynamic mixed-LOD seamless gameplay",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S1 gallery tool is missing phrase: {phrase}")
+
+    persistence_audit = ROOT / "tests" / "terrain_s1_lod0_persistence_audit.gd"
+    if persistence_audit.is_file():
+        text = persistence_audit.read_text(encoding="utf-8")
+        for phrase in (
+            "WT_SANDBOX_S1_LOD0_PERSISTENCE_PASS",
+            "set(\"input_enabled\", false)",
+            "begin_edit_transaction",
+            "restart=exact",
+            "mesh=stable",
+            "world.wtedit",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S1 persistence audit is missing phrase: {phrase}")
 
     default_policy_audit = ROOT / "tests" / "terrain_s1_default_policy_audit.gd"
     if default_policy_audit.is_file():

@@ -65,6 +65,10 @@ repository work remain secondary until the terrain itself is proven at scale.
   `docs/TERRAIN_RUNTIME_BUDGETS.md`; the conservative LOD0 workload baseline
   must follow `docs/S1_LOD0_WORKLOAD_BASELINE.md`; larger levels must not silently
   inherit smaller-level capacities.
+- The accepted LOD0 gallery and restart-persistence gate is part of S1
+  technical exit. It must follow `docs/S1_LOD0_GALLERY_AUDIT.md` and print
+  `WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS` before S1 is considered technically
+  complete.
 - The S1 default-policy gate is part of acceptance. The normal scene, script
   fallback defaults, overlay labels, and test matrix must keep dynamic mixed LOD
   out of the accepted playtest path unless the policy is explicitly replaced.
