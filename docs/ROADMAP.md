@@ -51,10 +51,12 @@ Exit: a human can see, navigate, inspect, and modify real terrain.
 ## S1 - Visual acceptance
 
 Status: reference-scene stability defaults, a one-chunk render-apply budget,
-single-view plus multi-view temporal gross-pop and region-bounds gates, and the
-conservative fixed-center LOD0 sandbox default are in place. S1 is not complete:
-technical acceptance of dynamic mixed LOD remains open; human review remains
-final qualitative confirmation.
+single-view plus multi-view temporal gross-pop and region-bounds gates, native
+batched exact-restore capture, and the S1.10 dynamic mixed-LOD default-policy
+decision are in place. The accepted default playtest path is fixed-center LOD0.
+Dynamic mixed LOD is rejected/demoted as default and remains diagnostic-only
+until a later explicit milestone supplies stronger technical evidence or native
+mitigation. Human review remains final qualitative confirmation.
 
 - dynamic mixed-LOD appearance remains an explicit visual acceptance gate after
   the 1.0.9 native fade-in/fade-out and budget-1 temporal evidence;
@@ -102,8 +104,13 @@ final qualitative confirmation.
 - S1.9 replaces the GDScript exact-restore capture loop with a native batched
   authoritative sample query. The workload audit now gates carve submission,
   total carve settle, and restore settle under 2,000 ms; the accepted run
-  measured max carve submit 135 ms and max total carve settle 415 ms across the
+  measured max carve submit 139 ms and max total carve settle 417 ms across the
   supported Godot matrix;
+- S1.10 resolves the dynamic mixed-LOD default-policy question for S1:
+  dynamic mixed LOD is not accepted as default gameplay, remains explicit
+  diagnostic-only, and is guarded by `docs/S1_DYNAMIC_LOD_POLICY.md`,
+  `tests/terrain_s1_default_policy_audit.gd`, and
+  `python tools/test_sandbox.py`;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -112,15 +119,17 @@ final qualitative confirmation.
 - inspect surfaces, caves, and interaction feel using the conservative LOD0
   reference scene;
 - inspect mixed-LOD appearance separately using the existing audit/debug views;
-- decide whether the native fade is acceptable as the default policy or whether
-  visible LOD transitions still require geomorphing, stronger hysteresis, larger
-  prefetch rings, or a different default policy;
+- do not promote native fade-only mixed LOD to default gameplay unless a later
+  milestone replaces the S1.10 diagnostic-only policy with stronger evidence;
 - add real texture-array/triplanar assets after the procedural palette is
   accepted;
 - record representative screenshots and identified defects;
 - confirm editing appearance and persistence after restart.
 
-Exit: no visible correctness blocker remains in the test gallery.
+Technical exit: no visible correctness blocker remains in the accepted
+fixed-center LOD0 test gallery, mining latency is under the S1.9 native-batch
+gate, and dynamic mixed LOD is explicitly rejected/demoted as default gameplay.
+Final human qualitative confirmation remains the last external confirmation.
 
 ## S2 - Chunked generation and scale ladder
 

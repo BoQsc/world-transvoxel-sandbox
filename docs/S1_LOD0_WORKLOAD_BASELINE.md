@@ -69,12 +69,12 @@ Result on June 26, 2026 after the native batched query change:
 
 | Engine | Startup ms | Settle ms | Render/collision | Active records | Idle frames | Max move frame ms | Max carve submit ms | Max carve total ms | Max restore ms | Journal growth |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Godot 4.6.3 | 101 | 4,797 | 173 / 173 | 256 | 240 | 33.226 | 135 | 415 | 285 | 18,852 bytes |
-| Godot 4.7 | 102 | 4,788 | 173 / 173 | 256 | 240 | 33.208 | 125 | 405 | 283 | 18,852 bytes |
+| Godot 4.6.3 | 153 | 4,963 | 173 / 173 | 256 | 240 | 33.176 | 137 | 400 | 267 | 18,852 bytes |
+| Godot 4.7 | 121 | 4,857 | 173 / 173 | 256 | 240 | 32.778 | 139 | 417 | 283 | 18,852 bytes |
 
-Process sampling was available through `psutil`: maximum RSS was 217,731,072
-bytes on Godot 4.6.3 and 223,084,544 bytes on Godot 4.7. Average process CPU
-over the full headless audit was about 30.0% and 30.3% of one core
+Process sampling was available through `psutil`: maximum RSS was 221,093,888
+bytes on Godot 4.6.3 and 217,853,952 bytes on Godot 4.7. Average process CPU
+over the full headless audit was about 31.2% and 32.5% of one core
 respectively; startup and edit work are included in those averages.
 
 ## Recorded host observations

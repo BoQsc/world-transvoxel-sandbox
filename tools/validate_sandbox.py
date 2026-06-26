@@ -97,6 +97,8 @@ def main() -> int:
         "tests/terrain_l4_visual_capture.gd.uid",
         "tests/terrain_probe_util.gd",
         "tests/terrain_probe_util.gd.uid",
+        "tests/terrain_s1_default_policy_audit.gd",
+        "tests/terrain_s1_default_policy_audit.gd.uid",
         "tests/terrain_s1_lod0_workload_audit.gd",
         "tests/terrain_s1_lod0_workload_audit.gd.uid",
         "tests/terrain_lod_pop_capture.gd",
@@ -117,6 +119,7 @@ def main() -> int:
         "docs/TERRAIN_RUNTIME_BUDGETS.md",
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "docs/S1_LOD0_WORKLOAD_BASELINE.md",
+        "docs/S1_DYNAMIC_LOD_POLICY.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
     )
@@ -180,7 +183,8 @@ def main() -> int:
     if readme.is_file():
         text = readme.read_text(encoding="utf-8")
         for phrase in (
-            "Dynamic LOD technical acceptance is still open",
+            "S1.10 explicitly rejects/demotes dynamic mixed LOD",
+            "diagnostic-only until stronger evidence",
             "Human review is final qualitative confirmation",
             "not for deciding technical correctness",
             "final human qualitative confirmation",
@@ -194,8 +198,9 @@ def main() -> int:
         for phrase in (
             "standards-first",
             "Large-terrain ladder",
-            "Dynamic LOD popping remains a blocker",
+            "Dynamic LOD popping is demoted by the S1.10 documented standard",
             "Normal sandbox/playtest defaults are conservative",
+            "docs/S1_DYNAMIC_LOD_POLICY.md",
             "LOD-debug captures are diagnostic only",
             "current automated gross-pop and region-bounds gates",
             "front/side/diagonal multi-view harness",
@@ -203,7 +208,7 @@ def main() -> int:
             "Human review is final qualitative confirmation",
             "does not block technical",
             "cannot replace automated gates",
-            "technical visual acceptance",
+            "stronger evidence or a native mitigation",
             "final qualitative confirmation does not replace technical correctness",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
             "Do not jump milestones",
@@ -215,6 +220,7 @@ def main() -> int:
             "Compute shaders are deferred",
             "Decision tracking",
             "Containment is not completion",
+            "S1 default-policy gate is part of acceptance",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"terrain standard is missing phrase: {phrase}")
@@ -223,8 +229,10 @@ def main() -> int:
     if roadmap.is_file():
         text = roadmap.read_text(encoding="utf-8")
         for phrase in (
-            "technical acceptance of dynamic mixed LOD remains open",
-            "human review remains",
+            "S1.10 dynamic mixed-LOD default-policy",
+            "Dynamic mixed LOD is rejected/demoted as default",
+            "tests/terrain_s1_default_policy_audit.gd",
+            "Human review remains",
             "final human qualitative confirmation",
             "S3 must not start until S1 exits",
         ):
@@ -259,16 +267,36 @@ def main() -> int:
             if not has_phrase(text, phrase):
                 errors.append(f"S1 workload baseline is missing phrase: {phrase}")
 
+    dynamic_policy = ROOT / "docs" / "S1_DYNAMIC_LOD_POLICY.md"
+    if dynamic_policy.is_file():
+        text = dynamic_policy.read_text(encoding="utf-8")
+        for phrase in (
+            "S1.10 rejects dynamic mixed LOD as the default accepted playtest policy",
+            "fixed-center LOD0 reference mode",
+            "`maximum_lod` | `0`",
+            "`streaming_follows_viewer` | `false`",
+            "diagnostic mode",
+            "does not prove all camera angles",
+            "user-visible popping/glitching concern",
+            "not as normal terrain behavior",
+            "tests/terrain_s1_default_policy_audit.gd",
+            "autonomous input disabled",
+            "all rendered chunks are LOD0",
+            "Human review remains final qualitative confirmation",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S1 dynamic LOD policy is missing phrase: {phrase}")
+
     status = ROOT / "docs" / "CURRENT_STATUS.md"
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
             "S1 - visual acceptance",
-            "S1 is not complete",
+            "S1 now has a technical default-policy decision",
             "Unresolved blockers kept visible",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
             "Do not start later-milestone work",
-            "technical visual acceptance",
+            "dynamic mixed LOD is rejected/demoted as default gameplay by S1.10",
             "Human review remains final",
             "does not block technical milestone progress",
             "replace automated/capture-based correctness",
@@ -287,15 +315,19 @@ def main() -> int:
             "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
             "S1.7 - conservative default dynamic LOD containment is complete",
-            "containment, not mixed-LOD implementation completion",
-            "S1 active task - mining latency and dynamic mixed-LOD S1 exit",
+            "S1.10 later made the default-policy decision",
+            "S1 active task - lock and preserve the accepted default playtest policy",
+            "S1.10 - dynamic mixed-LOD default-policy decision",
+            "WT_SANDBOX_S1_DEFAULT_POLICY_PASS",
+            "tests/terrain_s1_default_policy_audit.gd",
             "S1.9 - native batched exact-restore capture",
             "production-feel mining latency",
             "tightened 2,000 ms edit-latency ceiling",
             "World Transvoxel 1.0.10-dev",
             "tools/s1_lod0_workload_audit.py",
             "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
-            "dynamic mixed LOD remains diagnostic/experimental",
+            "dynamic mixed LOD remains available only through explicit diagnostic scripts",
+            "fixed streaming anchor",
             "lod_transition_native_fade_without_geomorph_pending_visual_acceptance",
             "surface_transition_pending_visual_acceptance",
             "temporal_surface_gross_pop_gate_pass_pending_human_review",
@@ -355,6 +387,23 @@ def main() -> int:
             if not has_phrase(text, phrase):
                 errors.append(f"S1 workload audit is missing phrase: {phrase}")
 
+    default_policy_audit = ROOT / "tests" / "terrain_s1_default_policy_audit.gd"
+    if default_policy_audit.is_file():
+        text = default_policy_audit.read_text(encoding="utf-8")
+        for phrase in (
+            "WT_SANDBOX_S1_DEFAULT_POLICY_PASS",
+            "set(\"input_enabled\", false)",
+            "radius_chunks != 4",
+            "maximum_lod != 0",
+            "streaming_follows_viewer",
+            "fixed_streaming_position",
+            "render_apply_budget",
+            "_all_render_chunks_are_lod0",
+            "viewer movement changed the accepted fixed-anchor demand",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S1 default policy audit is missing phrase: {phrase}")
+
     sculpt_capture = ROOT / "scripts" / "terrain_sculpt_capture.gd"
     if sculpt_capture.is_file():
         text = sculpt_capture.read_text(encoding="utf-8")
@@ -399,6 +448,16 @@ def main() -> int:
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"terrain overlay is missing phrase: {phrase}")
+
+    test_runner = ROOT / "tools" / "test_sandbox.py"
+    if test_runner.is_file():
+        text = test_runner.read_text(encoding="utf-8")
+        for phrase in (
+            "terrain_s1_default_policy_audit.gd",
+            "WT_SANDBOX_S1_DEFAULT_POLICY_PASS",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"sandbox test runner is missing phrase: {phrase}")
 
     budget_check = subprocess.run(
         [sys.executable, str(ROOT / "tools" / "runtime_budget_profiles.py"), "--check"],

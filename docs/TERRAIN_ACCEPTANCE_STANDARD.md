@@ -34,16 +34,18 @@ repository work remain secondary until the terrain itself is proven at scale.
   milestone progress, and it cannot replace automated gates, deterministic
   captures, measured runtime evidence, native audits, or direct technical
   inspection.
-- Dynamic LOD popping remains a blocker until fixed or explicitly demoted by a
-  documented standard. The current reference mitigation is native
-  fade-in/fade-out with `render_apply_budget = 1`; higher render-apply bursts
-  are not accepted as the default visual policy unless they pass the same gates.
+- Dynamic LOD popping is demoted by the S1.10 documented standard, not accepted
+  as normal gameplay behavior. The current reference mitigation is native
+  fade-in/fade-out with `render_apply_budget = 1`, but fade-only mixed LOD is
+  diagnostic-only until stronger evidence or a native mitigation closes the
+  visual-quality gap. Higher render-apply bursts are not accepted as the
+  default visual policy unless they pass the same or stronger gates.
 - Normal sandbox/playtest defaults are conservative: fixed-center LOD0 reference
   mode with `radius_chunks = 4`, `maximum_lod = 0`, and
   `streaming_follows_viewer = false`. Dynamic mixed LOD remains
-  diagnostic/experimental until technical visual acceptance or a native
-  mitigation closes the remaining visual-quality gap. Human review remains
-  final qualitative confirmation.
+  diagnostic-only unless a later explicit milestone replaces
+  `docs/S1_DYNAMIC_LOD_POLICY.md`. Human review remains final qualitative
+  confirmation.
 - LOD-debug captures are diagnostic only. Dynamic LOD visual acceptance requires
   surface-mode transition evidence, and still-image evidence cannot by itself
   prove temporal seamlessness; video/capture review, direct technical
@@ -63,6 +65,9 @@ repository work remain secondary until the terrain itself is proven at scale.
   `docs/TERRAIN_RUNTIME_BUDGETS.md`; the conservative LOD0 workload baseline
   must follow `docs/S1_LOD0_WORKLOAD_BASELINE.md`; larger levels must not silently
   inherit smaller-level capacities.
+- The S1 default-policy gate is part of acceptance. The normal scene, script
+  fallback defaults, overlay labels, and test matrix must keep dynamic mixed LOD
+  out of the accepted playtest path unless the policy is explicitly replaced.
 - Do not jump milestones. If work becomes necessary for the current milestone,
   reclassify it into the current milestone with exit criteria before doing it;
   otherwise defer it until the current milestone exits.

@@ -22,11 +22,12 @@ commit `6c21b2538e62f2cbd5eda0a141da581eae826453`, based on the 1.0.9 PQ4
 release plus the S1 native batch-query change. Its mixed 0BSD/MIT scope and
 vendor manifest are retained at the repository root.
 
-Dynamic mixed-LOD streaming now passes the automated six-anchor surface
-temporal gross-pop gate in both the primary view and the three-camera
-multi-view harness. The reference dynamic LOD policy is native fade-in/fade-out
-plus `render_apply_budget = 1` to avoid large visual bursts. Dynamic LOD
-technical acceptance is still open, so the normal playtest uses a fixed,
+Dynamic mixed-LOD streaming passes the automated six-anchor surface temporal
+gross-pop gate in both the primary view and the three-camera multi-view
+harness. That proves bounded deterministic transitions, not seamless default
+gameplay. S1.10 explicitly rejects/demotes dynamic mixed LOD as the accepted
+default policy; it remains diagnostic-only until stronger evidence or a native
+mitigation closes the visual-quality gap. The normal playtest uses a fixed,
 complete LOD0 map and must not be presented as proof that dynamic LOD
 appearance is finished. Human review is final qualitative confirmation, not a
 blocker that halts technical milestones or replaces automated/capture-based
@@ -134,14 +135,14 @@ center anchor. Camera movement therefore causes no chunk or LOD replacement
 in the human playtest view. Collision remains available across the complete
 map so digging and inspection rays do not silently miss visible terrain.
 Dynamic mixed-LOD streaming remains tested, but it is not the default
-playtest view until LOD popping is addressed as a separate visual-quality
-milestone.
+playtest view. S1.10 locks it as diagnostic-only until LOD popping is addressed
+by stronger evidence or a native mitigation.
 The conservative LOD0 workload gate is tracked in
 [`docs/S1_LOD0_WORKLOAD_BASELINE.md`](docs/S1_LOD0_WORKLOAD_BASELINE.md).
 It passes as a deterministic correctness/regression ceiling on both supported
 Godot engines. S1.9 replaced the slow GDScript exact-capture loop with a native
-batched query path. The current audit keeps carve submission under 135 ms and
-total carve settle under 415 ms on the supported Godot matrix, with a 2,000 ms
+batched query path. The current audit keeps carve submission under 139 ms and
+total carve settle under 417 ms on the supported Godot matrix, with a 2,000 ms
 hard regression gate.
 
 On the current four-core / GTX 1060 Max-Q reference machine, a 12-second
@@ -159,9 +160,10 @@ and remesh; restoration must recover the exact density and original mesh hash;
 construction must assign rock material 3; an authoritative column audit must
 prove solid-void-solid-air volume and XYZ geology; mixed-LOD audits must include
 both LODs; every full-world triangle edge must form a closed two-use manifold;
-and coincident cross-chunk normals must agree. An idle audit also proves settled
-terrain creates no additional viewer updates, sample jobs, mesh jobs, mesh
-completions, or publications,
+coincident cross-chunk normals must agree; and the S1 default-policy audit must
+prove the accepted scene starts as fixed LOD0 reference and does not replan when
+the camera moves. An idle audit also proves settled terrain creates no
+additional viewer updates, sample jobs, mesh jobs, mesh completions, or publications,
 that camera movement does not alter the fixed reference anchor, and that the
 dynamic test mode honors the eight-unit streaming threshold.
 Continuous motion checks 480 viewer positions, direct render coverage, and
@@ -175,9 +177,9 @@ appearance and game feel confirmation, not for proving Transvoxel topology and
 not for deciding technical correctness in place of tests, captures, and
 measured evidence.
 
-This does not yet prove a 2K map, GPU compute, water, lava, planetary terrain,
-or structural stability. Those gates are finite and recorded in
-[`docs/ROADMAP.md`](docs/ROADMAP.md).
+This does not yet prove game-ready 2K exploration, GPU compute, water, lava,
+planetary terrain, or structural stability. Those gates are finite and recorded
+in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## License
 

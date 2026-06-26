@@ -23,38 +23,75 @@ storage, recovery, fluids, or stability algorithms should live.
 ## Current milestone
 
 S1 - visual acceptance, LOD0 interaction correctness, and dynamic mixed-LOD
-decision.
+default-policy decision.
 
-S0 is complete for the 128 baseline. S1 is not complete: dynamic mixed LOD
-remains a primary implementation blocker until technical visual acceptance or a
-native mitigation closes the visual-quality gap. Human review remains final
-qualitative confirmation; it does not block technical milestone progress or
-replace automated/capture-based correctness. S1.7 is containment, not
-completion: normal sandbox/playtest paths use fixed-center LOD0 reference mode,
-while dynamic mixed LOD remains diagnostic/experimental. S1.8 reclassifies the
+S0 is complete for the 128 baseline. S1 now has a technical default-policy
+decision: the accepted playtest path is fixed-center LOD0 reference mode, and
+dynamic mixed LOD is rejected/demoted as default gameplay by S1.10. Human review
+remains final qualitative confirmation; it does not block technical milestone
+progress or replace automated/capture-based correctness. S1.8 reclassified the
 fixed-center LOD0 workload audit as S1 evidence because interaction feel and
-visible terrain stability belong to S1. Previously collected S2 scale-ladder
-evidence remains recorded, but no new S2/S3/S4 work is active until S1 exits.
-We are not starting GPU compute, water/lava, planets, structural collapse, a
-game repository, or 0BSD backend replacement work before the core terrain
-workload budgets and remaining visual blockers are explicitly resolved.
+visible terrain stability belong to S1, and S1.9 moved exact restore capture to
+the native batched path. Previously collected S2 scale-ladder evidence remains
+recorded, but no new S3/S4 work is active until the S1.10 policy gate and
+default-path tests are committed. We are not starting GPU compute, water/lava,
+planets, structural collapse, a game repository, or 0BSD backend replacement
+work before the core terrain workload budgets and remaining visual limitations
+are explicitly tracked.
 
 ## Unresolved blockers kept visible
 
 - dynamic mixed-LOD technical seamless visual acceptance, all camera angles, all
-  movement speeds, and geomorphing/native mitigation remain open;
+  movement speeds, and geomorphing/native mitigation remain open as a
+  diagnostic/future limitation, not as accepted default gameplay;
 - production-feel mining latency now has an S1.9 native-batch regression gate.
   The conservative LOD0 workload evidence covers fixed-anchor movement,
   repeated mining/restoration, process CPU/RSS sampling, I/O, memory, and idle
   coldness;
 - graphical GPU/frustum behavior and target hardware remain deferred unless
   they are explicitly moved into S1 exit criteria;
-- full terrain/game readiness is blocked by the fixed-center LOD0 containment
-  boundary until S1 exits cleanly;
+- full terrain/game readiness still requires later workload and feature gates;
+  S1.10 only closes the default playtest policy decision;
 - compute shaders and optional systems remain deferred until measured workload
   evidence justifies them.
 
 ## Latest evidence
+
+S1.10 - dynamic mixed-LOD default-policy decision and fixed LOD0 default gate
+are complete.
+
+Commands:
+
+```console
+python tools/validate_sandbox.py
+python tools/test_sandbox.py
+python tools/s1_lod0_workload_audit.py
+python tools/capture_visuals.py
+```
+
+Decision:
+
+- policy document: `docs/S1_DYNAMIC_LOD_POLICY.md`;
+- runtime audit: `tests/terrain_s1_default_policy_audit.gd`;
+- matrix runner: `tools/test_sandbox.py`;
+- marker: `WT_SANDBOX_S1_DEFAULT_POLICY_PASS`;
+- validation marker: `WT_SANDBOX_VALIDATION_PASS vendored_files=147
+  project_files=240`;
+- matrix marker: `WT_SANDBOX_MATRIX_PASS engines=2 configurations=2 tests=8
+  cases=32`;
+- workload marker: `WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS engines=2
+  report=artifacts/s1_lod0_workload/workload_report.json`;
+- visual marker: `WT_SANDBOX_VISUAL_EVIDENCE_PASS images=9`;
+- accepted default: `radius_chunks = 4`, `maximum_lod = 0`,
+  `streaming_follows_viewer = false`, fixed streaming position `(64, 32, 64)`,
+  `render_apply_budget = 1`, and 60 FPS;
+- verified behavior: the accepted scene starts fixed LOD0, settles the full
+  LOD0 reference active set, renders only LOD0 chunks, and viewer movement does
+  not change the fixed streaming anchor or submit new viewer demand;
+- dynamic mixed LOD remains available only through explicit diagnostic scripts
+  or test modes. Existing S1.6 evidence proves bounded deterministic
+  transitions under the current automated gates; it does not prove seamless
+  default gameplay, all camera angles, all movement speeds, or geomorphing.
 
 S1.9 - native batched exact-restore capture and conservative LOD0 workload gate
 are complete.
@@ -72,16 +109,16 @@ Result:
 - runner: `tools/s1_lod0_workload_audit.py`;
 - marker: `WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS engines=2
   report=artifacts/s1_lod0_workload/workload_report.json`;
-- Godot 4.6.3: startup 101 ms, settle 4,797 ms, render/collision 173 / 173,
-  active records 256, 240 idle frames, max movement frame 33.226 ms,
-  3 carve + exact-restore cycles, 6 edit commits, max carve submit 135 ms,
-  max carve total 415 ms, max restore 285 ms, edit-journal growth 18,852
-  bytes, max RSS 217,731,072 bytes, average process CPU 29.965%;
-- Godot 4.7: startup 102 ms, settle 4,788 ms, render/collision 173 / 173,
-  active records 256, 240 idle frames, max movement frame 33.208 ms,
-  3 carve + exact-restore cycles, 6 edit commits, max carve submit 125 ms,
-  max carve total 405 ms, max restore 283 ms, edit-journal growth 18,852
-  bytes, max RSS 223,084,544 bytes, average process CPU 30.289%;
+- Godot 4.6.3: startup 153 ms, settle 4,963 ms, render/collision 173 / 173,
+  active records 256, 240 idle frames, max movement frame 33.176 ms,
+  3 carve + exact-restore cycles, 6 edit commits, max carve submit 137 ms,
+  max carve total 400 ms, max restore 267 ms, edit-journal growth 18,852
+  bytes, max RSS 221,093,888 bytes, average process CPU 31.162%;
+- Godot 4.7: startup 121 ms, settle 4,857 ms, render/collision 173 / 173,
+  active records 256, 240 idle frames, max movement frame 32.778 ms,
+  3 carve + exact-restore cycles, 6 edit commits, max carve submit 139 ms,
+  max carve total 417 ms, max restore 283 ms, edit-journal growth 18,852
+  bytes, max RSS 217,853,952 bytes, average process CPU 32.472%;
 - completed evidence: conservative fixed-center LOD0 active set is bounded and cold while
   idle; fixed-anchor surface/underground movement does not trigger streaming;
   repeated carve/exact-restore commits and journal growth are bounded under the
@@ -250,8 +287,10 @@ Result:
   playtest mode and marks mixed LOD as diagnostic when enabled;
 - dynamic mixed LOD captures and scale-ladder audits remain explicit opt-in
   diagnostics/tests by setting `maximum_lod = 1`;
-- not proven: dynamic mixed LOD is still not a seamless default play mode; S1.7
-  is containment, not mixed-LOD implementation completion.
+- not proven: dynamic mixed LOD is still not a seamless default play mode. S1.7
+  was containment, and S1.10 later made the default-policy decision to keep that
+  path diagnostic-only instead of treating fade-only transitions as accepted
+  gameplay.
 
 Post-vendor 1.0.10-dev verification passed:
 
@@ -266,9 +305,9 @@ python tools/scale_runtime.py --level L4
 Result:
 
 - repository validation: `WT_SANDBOX_VALIDATION_PASS vendored_files=147
-  project_files=228`;
-- sandbox matrix: `WT_SANDBOX_MATRIX_PASS engines=2 configurations=2 tests=7
-  cases=28`;
+  project_files=240`;
+- sandbox matrix: `WT_SANDBOX_MATRIX_PASS engines=2 configurations=2 tests=8
+  cases=32`;
 - visual capture: `WT_SANDBOX_VISUAL_EVIDENCE_PASS images=9`;
 - L4 runtime: `WT_SANDBOX_SCALE_RUNTIME_PASS level=L4 engines=2`, with
   active chunk capacity 1,024, `render_apply_budget=1`, minimum render 210,
@@ -589,7 +628,7 @@ Result:
 
 ## Current active task
 
-S1 active task - mining latency and dynamic mixed-LOD S1 exit.
+S1 active task - lock and preserve the accepted default playtest policy.
 
 Scope:
 
@@ -599,25 +638,26 @@ Scope:
   conservative default where needed for S1 exit;
 - keep the native batched exact-restore capture under the S1 workload latency
   gate while testing interaction feel;
-- keep mixed-LOD diagnostics focused on S1 visual acceptance;
+- keep mixed-LOD diagnostics explicit and out of the accepted default playtest
+  path;
 - keep compute shaders deferred until S1 exits and a measured bottleneck
   justifies later milestone work.
 
 Exit:
 
-- S1 exits only when the accepted playtest mode has no visible correctness
-  blocker, mining latency stays within the native-batch standard, and dynamic
-  mixed LOD is either technically accepted as default or explicitly
-  rejected/demoted with a documented policy.
+- S1 technical exit is satisfied when the accepted playtest mode has no visible
+  correctness blocker, mining latency stays within the native-batch standard,
+  and dynamic mixed LOD remains explicitly rejected/demoted as default gameplay
+  by the S1.10 policy gate.
 
 ## Next finite steps
 
-1. Continue S1 dynamic mixed-LOD visual acceptance work or make a documented S1
-   policy decision to keep dynamic mixed LOD diagnostic-only.
+1. Run and keep `python tools/test_sandbox.py` as the matrix gate for the
+   accepted default-policy audit.
 2. Keep `python tools/s1_lod0_workload_audit.py` as the regression gate for
    fixed-center LOD0 mining/restoration and cold-idle behavior.
-3. Do not start S2/S3/S4 work unless S1 exits or the current milestone is
-   explicitly redefined first.
+3. Do not start S3/S4 work unless S1.10 is committed and the current milestone
+   tracker is explicitly advanced.
 
 ## Deferred by rule
 
