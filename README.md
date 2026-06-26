@@ -49,10 +49,11 @@ recorded in
 The current active milestone and next finite task are tracked in
 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md).
 
-Automated L4 / 2048 terrain evidence now exists for bounded generation,
-staged runtime, edit/remesh, and static visual capture. Dynamic seamless LOD
-movement, fast travel, game-scale feature systems, and final human qualitative
-confirmation are still separate unfinished gates.
+Automated L4 / 2048 terrain evidence now has an S2 exit review
+(`WT_SANDBOX_S2_EXIT_REVIEW_PASS`) for bounded generation, staged runtime,
+edit/remesh, and static visual capture. Dynamic seamless LOD movement, fast
+travel, game-scale feature systems, and final human qualitative confirmation
+are still separate unfinished gates.
 
 ## Run
 

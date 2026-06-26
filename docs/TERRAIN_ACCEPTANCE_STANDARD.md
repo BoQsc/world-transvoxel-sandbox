@@ -127,7 +127,9 @@ Each level must record:
 - representative visual captures;
 - known visual defects.
 
-The 2K map claim is rejected until L4 has this evidence.
+The 2K map claim is rejected until L4 has this evidence. S2 scale-ladder exit
+also requires `docs/S2_SCALE_LADDER_EXIT_REVIEW.md` and
+`WT_SANDBOX_S2_EXIT_REVIEW_PASS`.
 
 ## Visual artifact standard
 

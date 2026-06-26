@@ -148,11 +148,12 @@ confirmation.
 
 ## S2 - Chunked generation and scale ladder
 
-Status: automated scale-ladder evidence is complete through L4 / 2048. L0
-remains the default accepted human playtest world. L1, L2, L3, and L4 have
-generation, headless runtime, and automated static visual evidence. None of
-the larger mixed-LOD levels are yet technically or dynamically visually
-accepted; final human qualitative confirmation also remains open.
+Status: complete for automated S2 exit by
+`WT_SANDBOX_S2_EXIT_REVIEW_PASS`. L0 remains the default accepted human playtest
+world. L1, L2, L3, and L4 have generation, headless runtime, and automated
+static visual evidence. None of the larger mixed-LOD levels are yet technically
+or dynamically visually accepted; final human qualitative confirmation also
+remains open.
 
 - follow the terrain acceptance standard scale ladder: 128, 256, 512, 1024,
   and 2048 horizontal cells;
@@ -240,22 +241,27 @@ accepted; final human qualitative confirmation also remains open.
   same-key LOD remeshes while fading the previous mesh through a temporary
   retiring copy; the rerun L4 visual gate passes with seven images and no Godot
   `Too many instances using shader instance variables` errors;
+- S2 exit review: `docs/S2_SCALE_LADDER_EXIT_REVIEW.md` and
+  `tools/s2_exit_review.py` validate L1-L4 generation, runtime, static visual,
+  declared budget, L3/L4 boundary-marker, and bounded L4 preflight evidence;
 - L4 not yet proven: final human qualitative confirmation, dynamic seamless LOD
   appearance, fast travel/disjoint teleport movement, target-hardware gameplay
   workload, or scale support beyond 2048;
 - set the supported vertical range and target hardware profile before claiming
   game-readiness beyond this reference machine.
 
-Exit: the automated 2K scale-ladder claim is accepted for bounded generation,
-staged runtime, edit/remesh, and static visual capture. Final human qualitative
-confirmation, dynamic seamless LOD movement, and gameplay workload acceptance
-remain outside S2.
+Exit: complete for automated 2K scale-ladder evidence. The accepted S2 claim is
+bounded generation, staged runtime, edit/remesh, and static visual capture
+through L4. Final human qualitative confirmation, dynamic seamless LOD movement,
+and gameplay workload acceptance remain outside S2.
 
 ## S3 - Visibility and production workload
 
-Status: inactive. S3 must not start until S2 exits or the roadmap is explicitly
-redefined. The LOD0 workload audit is S1.8 because it affects S1 interaction
-feel and accepted-playtest correctness.
+Status: next in order. S3 may start after S2 exit, but its first task must be a
+scoped S3 contract for visibility/frustum behavior and production workload.
+GPU compute, water/lava, planets, structural collapse, a game repository, and
+0BSD backend replacement remain out of scope unless the S3 contract explicitly
+moves them in.
 
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;

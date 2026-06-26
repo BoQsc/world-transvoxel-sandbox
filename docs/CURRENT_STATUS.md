@@ -24,9 +24,11 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S1 technical exit evidence is complete. The next in-order work is S2
-scale-ladder exit review and cleanup; do not start S3/GPU/feature work until S2
-is explicitly exited or the roadmap is intentionally redefined.
+S2 automated scale-ladder exit evidence is complete. The next in-order
+milestone is S3 visibility and production workload. Do not start GPU compute,
+water/lava, planets, structural collapse, a game repository, or 0BSD backend
+replacement inside S3 unless the S3 contract explicitly moves those items into
+scope.
 
 S0 is complete for the 128 baseline. S1 now has a technical default-policy
 decision: the accepted playtest path is fixed-center LOD0 reference mode, and
@@ -36,11 +38,11 @@ progress or replace automated/capture-based correctness. S1.8 reclassified the
 fixed-center LOD0 workload audit as S1 evidence because interaction feel and
 visible terrain stability belong to S1, and S1.9 moved exact restore capture to
 the native batched path. S1.11 added an accepted fixed-center LOD0 gallery plus
-restart-persistence audit. Previously collected S2 scale-ladder evidence remains
-recorded, but no new S3/S4 work is active until S2 is explicitly exited. We are
-not starting GPU compute, water/lava, planets, structural collapse, a game
-repository, or 0BSD backend replacement work before the core terrain workload
-budgets and remaining visual limitations are explicitly tracked.
+restart-persistence audit. S2 now has an explicit exit review for L1 through L4
+bounded generation, staged runtime, and static visual reports. We are not
+starting GPU compute, water/lava, planets, structural collapse, a game
+repository, or 0BSD backend replacement work before the relevant S3/S4 contracts
+move those items into scope.
 
 ## Unresolved blockers kept visible
 
@@ -61,6 +63,33 @@ budgets and remaining visual limitations are explicitly tracked.
   evidence justifies them.
 
 ## Latest evidence
+
+S2 exit review - L1 through L4 scale-ladder evidence is complete.
+
+Command:
+
+```console
+python tools/s2_exit_review.py
+```
+
+Result:
+
+- contract: `docs/S2_SCALE_LADDER_EXIT_REVIEW.md`;
+- review tool: `tools/s2_exit_review.py`;
+- marker: `WT_SANDBOX_S2_EXIT_REVIEW_PASS levels=4
+  report=artifacts/s2_exit_review/s2_exit_review_report.json`;
+- validated reports: L1-L4 generation, L1-L4 runtime, and L1-L4 static visual
+  reports under `artifacts/scale_ladder`;
+- validated budget gate: `WT_SANDBOX_RUNTIME_BUDGETS_PASS profiles=5`;
+- validated L4 shader-budget cleanup: rerun
+  `WT_SANDBOX_SCALE_VISUAL_PASS level=L4 images=7`;
+- accepted S2 claim: bounded L1-L4 generation, storage validation, staged
+  runtime movement, one active-window edit/remesh per runtime audit, clean
+  shutdown, declared active chunk capacities, nonblank static visual captures,
+  and L3/L4 finite-boundary regression markers;
+- still outside S2: final human qualitative confirmation, dynamic seamless LOD
+  gameplay, fast travel/disjoint teleport support, target-hardware gameplay
+  workload, scale beyond L4 / 2048, and optional systems.
 
 S1.11 - accepted fixed-center LOD0 gallery and restart-persistence audit are
 complete.

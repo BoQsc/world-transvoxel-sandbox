@@ -200,7 +200,9 @@ def run_visual(level: str, engine: Path) -> dict:
             "lod_debug_partition": "expected in overview_lod captures",
             "underground_tunnel": "static centerline-framed capture",
             "top_view_detail": "limited by flat procedural palette",
-            "shader_instance_variable_limit": "not_detected after per-LOD materials",
+            "shader_instance_variable_limit": (
+                "not_detected with default-off shader fade instance parameters"
+            ),
             "render_collision_runtime_gap": "not_tested_here; covered by scale_runtime",
             "dynamic_lod_popping": "not_proven_by_static_captures",
             "human_visual_acceptance": "pending",

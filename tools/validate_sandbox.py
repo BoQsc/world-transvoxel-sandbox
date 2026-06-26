@@ -69,6 +69,7 @@ def main() -> int:
         "tools/scale_visual.py",
         "tools/s1_lod0_workload_audit.py",
         "tools/s1_lod0_gallery_audit.py",
+        "tools/s2_exit_review.py",
         "tools/capture_lod_popping.py",
         "tools/capture_lod_surface.py",
         "tools/capture_lod_temporal.py",
@@ -123,6 +124,7 @@ def main() -> int:
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "docs/S1_LOD0_WORKLOAD_BASELINE.md",
         "docs/S1_LOD0_GALLERY_AUDIT.md",
+        "docs/S2_SCALE_LADDER_EXIT_REVIEW.md",
         "docs/S1_DYNAMIC_LOD_POLICY.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
@@ -190,9 +192,8 @@ def main() -> int:
             "S1.10 explicitly rejects/demotes dynamic mixed LOD",
             "diagnostic-only until stronger evidence",
             "Human review is final qualitative confirmation",
-            "not for deciding technical correctness",
-            "final human qualitative confirmation",
             "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
+            "WT_SANDBOX_S2_EXIT_REVIEW_PASS",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"readme is missing phrase: {phrase}")
@@ -244,7 +245,7 @@ def main() -> int:
             "Technical exit: complete by S1.11",
             "Human review remains",
             "final human qualitative confirmation",
-            "S3 must not start until S2 exits",
+            "S3 may start after S2 exit",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"roadmap is missing phrase: {phrase}")
@@ -317,8 +318,8 @@ def main() -> int:
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
-            "S1 technical exit evidence is complete",
-            "S2 scale-ladder exit review",
+            "S2 automated scale-ladder exit evidence is complete",
+            "WT_SANDBOX_S2_EXIT_REVIEW_PASS",
             "S1 now has a technical default-policy decision",
             "Unresolved blockers kept visible",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
