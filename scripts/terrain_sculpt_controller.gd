@@ -1,25 +1,21 @@
 class_name WtSandboxTerrainSculptController
 extends RefCounted
 
+const Capture = preload("res://scripts/terrain_sculpt_capture.gd")
 const MODE_CARVE := "carve"
 const MODE_CONSTRUCT := "construct rock"
 const MODE_PAINT := "paint ore"
 const MODE_RESTORE := "restore carve"
-const SAMPLE_SCALE := 65536
-const MAX_CAPTURE_REQUESTS := 15
-const CAPTURE_TIMEOUT_FRAMES := 600
 
 var _terrain: Node
 var _radius := 2.0
 var _strength := 6.0
 var _construction_material := 3
 var _ore_material := 4
+var _capture := Capture.new()
 var _committed_carves: Array[Dictionary] = []
 var _pending: Dictionary = {}
 var _capture_active := false
-var _capture_request_ids: Dictionary = {}
-var _sample_results: Dictionary = {}
-var _sample_failures: Dictionary = {}
 
 
 func configure(
@@ -34,8 +30,7 @@ func configure(
 	_strength = strength
 	_construction_material = construction_material
 	_ore_material = ore_material
-	_terrain.authoritative_sample_ready.connect(_on_sample_ready)
-	_terrain.authoritative_sample_failed.connect(_on_sample_failed)
+	_capture.configure(_terrain)
 
 
 func submit(point: Vector3, mode: String) -> Dictionary:
@@ -53,7 +48,9 @@ func submit(point: Vector3, mode: String) -> Dictionary:
 	if mode == MODE_CARVE:
 		var base_revision: int = _terrain.call("get_world_revision")
 		_capture_active = true
-		var samples: Array[Dictionary] = await _capture_density_samples(point, _radius)
+		var samples: Array[Dictionary] = await _capture.capture_density_samples(
+			point, _radius
+		)
 		_capture_active = false
 		if samples.is_empty():
 			return _failure("carve rejected: exact restoration capture failed")
@@ -150,96 +147,6 @@ func edit_failed() -> String:
 
 func get_restorable_carve_count() -> int:
 	return _committed_carves.size()
-
-
-func _capture_density_samples(center: Vector3, radius: float) -> Array[Dictionary]:
-	var points := _sphere_grid_points(center, radius)
-	var captured: Array[Dictionary] = []
-	var pending: Dictionary = {}
-	var cursor := 0
-	var elapsed_frames := 0
-	while cursor < points.size() or not pending.is_empty():
-		while cursor < points.size() and pending.size() < MAX_CAPTURE_REQUESTS:
-			var request_id: int = _terrain.call(
-				"request_authoritative_sample", points[cursor], 0
-			)
-			if request_id <= 0:
-				break
-			_capture_request_ids[request_id] = true
-			pending[request_id] = points[cursor]
-			cursor += 1
-		for request_id: int in pending.keys():
-			if _sample_results.has(request_id):
-				var sample: RefCounted = _sample_results[request_id]
-				captured.append({
-					"point": pending[request_id],
-					"density": sample.call("get_density"),
-				})
-				_sample_results.erase(request_id)
-				pending.erase(request_id)
-			elif _sample_failures.has(request_id):
-				_sample_failures.erase(request_id)
-				_discard_capture_requests(pending)
-				return []
-		if cursor < points.size() or not pending.is_empty():
-			elapsed_frames += 1
-			if elapsed_frames > CAPTURE_TIMEOUT_FRAMES:
-				_discard_capture_requests(pending)
-				return []
-			await _terrain.get_tree().process_frame
-	return captured
-
-
-func _sphere_grid_points(center: Vector3, radius: float) -> Array[Vector3i]:
-	var center_q := Vector3i(
-		roundi(center.x * SAMPLE_SCALE),
-		roundi(center.y * SAMPLE_SCALE),
-		roundi(center.z * SAMPLE_SCALE)
-	)
-	var radius_q := roundi(radius * SAMPLE_SCALE)
-	var minimum := Vector3i(
-		floori(float(center_q.x - radius_q) / SAMPLE_SCALE),
-		floori(float(center_q.y - radius_q) / SAMPLE_SCALE),
-		floori(float(center_q.z - radius_q) / SAMPLE_SCALE)
-	)
-	var maximum := Vector3i(
-		ceili(float(center_q.x + radius_q) / SAMPLE_SCALE),
-		ceili(float(center_q.y + radius_q) / SAMPLE_SCALE),
-		ceili(float(center_q.z + radius_q) / SAMPLE_SCALE)
-	)
-	var points: Array[Vector3i] = []
-	for z in range(minimum.z, maximum.z + 1):
-		for y in range(minimum.y, maximum.y + 1):
-			for x in range(minimum.x, maximum.x + 1):
-				var delta := Vector3i(
-					x * SAMPLE_SCALE - center_q.x,
-					y * SAMPLE_SCALE - center_q.y,
-					z * SAMPLE_SCALE - center_q.z
-				)
-				if delta.length_squared() <= radius_q * radius_q:
-					points.append(Vector3i(x, y, z))
-	return points
-
-
-func _discard_capture_requests(requests: Dictionary) -> void:
-	for request_id: int in requests:
-		_capture_request_ids.erase(request_id)
-		_sample_results.erase(request_id)
-		_sample_failures.erase(request_id)
-
-
-func _on_sample_ready(request_id: int, sample: RefCounted) -> void:
-	if not _capture_request_ids.has(request_id):
-		return
-	_capture_request_ids.erase(request_id)
-	_sample_results[request_id] = sample
-
-
-func _on_sample_failed(request_id: int, error: String) -> void:
-	if not _capture_request_ids.has(request_id):
-		return
-	_capture_request_ids.erase(request_id)
-	_sample_failures[request_id] = error
 
 
 func _success(status: String, point: Vector3, mode: String) -> Dictionary:

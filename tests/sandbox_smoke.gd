@@ -24,8 +24,11 @@ func _run() -> void:
 			_fail("world did not reach running: " + str(terrain.call("get_world_error")))
 			return
 		await process_frame
-	if terrain.call("get_addon_version") != "1.0.9":
+	if terrain.call("get_addon_version") != "1.0.10-dev":
 		_fail("unexpected addon version")
+		return
+	if terrain.call("get_milestone") != "PQ4+S1":
+		_fail("unexpected addon milestone")
 		return
 	if terrain.call("get_world_page_count") != 288:
 		_fail("unexpected sandbox page count")

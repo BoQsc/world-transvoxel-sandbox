@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+*.dll binary
+*.exe binary
+*.f32 binary
+*.u16 binary
+*.wt binary
+*.wtedit binary
+*.png binary
+
+addons/world_transvoxel/thirdparty/transvoxel_mit/LICENSE text eol=crlf
+addons/world_transvoxel/thirdparty/transvoxel_mit/Transvoxel.cpp text eol=crlf

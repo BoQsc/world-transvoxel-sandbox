@@ -13,15 +13,17 @@ milestone, move it into that milestone before doing it.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.9.
+Status: revalidated against World Transvoxel 1.0.10-dev.
 
-- vendored and locked World Transvoxel 1.0.9 release; 1.0.0 is withdrawn,
+- vendored and locked World Transvoxel 1.0.10-dev sandbox build; 1.0.0 is withdrawn,
   1.0.1 is superseded for premature moving-viewer chunk retirement, and 1.0.3
   is superseded for one-frame bulk retirement during dynamic mixed-LOD motion;
   1.0.5 adds a bounded native render fade-out for retiring chunks after
   replacement application, and 1.0.6 adds a bounded native render fade-in for
   newly introduced chunks; 1.0.9 exposes the native `wt_fade_opacity` shader
-  parameter, but the reference sandbox terrain material remains opaque;
+  parameter, and 1.0.10-dev adds native batched authoritative sample queries
+  for exact restore capture; the reference sandbox terrain material remains
+  opaque;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
@@ -96,9 +98,12 @@ final qualitative confirmation.
 - S1.8 reclassifies the conservative LOD0 workload audit as S1 evidence because
   mining latency and interaction feel affect S1 visual/playtest acceptance;
   `docs/S1_LOD0_WORKLOAD_BASELINE.md` and
-  `python tools/s1_lod0_workload_audit.py` pass on Godot 4.6.3 and 4.7, but
-  the current GDScript exact-restore capture still takes 3.2-3.5 seconds after
-  reducing the default conservative mining radius to 2.0;
+  `python tools/s1_lod0_workload_audit.py` pass on Godot 4.6.3 and 4.7;
+- S1.9 replaces the GDScript exact-restore capture loop with a native batched
+  authoritative sample query. The workload audit now gates carve submission,
+  total carve settle, and restore settle under 2,000 ms; the accepted run
+  measured max carve submit 135 ms and max total carve settle 415 ms across the
+  supported Godot matrix;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;

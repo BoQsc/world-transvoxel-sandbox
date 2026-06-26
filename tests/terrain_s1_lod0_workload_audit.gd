@@ -9,7 +9,7 @@ const MAX_ACTIVE_CHUNKS := 512
 const MAX_STARTUP_MS := 10000
 const MAX_SETTLE_MS := 10000
 const MAX_FRAME_MS := 250.0
-const MAX_EDIT_MS := 10000
+const MAX_EDIT_MS := 2000
 const MAX_JOURNAL_GROWTH_BYTES := 1048576
 const EDIT_CYCLES := 3
 var _scene_root: Node

@@ -53,6 +53,8 @@ def main() -> int:
         "scripts/terrain_lab.gd",
         "scripts/terrain_recovery_policy.gd",
         "scripts/terrain_recovery_policy.gd.uid",
+        "scripts/terrain_sculpt_capture.gd",
+        "scripts/terrain_sculpt_capture.gd.uid",
         "scripts/terrain_sculpt_controller.gd",
         "scripts/fly_camera.gd",
         "scripts/terrain_visualizer.gd",
@@ -244,14 +246,14 @@ def main() -> int:
     if workload.is_file():
         text = workload.read_text(encoding="utf-8")
         for phrase in (
-            "S1.8 baseline",
+            "S1.8/S1.9 baseline",
             "fixed-center LOD0 reference",
             "Default mining radius | 2",
+            "native batched authoritative sample query",
+            "Compatibility fallback batch | 15",
+            "2,000 ms edit-latency gate",
             "WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS",
             "3 carve + exact-restore cycles",
-            "15-request capture batch",
-            "not the final gameplay interaction target",
-            "production-feel mining latency",
             "GPU power and real rendered-frame cost are not available",
         ):
             if not has_phrase(text, phrase):
@@ -287,10 +289,10 @@ def main() -> int:
             "S1.7 - conservative default dynamic LOD containment is complete",
             "containment, not mixed-LOD implementation completion",
             "S1 active task - mining latency and dynamic mixed-LOD S1 exit",
-            "S1.8 - conservative LOD0 deterministic workload budget",
+            "S1.9 - native batched exact-restore capture",
             "production-feel mining latency",
-            "temporary capture batch to 15",
-            "reducing the default mining radius from 3.0 to",
+            "tightened 2,000 ms edit-latency ceiling",
+            "World Transvoxel 1.0.10-dev",
             "tools/s1_lod0_workload_audit.py",
             "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
             "dynamic mixed LOD remains diagnostic/experimental",
@@ -353,11 +355,16 @@ def main() -> int:
             if not has_phrase(text, phrase):
                 errors.append(f"S1 workload audit is missing phrase: {phrase}")
 
-    sculpt = ROOT / "scripts" / "terrain_sculpt_controller.gd"
-    if sculpt.is_file():
-        text = sculpt.read_text(encoding="utf-8")
-        if not has_phrase(text, "const MAX_CAPTURE_REQUESTS := 15"):
-            errors.append("terrain sculpt controller capture batch is not 15")
+    sculpt_capture = ROOT / "scripts" / "terrain_sculpt_capture.gd"
+    if sculpt_capture.is_file():
+        text = sculpt_capture.read_text(encoding="utf-8")
+        for phrase in (
+            "request_authoritative_samples",
+            "const MAX_CAPTURE_REQUESTS := 15",
+            "_capture_density_samples_batch",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"terrain sculpt capture is missing phrase: {phrase}")
 
     lab = ROOT / "scripts" / "terrain_lab.gd"
     if lab.is_file():
@@ -386,7 +393,7 @@ def main() -> int:
     if overlay.is_file():
         text = overlay.read_text(encoding="utf-8")
         for phrase in (
-            "World Transvoxel 1.0.9 Visual Sandbox",
+            "World Transvoxel 1.0.10-dev Visual Sandbox",
             "fixed LOD0 reference",
             "fixed mixed-LOD diagnostic",
         ):

@@ -1,8 +1,7 @@
 # World Transvoxel Sandbox
 
-Visual, gameplay, and scale validation for the qualified World Transvoxel
-1.0.9 MIT-backed addon. This repository is deliberately a sandbox before it
-becomes a game.
+Visual, gameplay, and scale validation for the MIT-backed World Transvoxel
+addon. This repository is deliberately a sandbox before it becomes a game.
 
 World Transvoxel 1.0.0 is rejected and withdrawn. This sandbox exposed its
 incorrect Godot render/collision winding, incomplete convex mixed-LOD corner
@@ -12,14 +11,16 @@ their replacements were applied. Version 1.0.3 is superseded because dynamic
 mixed-LOD movement could retire a large ready replacement set in one frame.
 Version 1.0.5 adds a bounded native render fade-out for retiring chunks after
 replacement application. Version 1.0.6 also fades newly introduced render
-chunks through a bounded native window. Version 1.0.9 is the current sandbox
-baseline and exposes the native `wt_fade_opacity` shader parameter, but this
-reference terrain material remains opaque because transparent alpha blending
-created worse patch/sorting artifacts in surface mode.
+chunks through a bounded native window. Version 1.0.9 exposes the native
+`wt_fade_opacity` shader parameter. Version 1.0.10-dev is the current sandbox
+baseline; it adds a native batched authoritative sample query for exact carve
+restoration. This reference terrain material remains opaque because transparent
+alpha blending created worse patch/sorting artifacts in surface mode.
 
-The vendored addon is the exact Windows x86-64 release from
-`world-transvoxel` commit `c0ef66b77a40c2c0891e8b063109eb111cd47457`. Its
-mixed 0BSD/MIT scope and release manifest are retained at the repository root.
+The vendored addon is a Windows x86-64 sandbox build from `world-transvoxel`
+commit `6c21b2538e62f2cbd5eda0a141da581eae826453`, based on the 1.0.9 PQ4
+release plus the S1 native batch-query change. Its mixed 0BSD/MIT scope and
+vendor manifest are retained at the repository root.
 
 Dynamic mixed-LOD streaming now passes the automated six-anchor surface
 temporal gross-pop gate in both the primary view and the three-camera
@@ -111,10 +112,11 @@ orange wire box toggled by F2 is the map boundary.
 
 Carving and construction are intentionally different operations. Carving
 changes density without erasing the existing material. Before committing a
-carve, the sandbox captures every affected authoritative grid sample in bounded
-batches. `Ctrl+Z` restores those exact float32 values with point-sized density
-commands, so it does not raycast a new brush position or rely on numerically
-inexact `+strength/-strength` cancellation. Shift+LMB instead constructs new
+carve, the sandbox captures every affected authoritative grid sample through one
+native batched authoritative sample query. `Ctrl+Z` restores those exact float32
+values with point-sized density commands, so it does not raycast a new brush
+position or rely on numerically inexact `+strength/-strength` cancellation.
+Shift+LMB instead constructs new
 solid density and explicitly paints rock material 3; it is not undo. The carve
 restoration stack is session-local; both carvings and committed restorations
 still persist through the addon's edit journal.
@@ -137,10 +139,10 @@ milestone.
 The conservative LOD0 workload gate is tracked in
 [`docs/S1_LOD0_WORKLOAD_BASELINE.md`](docs/S1_LOD0_WORKLOAD_BASELINE.md).
 It passes as a deterministic correctness/regression ceiling on both supported
-Godot engines. Reducing the conservative default mining radius to 2.0 lowered
-pre-carve exact restoration capture to roughly 3.2-3.5 seconds and total carve
-settle to roughly 3.6-3.8 seconds; S1 still needs a faster native/batched path
-before mining feels production-ready.
+Godot engines. S1.9 replaced the slow GDScript exact-capture loop with a native
+batched query path. The current audit keeps carve submission under 135 ms and
+total carve settle under 415 ms on the supported Godot matrix, with a 2,000 ms
+hard regression gate.
 
 On the current four-core / GTX 1060 Max-Q reference machine, a 12-second
 settled sample of the fixed full-map scene with autonomous input disabled

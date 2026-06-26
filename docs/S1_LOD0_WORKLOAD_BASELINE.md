@@ -1,10 +1,10 @@
-# S1.8 Conservative LOD0 Workload Baseline
+# S1.8/S1.9 Conservative LOD0 Workload Baseline
 
-This document defines the S1.8 baseline for the accepted playtest mode. It is
-part of S1 because interaction feel and visible terrain stability are S1
-concerns. It covers the conservative fixed-center LOD0 reference scene only.
-It does not move the project to S2 or S3, and it does not accept dynamic mixed
-LOD, fast travel, GPU compute, fluids, planets, or game-scale feature systems.
+This document defines the S1.8/S1.9 baseline for the accepted playtest mode. It
+is part of S1 because interaction feel and visible terrain stability are S1
+concerns. It covers the conservative fixed-center LOD0 reference scene only. It
+does not move the project to S2 or S3, and it does not accept dynamic mixed LOD,
+fast travel, GPU compute, fluids, planets, or game-scale feature systems.
 
 ## Baseline profile
 
@@ -20,7 +20,8 @@ LOD, fast travel, GPU compute, fluids, planets, or game-scale feature systems.
 | `render_apply_budget` | 1 |
 | `collision_apply_budget` | 3 |
 | Default mining radius | 2 |
-| Exact restore capture request batch | 15 |
+| Exact restore capture path | native batched authoritative sample query |
+| Compatibility fallback batch | 15 single-sample requests |
 | Frame cap | 60 FPS |
 | Autonomous input | disabled before scene entry |
 
@@ -47,18 +48,16 @@ run must print `WT_SANDBOX_S1_LOD0_WORKLOAD_PASS`.
 | Rapid movement | fixed-anchor movement across surface and underground positions does not trigger streaming |
 | Movement coverage | every movement probe has both render and collision coverage |
 | Repeated edits | 3 carve + exact-restore cycles commit exactly 6 edits with no edit rejections |
-| Edit latency | carve submission, total carve settle, and restore settle each stay under 10,000 ms |
+| Edit latency | carve submission, total carve settle, and restore settle each stay under 2,000 ms |
 | Edit journal | 3 carve + restore cycles grow `world.wtedit` by no more than 1 MiB |
 | Post-edit idle | 120 idle frames after edits produce no hidden runtime work |
 
-The 10,000 ms edit-latency gate is a correctness/regression ceiling for this
-first deterministic workload audit. It is not the final gameplay interaction
-target. The accepted run below uses a conservative 15-request capture batch and
-the default mining radius 2.0. Exact pre-carve restoration capture is now
-bounded, but still slow enough that S1 should replace or reduce it with a
-native/batched path before production-feel mining latency is accepted.
+The 2,000 ms edit-latency gate is a conservative S1 regression ceiling for the
+native batched path. The accepted run below uses the default mining radius 2.0.
+The former GDScript single-sample loop is retained only as a compatibility
+fallback and is not the accepted hot path.
 
-## Accepted S1.8 run
+## Accepted S1.9 run
 
 Command:
 
@@ -66,16 +65,16 @@ Command:
 python tools/s1_lod0_workload_audit.py
 ```
 
-Result on June 26, 2026:
+Result on June 26, 2026 after the native batched query change:
 
 | Engine | Startup ms | Settle ms | Render/collision | Active records | Idle frames | Max move frame ms | Max carve submit ms | Max carve total ms | Max restore ms | Journal growth |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Godot 4.6.3 | 443 | 5,272 | 173 / 173 | 256 | 240 | 33.194 | 3,201 | 3,551 | 318 | 18,852 bytes |
-| Godot 4.7 | 146 | 5,218 | 173 / 173 | 256 | 240 | 33.681 | 3,464 | 3,745 | 427 | 18,852 bytes |
+| Godot 4.6.3 | 101 | 4,797 | 173 / 173 | 256 | 240 | 33.226 | 135 | 415 | 285 | 18,852 bytes |
+| Godot 4.7 | 102 | 4,788 | 173 / 173 | 256 | 240 | 33.208 | 125 | 405 | 283 | 18,852 bytes |
 
-Process sampling was available through `psutil`: maximum RSS was 216,776,704
-bytes on Godot 4.6.3 and 217,534,464 bytes on Godot 4.7. Average process CPU
-over the full headless audit was about 42.9% and 41.9% of one core
+Process sampling was available through `psutil`: maximum RSS was 217,731,072
+bytes on Godot 4.6.3 and 223,084,544 bytes on Godot 4.7. Average process CPU
+over the full headless audit was about 30.0% and 30.3% of one core
 respectively; startup and edit work are included in those averages.
 
 ## Recorded host observations
@@ -91,8 +90,8 @@ must be added to S1 explicitly rather than starting S3.
 
 ## Boundary
 
-Passing S1.8 shows that the conservative LOD0 baseline is deterministic,
+Passing S1.9 shows that the conservative LOD0 baseline is deterministic,
 bounded, cold while idle, and supports controlled movement plus repeated
-carve/restore edits under the listed audit budgets. Remaining S1 work is to
-make mining faster, resolve the dynamic mixed-LOD default policy, and capture
-final qualitative confirmation.
+carve/restore edits under the tightened native-batch audit budgets. Remaining
+S1 work is to resolve the dynamic mixed-LOD default policy and capture final
+qualitative confirmation.

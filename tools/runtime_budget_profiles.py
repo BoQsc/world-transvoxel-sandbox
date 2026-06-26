@@ -87,15 +87,15 @@ def validate() -> list[str]:
         require(contract, phrase, "runtime budget contract", errors)
 
     for phrase in (
-        "S1.8 baseline",
+        "S1.8/S1.9 baseline",
         "fixed-center LOD0 reference",
         "Autonomous input | disabled before scene entry",
         "Default mining radius | 2",
+        "native batched authoritative sample query",
+        "Compatibility fallback batch | 15",
+        "2,000 ms edit-latency gate",
         "WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS",
         "3 carve + exact-restore cycles",
-        "15-request capture batch",
-        "not the final gameplay interaction target",
-        "production-feel mining latency",
         "GPU power and real rendered-frame cost are not available",
     ):
         require(workload, phrase, "S1 LOD0 workload baseline", errors)
@@ -106,8 +106,8 @@ def validate() -> list[str]:
         "L4 accepted runtime budget: staged movement",
         "docs/S1_LOD0_WORKLOAD_BASELINE.md",
         "production-feel mining latency",
-        "temporary capture batch to 15",
-        "reducing the default mining radius from 3.0 to",
+        "tightened 2,000 ms edit-latency ceiling",
+        "World Transvoxel 1.0.10-dev",
         "fast travel or disjoint teleport movement",
     ):
         require(status, phrase, "current status", errors)

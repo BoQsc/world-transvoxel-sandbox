@@ -43,8 +43,8 @@ workload budgets and remaining visual blockers are explicitly resolved.
 
 - dynamic mixed-LOD technical seamless visual acceptance, all camera angles, all
   movement speeds, and geomorphing/native mitigation remain open;
-- production-feel mining latency remains an S1 target. S1.8 deterministic LOD0
-  workload evidence exists for fixed-anchor movement,
+- production-feel mining latency now has an S1.9 native-batch regression gate.
+  The conservative LOD0 workload evidence covers fixed-anchor movement,
   repeated mining/restoration, process CPU/RSS sampling, I/O, memory, and idle
   coldness;
 - graphical GPU/frustum behavior and target hardware remain deferred unless
@@ -56,8 +56,8 @@ workload budgets and remaining visual blockers are explicitly resolved.
 
 ## Latest evidence
 
-S1.8 - conservative LOD0 deterministic workload budget and audit baseline are
-complete.
+S1.9 - native batched exact-restore capture and conservative LOD0 workload gate
+are complete.
 
 Command:
 
@@ -72,27 +72,25 @@ Result:
 - runner: `tools/s1_lod0_workload_audit.py`;
 - marker: `WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS engines=2
   report=artifacts/s1_lod0_workload/workload_report.json`;
-- Godot 4.6.3: startup 443 ms, settle 5,272 ms, render/collision 173 / 173,
-  active records 256, 240 idle frames, max movement frame 33.194 ms,
-  3 carve + exact-restore cycles, 6 edit commits, max carve submit 3,201 ms,
-  max carve total 3,551 ms, max restore 318 ms, edit-journal growth 18,852
-  bytes, max RSS 216,776,704 bytes, average process CPU 42.889%;
-- Godot 4.7: startup 146 ms, settle 5,218 ms, render/collision 173 / 173,
-  active records 256, 240 idle frames, max movement frame 33.681 ms,
-  3 carve + exact-restore cycles, 6 edit commits, max carve submit 3,464 ms,
-  max carve total 3,745 ms, max restore 427 ms, edit-journal growth 18,852
-  bytes, max RSS 217,534,464 bytes, average process CPU 41.945%;
+- Godot 4.6.3: startup 101 ms, settle 4,797 ms, render/collision 173 / 173,
+  active records 256, 240 idle frames, max movement frame 33.226 ms,
+  3 carve + exact-restore cycles, 6 edit commits, max carve submit 135 ms,
+  max carve total 415 ms, max restore 285 ms, edit-journal growth 18,852
+  bytes, max RSS 217,731,072 bytes, average process CPU 29.965%;
+- Godot 4.7: startup 102 ms, settle 4,788 ms, render/collision 173 / 173,
+  active records 256, 240 idle frames, max movement frame 33.208 ms,
+  3 carve + exact-restore cycles, 6 edit commits, max carve submit 125 ms,
+  max carve total 405 ms, max restore 283 ms, edit-journal growth 18,852
+  bytes, max RSS 223,084,544 bytes, average process CPU 30.289%;
 - completed evidence: conservative fixed-center LOD0 active set is bounded and cold while
   idle; fixed-anchor surface/underground movement does not trigger streaming;
   repeated carve/exact-restore commits and journal growth are bounded under the
-  first S1.8 correctness/regression ceiling;
-- active S1 improvement target: reducing the default mining radius from 3.0 to
-  2.0 cut pre-carve exact restoration capture from 8.4-9.6 seconds to
-  3.2-3.5 seconds and journal growth from 62,844 to 18,852 bytes. A native or
-  properly batched delta path is still the next implementation target before
-  mining feels production-ready. The temporary capture batch to 15 is only a
-  stopgap until that path replaces the GDScript capture loop. Dynamic mixed-LOD gameplay
-  readiness also remains an S1 blocker.
+  tightened 2,000 ms edit-latency ceiling;
+- implemented S1 improvement: World Transvoxel 1.0.10-dev adds a native batched
+  authoritative sample query. The sandbox moved exact pre-carve restoration
+  capture out of the GDScript hot path; the 15-request single-sample loop remains
+  only as a compatibility fallback. Dynamic mixed-LOD gameplay readiness remains
+  an S1 blocker.
 
 S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and
 region-bounds gates are complete.
@@ -109,13 +107,13 @@ python tools/review_lod_temporal.py
 
 Result:
 
-- vendored addon: World Transvoxel 1.0.9 from upstream commit
-  `c0ef66b77a40c2c0891e8b063109eb111cd47457`;
+- vendored addon: World Transvoxel 1.0.10-dev from upstream commit
+  `6c21b2538e62f2cbd5eda0a141da581eae826453`;
 - `render_apply_budget = 1` is now the locked reference runtime/visual policy
   for dynamic mixed-LOD captures; budget 2 passed the single-view temporal gate
   but still failed the multi-view gate, and budget 1 passed both without
   loosening thresholds;
-- the sandbox terrain material remains opaque. World Transvoxel 1.0.9 exposes
+- the sandbox terrain material remains opaque. World Transvoxel 1.0.9 exposed
   native `wt_fade_opacity`, but consuming it as transparent alpha in this
   terrain material created worse patch/sorting artifacts and is not the
   accepted surface-mode policy;
@@ -255,7 +253,7 @@ Result:
 - not proven: dynamic mixed LOD is still not a seamless default play mode; S1.7
   is containment, not mixed-LOD implementation completion.
 
-Post-vendor 1.0.9 verification passed:
+Post-vendor 1.0.10-dev verification passed:
 
 ```console
 python tools/validate_sandbox.py
@@ -599,8 +597,8 @@ Scope:
   inside S1 because they affect interaction feel and visible correctness;
 - test movement, underground positioning, and repeated mining against the
   conservative default where needed for S1 exit;
-- reduce the measured 3.2-3.5 second exact pre-carve restoration capture before
-  treating mining as production-feel gameplay;
+- keep the native batched exact-restore capture under the S1 workload latency
+  gate while testing interaction feel;
 - keep mixed-LOD diagnostics focused on S1 visual acceptance;
 - keep compute shaders deferred until S1 exits and a measured bottleneck
   justifies later milestone work.
@@ -608,17 +606,16 @@ Scope:
 Exit:
 
 - S1 exits only when the accepted playtest mode has no visible correctness
-  blocker, mining latency is reduced to a usable standard, and dynamic mixed LOD
-  is either technically accepted as default or explicitly rejected/demoted with a
-  documented policy.
+  blocker, mining latency stays within the native-batch standard, and dynamic
+  mixed LOD is either technically accepted as default or explicitly
+  rejected/demoted with a documented policy.
 
 ## Next finite steps
 
-1. S1.9: replace or bypass the slow GDScript exact pre-carve restoration
-   capture with a native/batched delta path, then rerun `python
-   tools/s1_lod0_workload_audit.py` with a lower mining-latency gate.
-2. Continue S1 dynamic mixed-LOD visual acceptance work or make a documented S1
+1. Continue S1 dynamic mixed-LOD visual acceptance work or make a documented S1
    policy decision to keep dynamic mixed LOD diagnostic-only.
+2. Keep `python tools/s1_lod0_workload_audit.py` as the regression gate for
+   fixed-center LOD0 mining/restoration and cold-idle behavior.
 3. Do not start S2/S3/S4 work unless S1 exits or the current milestone is
    explicitly redefined first.
 
