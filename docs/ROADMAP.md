@@ -7,6 +7,10 @@ artifact-free terrain and standards come before optional feature systems.
 Runtime budget acceptance is tracked in `docs/TERRAIN_RUNTIME_BUDGETS.md`.
 The short-form tracker is `docs/CURRENT_STATUS.md`.
 
+Milestone order is strict. Do not start later-milestone implementation while the
+current milestone is incomplete. If a task is required for the current
+milestone, move it into that milestone before doing it.
+
 ## S0 - Visible integration
 
 Status: revalidated against World Transvoxel 1.0.9.
@@ -89,6 +93,12 @@ final qualitative confirmation.
   diagnostic/experimental until technical acceptance or a native mitigation
   closes the visual-quality gap; final human review confirms appearance/game
   feel but does not replace technical evidence;
+- S1.8 reclassifies the conservative LOD0 workload audit as S1 evidence because
+  mining latency and interaction feel affect S1 visual/playtest acceptance;
+  `docs/S1_LOD0_WORKLOAD_BASELINE.md` and
+  `python tools/s1_lod0_workload_audit.py` pass on Godot 4.6.3 and 4.7, but
+  the current GDScript exact-restore capture still takes 3.2-3.5 seconds after
+  reducing the default conservative mining radius to 2.0;
 - classify every visible artifact as topology/collision, generation,
   material/shading, LOD transition, streaming/lifetime, harness
   misunderstanding, or documented limitation;
@@ -207,18 +217,13 @@ remain outside S2.
 
 ## S3 - Visibility and production workload
 
-Status: limited active after S1.7 conservative default-policy containment. S3
-may measure the fixed-center LOD0 workload baseline only; mixed-LOD gameplay
-readiness remains blocked by S1 technical visual acceptance.
+Status: inactive. S3 must not start until S1 exits or the roadmap is explicitly
+redefined. The LOD0 workload audit is S1.8 because it affects S1 interaction
+feel and accepted-playtest correctness.
 
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;
 - test fast travel, rapid turns, underground movement, and repeated mining;
-- S3a.1 adds `docs/S3A_WORKLOAD_BUDGETS.md` and
-  `python tools/workload_audit.py` for the conservative LOD0 deterministic
-  workload gate; it passes on Godot 4.6.3 and 4.7, but exposes 8.4-9.6 second
-  pre-carve restoration capture and up-to-9.9 second carve total, which is not
-  production-feel mining latency;
 - measure restoration capture latency and edit-journal growth; replace the
   correctness-first point-command snapshot with a compressed native delta path
   if it misses the production interaction or storage budgets;

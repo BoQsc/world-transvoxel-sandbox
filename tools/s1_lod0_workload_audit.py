@@ -18,9 +18,9 @@ except ImportError:  # pragma: no cover - optional host sampler
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ARTIFACT_ROOT = ROOT / "artifacts" / "s3a_workload"
-SCRIPT = "res://tests/terrain_s3a_workload_audit.gd"
-PASS_MARKER = "WT_SANDBOX_S3A_WORKLOAD_PASS"
+ARTIFACT_ROOT = ROOT / "artifacts" / "s1_lod0_workload"
+SCRIPT = "res://tests/terrain_s1_lod0_workload_audit.gd"
+PASS_MARKER = "WT_SANDBOX_S1_LOD0_WORKLOAD_PASS"
 TIMEOUT_SECONDS = 240
 
 
@@ -101,7 +101,7 @@ def run_engine(version: str, engine: Path) -> dict:
         while process.poll() is None:
             if time.monotonic() - started > TIMEOUT_SECONDS:
                 process.kill()
-                raise RuntimeError(f"S3a workload audit timed out on {version}")
+                raise RuntimeError(f"S1 LOD0 workload audit timed out on {version}")
             if process_sampler is not None:
                 try:
                     info = process_sampler.memory_info()
@@ -120,7 +120,7 @@ def run_engine(version: str, engine: Path) -> dict:
     print(combined, end="" if combined.endswith("\n") else "\n")
     fields = parse_marker(combined)
     if return_code != 0 or not fields or fail_if_godot_error(combined):
-        raise RuntimeError(f"S3a workload audit failed on {version}")
+        raise RuntimeError(f"S1 LOD0 workload audit failed on {version}")
     return {
         "engine": version,
         "executable": str(engine),
@@ -131,7 +131,7 @@ def run_engine(version: str, engine: Path) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run the S3a conservative LOD0 workload audit."
+        description="Run the S1 conservative LOD0 workload audit."
     )
     parser.add_argument("--godot", type=Path, action="append", default=[])
     arguments = parser.parse_args()
@@ -140,7 +140,7 @@ def main() -> None:
     engines = discover_engines(arguments.godot)
     results = [run_engine(version, engine) for version, engine in engines]
     report = {
-        "schema": "world-transvoxel-sandbox.s3a-workload.v1",
+        "schema": "world-transvoxel-sandbox.s1-lod0-workload.v1",
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "status": "conservative_lod0_workload_pass",
         "script": SCRIPT,
@@ -164,7 +164,7 @@ def main() -> None:
         encoding="utf-8",
     )
     print(
-        "WT_SANDBOX_S3A_WORKLOAD_AUDIT_PASS "
+        "WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS "
         f"engines={len(engines)} report={report_path.relative_to(ROOT).as_posix()}"
     )
 

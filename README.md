@@ -54,7 +54,7 @@ qualified engine matrix.
 python tools/validate_sandbox.py
 python tools/generate_world.py --force
 python tools/test_sandbox.py
-python tools/workload_audit.py
+python tools/s1_lod0_workload_audit.py
 python tools/capture_visuals.py
 ```
 
@@ -135,11 +135,12 @@ Dynamic mixed-LOD streaming remains tested, but it is not the default
 playtest view until LOD popping is addressed as a separate visual-quality
 milestone.
 The conservative LOD0 workload gate is tracked in
-[`docs/S3A_WORKLOAD_BUDGETS.md`](docs/S3A_WORKLOAD_BUDGETS.md).
+[`docs/S1_LOD0_WORKLOAD_BASELINE.md`](docs/S1_LOD0_WORKLOAD_BASELINE.md).
 It passes as a deterministic correctness/regression ceiling on both supported
-Godot engines, but it exposes pre-carve exact restoration capture around
-8.4-9.6 seconds and up-to-9.9 second carve total, which is not production-feel
-mining latency.
+Godot engines. Reducing the conservative default mining radius to 2.0 lowered
+pre-carve exact restoration capture to roughly 3.2-3.5 seconds and total carve
+settle to roughly 3.6-3.8 seconds; S1 still needs a faster native/batched path
+before mining feels production-ready.
 
 On the current four-core / GTX 1060 Max-Q reference machine, a 12-second
 settled sample of the fixed full-map scene with autonomous input disabled

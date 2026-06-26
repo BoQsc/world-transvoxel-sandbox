@@ -123,7 +123,7 @@ func _run() -> void:
 	for _frame in range(TIMEOUT_FRAMES):
 		if terrain.get_world_state_name() == "stopped":
 			print(
-				"WT_SANDBOX_S3A_WORKLOAD_PASS startup_ms=%d settle_ms=%d "
+				"WT_SANDBOX_S1_LOD0_WORKLOAD_PASS startup_ms=%d settle_ms=%d "
 				% [startup_ms, settle_ms] +
 				"render=%d collision=%d active=%d idle_frames=%d "
 				% [
@@ -150,7 +150,7 @@ func _run() -> void:
 			quit(0)
 			return
 		await process_frame
-	_fail("world did not stop after S3a workload audit")
+	_fail("world did not stop after S1 LOD0 workload audit")
 func _audit_fixed_anchor_movement(terrain: Node, viewer: Node3D) -> Dictionary:
 	var before: Dictionary = terrain.get_runtime_metrics()
 	var max_frame_ms := 0.0
@@ -239,7 +239,7 @@ func _file_size(path: String) -> int:
 	file.close()
 	return length
 func _fail(message: String) -> void:
-	push_error("WT_SANDBOX_S3A_WORKLOAD_FAIL: " + message)
+	push_error("WT_SANDBOX_S1_LOD0_WORKLOAD_FAIL: " + message)
 	if _scene_root != null:
 		_scene_root.queue_free()
 	quit(1)

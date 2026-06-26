@@ -10,7 +10,7 @@ const MAX_CAPTURE_REQUESTS := 15
 const CAPTURE_TIMEOUT_FRAMES := 600
 
 var _terrain: Node
-var _radius := 3.0
+var _radius := 2.0
 var _strength := 6.0
 var _construction_material := 3
 var _ore_material := 4

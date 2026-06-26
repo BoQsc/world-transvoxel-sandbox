@@ -5,7 +5,7 @@ just because generation succeeds or because a smaller-level configuration
 happens to work.
 
 The conservative LOD0 production-workload baseline is governed by
-`docs/S3A_WORKLOAD_BUDGETS.md`.
+`docs/S1_LOD0_WORKLOAD_BASELINE.md`.
 
 This document exists because L2 exposed a real budget boundary: 512-wide
 terrain can replace most of a roughly 294 chunk active set during staged
