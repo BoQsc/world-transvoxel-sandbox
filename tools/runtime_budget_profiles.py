@@ -107,7 +107,7 @@ def validate() -> list[str]:
         "docs/S1_LOD0_WORKLOAD_BASELINE.md",
         "production-feel mining latency",
         "tightened 2,000 ms edit-latency ceiling",
-        "World Transvoxel 1.0.10-dev",
+        "World Transvoxel 1.0.11-dev",
         "fast travel or disjoint teleport movement",
     ):
         require(status, phrase, "current status", errors)

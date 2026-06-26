@@ -27,6 +27,8 @@ public:
 	std::size_t resource_count() const noexcept;
 	std::size_t fading_count() const noexcept;
 	WtGenerationToken applied_generation(const WtChunkKey &key) const noexcept;
+	void set_shader_fade_parameter_enabled(bool enabled) noexcept;
+	bool is_shader_fade_parameter_enabled() const noexcept;
 
 private:
 	struct Record {
@@ -37,16 +39,18 @@ private:
 		float retirement_start_transparency = 0.0F;
 		std::uint32_t introduction_frame = 0;
 		std::uint32_t retirement_frame = 0;
+		bool shader_fade_parameter_active = false;
 		bool introducing = false;
 		bool retiring = false;
 	};
 
 	bool on_owner_thread() const noexcept;
-	static void set_record_transparency(Record &record, float value) noexcept;
+	void set_record_transparency(Record &record, float value) noexcept;
 	godot::Node3D &owner_;
 	std::thread::id owner_thread_;
 	std::map<WtChunkKey, Record> records_;
 	std::vector<Record> replacement_retirements_;
+	bool shader_fade_parameter_enabled_ = false;
 };
 
 } // namespace world_transvoxel

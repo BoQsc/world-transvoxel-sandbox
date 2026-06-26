@@ -314,6 +314,10 @@ def main() -> int:
             "S1.2 previously observed 79 replacement frames",
             "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
+            "S2.14 - L4 shader-instance budget and same-key render-node stability fix is complete",
+            "Too many instances using shader instance variables",
+            "instance-parameter writes opt-in/default-off because Godot retains",
+            "accepted large-scale defaults allocate no per-instance shader fade parameter slots",
             "S1.7 - conservative default dynamic LOD containment is complete",
             "S1.10 later made the default-policy decision",
             "S1 active task - lock and preserve the accepted default playtest policy",
@@ -323,7 +327,7 @@ def main() -> int:
             "S1.9 - native batched exact-restore capture",
             "production-feel mining latency",
             "tightened 2,000 ms edit-latency ceiling",
-            "World Transvoxel 1.0.10-dev",
+            "World Transvoxel 1.0.11-dev",
             "tools/s1_lod0_workload_audit.py",
             "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
             "dynamic mixed LOD remains available only through explicit diagnostic scripts",
@@ -442,7 +446,7 @@ def main() -> int:
     if overlay.is_file():
         text = overlay.read_text(encoding="utf-8")
         for phrase in (
-            "World Transvoxel 1.0.10-dev Visual Sandbox",
+            "World Transvoxel 1.0.11-dev Visual Sandbox",
             "fixed LOD0 reference",
             "fixed mixed-LOD diagnostic",
         ):

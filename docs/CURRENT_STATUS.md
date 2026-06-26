@@ -144,8 +144,8 @@ python tools/review_lod_temporal.py
 
 Result:
 
-- vendored addon: World Transvoxel 1.0.10-dev from upstream commit
-  `6c21b2538e62f2cbd5eda0a141da581eae826453`;
+- vendored addon: World Transvoxel 1.0.11-dev from upstream commit
+  `a84256e9a1d6877d994be6a7fd221285f00e4c99`;
 - `render_apply_budget = 1` is now the locked reference runtime/visual policy
   for dynamic mixed-LOD captures; budget 2 passed the single-view temporal gate
   but still failed the multi-view gate, and budget 1 passed both without
@@ -292,7 +292,7 @@ Result:
   path diagnostic-only instead of treating fade-only transitions as accepted
   gameplay.
 
-Post-vendor 1.0.10-dev verification passed:
+Post-vendor 1.0.11-dev verification passed:
 
 ```console
 python tools/validate_sandbox.py
@@ -300,6 +300,8 @@ python -m py_compile tools/capture_lod_temporal.py tools/capture_lod_temporal_mu
 python tools/test_sandbox.py
 python tools/capture_visuals.py
 python tools/scale_runtime.py --level L4
+python tools/scale_visual.py --level L4
+python tools/s1_lod0_workload_audit.py
 ```
 
 Result:
@@ -311,7 +313,31 @@ Result:
 - visual capture: `WT_SANDBOX_VISUAL_EVIDENCE_PASS images=9`;
 - L4 runtime: `WT_SANDBOX_SCALE_RUNTIME_PASS level=L4 engines=2`, with
   active chunk capacity 1,024, `render_apply_budget=1`, minimum render 210,
-  minimum collision 195, and max pending retirements 0.
+  minimum collision 195, and max pending retirements 0;
+- L4 visual shader-budget gate:
+  `WT_SANDBOX_SCALE_VISUAL_PASS level=L4 images=7`, with no Godot
+  `Too many instances using shader instance variables` errors;
+- S1 LOD0 workload regression:
+  `WT_SANDBOX_S1_LOD0_WORKLOAD_AUDIT_PASS engines=2`.
+
+S2.14 - L4 shader-instance budget and same-key render-node stability fix is
+complete.
+
+Result:
+
+- source fix: World Transvoxel 1.0.11-dev makes `wt_fade_opacity`
+  instance-parameter writes opt-in/default-off because Godot retains
+  per-instance shader parameter slots; accepted large-scale defaults allocate no
+  per-instance shader fade parameter slots, while native engine transparency fade
+  remains active;
+- source fix: same-key LOD remeshes preserve the active `MeshInstance3D` and
+  fade the previous mesh through a temporary retiring copy, so downstream node
+  identity does not churn when only mesh generation changes;
+- blocker resolved: the previous L4 visual run produced Godot
+  `Too many instances using shader instance variables` errors; this is no longer
+  accepted as a future issue and must remain a hard validation failure if it
+  returns. The rerun L4 visual gate now passes with accepted defaults because no
+  per-instance shader fade parameter slots are allocated by default.
 
 S2.13 - L4 bounded generation, runtime, and static visual capture are complete.
 

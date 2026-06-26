@@ -13,17 +13,20 @@ milestone, move it into that milestone before doing it.
 
 ## S0 - Visible integration
 
-Status: revalidated against World Transvoxel 1.0.10-dev.
+Status: revalidated against World Transvoxel 1.0.11-dev.
 
-- vendored and locked World Transvoxel 1.0.10-dev sandbox build; 1.0.0 is withdrawn,
+- vendored and locked World Transvoxel 1.0.11-dev sandbox build; 1.0.0 is withdrawn,
   1.0.1 is superseded for premature moving-viewer chunk retirement, and 1.0.3
   is superseded for one-frame bulk retirement during dynamic mixed-LOD motion;
   1.0.5 adds a bounded native render fade-out for retiring chunks after
   replacement application, and 1.0.6 adds a bounded native render fade-in for
   newly introduced chunks; 1.0.9 exposes the native `wt_fade_opacity` shader
-  parameter, and 1.0.10-dev adds native batched authoritative sample queries
-  for exact restore capture; the reference sandbox terrain material remains
-  opaque;
+  parameter; 1.0.10-dev adds native batched authoritative sample queries for
+  exact restore capture; and 1.0.11-dev makes `wt_fade_opacity`
+  instance-parameter writes opt-in/default-off because Godot retains
+  per-instance shader parameter slots while keeping native engine transparency
+  fade and same-key render nodes stable; the reference sandbox terrain material
+  remains opaque;
 - deterministic 128 x 64 x 128 surface baseline plus volumetric caves,
   chamber, winding tunnel, XYZ rock geology, and ore vein;
 - material and LOD shader views;
@@ -218,6 +221,13 @@ accepted; final human qualitative confirmation also remains open.
 - L4 visual evidence: seven Godot 4.7 captures covering overview, material,
   LOD, top, underground tunnel, closed boundary, and boundary materials; the
   permanent outside-in ray requires the first collision at x=0.500;
+- S2.14 L4 shader-instance budget fix: 1.0.11-dev makes `wt_fade_opacity`
+  instance-parameter writes opt-in/default-off so accepted large-scale defaults
+  allocate no per-instance shader parameter slots, keeps native engine
+  transparency fade active, and preserves active render-node identity during
+  same-key LOD remeshes while fading the previous mesh through a temporary
+  retiring copy; the rerun L4 visual gate passes with seven images and no Godot
+  `Too many instances using shader instance variables` errors;
 - L4 not yet proven: final human qualitative confirmation, dynamic seamless LOD
   appearance, fast travel/disjoint teleport movement, target-hardware gameplay
   workload, or scale support beyond 2048;

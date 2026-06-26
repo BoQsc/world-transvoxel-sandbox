@@ -12,15 +12,20 @@ mixed-LOD movement could retire a large ready replacement set in one frame.
 Version 1.0.5 adds a bounded native render fade-out for retiring chunks after
 replacement application. Version 1.0.6 also fades newly introduced render
 chunks through a bounded native window. Version 1.0.9 exposes the native
-`wt_fade_opacity` shader parameter. Version 1.0.10-dev is the current sandbox
-baseline; it adds a native batched authoritative sample query for exact carve
-restoration. This reference terrain material remains opaque because transparent
-alpha blending created worse patch/sorting artifacts in surface mode.
+`wt_fade_opacity` shader parameter. Version 1.0.10-dev adds the native batched
+authoritative sample query for exact carve restoration. Version 1.0.11-dev is
+the current sandbox baseline; it makes `wt_fade_opacity` instance-parameter
+writes opt-in/default-off because Godot retains per-instance shader parameter
+slots, and it preserves active render-node identity during same-key LOD remeshes.
+Native engine transparency fade remains active. This reference terrain material
+remains opaque because transparent alpha blending created worse patch/sorting
+artifacts in surface mode.
 
 The vendored addon is a Windows x86-64 sandbox build from `world-transvoxel`
-commit `6c21b2538e62f2cbd5eda0a141da581eae826453`, based on the 1.0.9 PQ4
-release plus the S1 native batch-query change. Its mixed 0BSD/MIT scope and
-vendor manifest are retained at the repository root.
+commit `a84256e9a1d6877d994be6a7fd221285f00e4c99`, based on the 1.0.9 PQ4
+release plus the S1 native batch-query change and S2 L4 fade-parameter budget
+fix. Its mixed 0BSD/MIT scope and vendor manifest are retained at the
+repository root.
 
 Dynamic mixed-LOD streaming passes the automated six-anchor surface temporal
 gross-pop gate in both the primary view and the three-camera multi-view
