@@ -4,6 +4,9 @@ Runtime budgets are part of terrain correctness. A scale level is not accepted
 just because generation succeeds or because a smaller-level configuration
 happens to work.
 
+The conservative LOD0 production-workload baseline is governed by
+`docs/S3A_WORKLOAD_BUDGETS.md`.
+
 This document exists because L2 exposed a real budget boundary: 512-wide
 terrain can replace most of a roughly 294 chunk active set during staged
 movement, and the old 512 active/change capacity can reject that delta.
@@ -88,8 +91,8 @@ rather than copying world size.
 The profile passed Godot 4.6.3 and 4.7 with seven staged positions, 35
 render/collision probes, minimum 201 render/collision chunks, one active-window
 edit/remesh, and clean shutdown. It is accepted for staged movement only. It
-does not prove fast travel, disjoint teleport movement, visual acceptance, or
-L4 support.
+does not prove fast travel, disjoint teleport movement, technical visual
+acceptance, or L4 support.
 
 ## L4 derivation and acceptance
 

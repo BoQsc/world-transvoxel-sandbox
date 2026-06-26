@@ -6,7 +6,7 @@ const MODE_CONSTRUCT := "construct rock"
 const MODE_PAINT := "paint ore"
 const MODE_RESTORE := "restore carve"
 const SAMPLE_SCALE := 65536
-const MAX_CAPTURE_REQUESTS := 12
+const MAX_CAPTURE_REQUESTS := 15
 const CAPTURE_TIMEOUT_FRAMES := 600
 
 var _terrain: Node

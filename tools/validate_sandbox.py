@@ -65,6 +65,7 @@ def main() -> int:
         "tools/scale_ladder.py",
         "tools/scale_runtime.py",
         "tools/scale_visual.py",
+        "tools/workload_audit.py",
         "tools/capture_lod_popping.py",
         "tools/capture_lod_surface.py",
         "tools/capture_lod_temporal.py",
@@ -92,6 +93,10 @@ def main() -> int:
         "tests/terrain_l3_visual_capture.gd.uid",
         "tests/terrain_l4_visual_capture.gd",
         "tests/terrain_l4_visual_capture.gd.uid",
+        "tests/terrain_probe_util.gd",
+        "tests/terrain_probe_util.gd.uid",
+        "tests/terrain_s3a_workload_audit.gd",
+        "tests/terrain_s3a_workload_audit.gd.uid",
         "tests/terrain_lod_pop_capture.gd",
         "tests/terrain_lod_pop_capture.gd.uid",
         "tests/terrain_lod_surface_capture.gd",
@@ -109,6 +114,7 @@ def main() -> int:
         "docs/TERRAIN_ACCEPTANCE_STANDARD.md",
         "docs/TERRAIN_RUNTIME_BUDGETS.md",
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
+        "docs/S3A_WORKLOAD_BUDGETS.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
     )
@@ -197,6 +203,7 @@ def main() -> int:
             "cannot replace automated gates",
             "technical visual acceptance",
             "final qualitative confirmation does not replace technical correctness",
+            "docs/S3A_WORKLOAD_BUDGETS.md",
             "Settled terrain must stay cold",
             "Finite boundary guards",
             "Generation preflight must account",
@@ -225,11 +232,28 @@ def main() -> int:
     if budgets.is_file():
         text = budgets.read_text(encoding="utf-8")
         for phrase in (
+            "docs/S3A_WORKLOAD_BUDGETS.md",
             "final human qualitative confirmation",
             "dynamic seamless LOD appearance",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"runtime budgets are missing phrase: {phrase}")
+
+    workload = ROOT / "docs" / "S3A_WORKLOAD_BUDGETS.md"
+    if workload.is_file():
+        text = workload.read_text(encoding="utf-8")
+        for phrase in (
+            "S3a.1 budget baseline",
+            "fixed-center LOD0 reference",
+            "WT_SANDBOX_S3A_WORKLOAD_AUDIT_PASS",
+            "3 carve + exact-restore cycles",
+            "15-request capture batch",
+            "not the final gameplay interaction target",
+            "production-feel mining latency",
+            "GPU power and real rendered-frame cost are not available",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S3a workload budgets are missing phrase: {phrase}")
 
     status = ROOT / "docs" / "CURRENT_STATUS.md"
     if status.is_file():
@@ -239,6 +263,7 @@ def main() -> int:
             "S1 is not complete",
             "S3 may proceed only for the conservative LOD0 workload baseline",
             "Unresolved blockers kept visible",
+            "docs/S3A_WORKLOAD_BUDGETS.md",
             "technical visual acceptance",
             "Human review remains final",
             "does not block technical milestone progress",
@@ -260,6 +285,10 @@ def main() -> int:
             "S1.7 - conservative default dynamic LOD containment is complete",
             "containment, not mixed-LOD implementation completion",
             "S3a - conservative LOD0 workload budget and audit baseline",
+            "S3a.1 - conservative LOD0 deterministic workload budget",
+            "production-feel mining latency",
+            "temporary capture batch to 15",
+            "tools/workload_audit.py",
             "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
             "dynamic mixed LOD remains diagnostic/experimental",
             "lod_transition_native_fade_without_geomorph_pending_visual_acceptance",
@@ -295,6 +324,37 @@ def main() -> int:
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"current status is missing phrase: {phrase}")
+
+    workload_tool = ROOT / "tools" / "workload_audit.py"
+    if workload_tool.is_file():
+        text = workload_tool.read_text(encoding="utf-8")
+        for phrase in (
+            "WT_SANDBOX_S3A_WORKLOAD_AUDIT_PASS",
+            "terrain_s3a_workload_audit.gd",
+            "--disable-player-input",
+            "process_sampling",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S3a workload tool is missing phrase: {phrase}")
+
+    workload_audit = ROOT / "tests" / "terrain_s3a_workload_audit.gd"
+    if workload_audit.is_file():
+        text = workload_audit.read_text(encoding="utf-8")
+        for phrase in (
+            "WT_SANDBOX_S3A_WORKLOAD_PASS",
+            "set(\"input_enabled\", false)",
+            "MAX_JOURNAL_GROWTH_BYTES",
+            "EDIT_CYCLES := 3",
+            "ProbeUtil.probe_render_and_collision",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S3a workload audit is missing phrase: {phrase}")
+
+    sculpt = ROOT / "scripts" / "terrain_sculpt_controller.gd"
+    if sculpt.is_file():
+        text = sculpt.read_text(encoding="utf-8")
+        if not has_phrase(text, "const MAX_CAPTURE_REQUESTS := 15"):
+            errors.append("terrain sculpt controller capture batch is not 15")
 
     lab = ROOT / "scripts" / "terrain_lab.gd"
     if lab.is_file():

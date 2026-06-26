@@ -60,8 +60,9 @@ repository work remain secondary until the terrain itself is proven at scale.
 - Settled terrain must stay cold: no hidden streaming, meshing, recovery, or
   regeneration work while nothing changed.
 - Runtime budgets are part of acceptance. Each accepted scale must follow
-  `docs/TERRAIN_RUNTIME_BUDGETS.md`; larger levels must not silently inherit
-  smaller-level capacities.
+  `docs/TERRAIN_RUNTIME_BUDGETS.md`; the conservative LOD0 workload baseline
+  must follow `docs/S3A_WORKLOAD_BUDGETS.md`; larger levels must not silently
+  inherit smaller-level capacities.
 - Generation preflight must account for both the offline generator and native
   bake lifetime. Raw source, decoded source, retained page payloads, and safety
   reserve count toward the peak; disk-only source size is not a memory bound.

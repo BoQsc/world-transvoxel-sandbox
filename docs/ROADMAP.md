@@ -214,6 +214,11 @@ readiness remains blocked by S1 technical visual acceptance.
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;
 - test fast travel, rapid turns, underground movement, and repeated mining;
+- S3a.1 adds `docs/S3A_WORKLOAD_BUDGETS.md` and
+  `python tools/workload_audit.py` for the conservative LOD0 deterministic
+  workload gate; it passes on Godot 4.6.3 and 4.7, but exposes 8.4-9.6 second
+  pre-carve restoration capture and up-to-9.9 second carve total, which is not
+  production-feel mining latency;
 - measure restoration capture latency and edit-journal growth; replace the
   correctness-first point-command snapshot with a compressed native delta path
   if it misses the production interaction or storage budgets;

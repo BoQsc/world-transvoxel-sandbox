@@ -7,6 +7,8 @@ turning into an endless stream of small unrelated decisions.
 
 Follow `docs/TERRAIN_ACCEPTANCE_STANDARD.md`.
 Runtime scale budgets are governed by `docs/TERRAIN_RUNTIME_BUDGETS.md`.
+The conservative LOD0 workload gate is governed by
+`docs/S3A_WORKLOAD_BUDGETS.md`.
 
 Performance-sensitive terrain work belongs in native code, shaders/compute
 when justified, binary formats, or Python offline tooling. GDScript is glue for
@@ -36,15 +38,54 @@ workload budgets and remaining visual blockers are explicitly resolved.
 
 - dynamic mixed-LOD technical seamless visual acceptance, all camera angles, all
   movement speeds, and geomorphing/native mitigation remain open;
-- S3 production workload budgets are not yet measured for idle CPU/GPU/memory,
-  active movement, repeated mining, restoration latency, I/O, physics, or
-  edit-journal growth;
+- S3 production workload budgets are not yet complete for graphical GPU/frustum
+  behavior, target hardware, or production-feel mining latency. S3a.1
+  deterministic LOD0 workload evidence exists for fixed-anchor movement,
+  repeated mining/restoration, process CPU/RSS sampling, I/O, memory, and idle
+  coldness;
 - full terrain/game readiness is not proven by the fixed-center LOD0 containment
   policy;
 - compute shaders and optional systems remain deferred until measured workload
   evidence justifies them.
 
 ## Latest evidence
+
+S3a.1 - conservative LOD0 deterministic workload budget and audit baseline are
+complete.
+
+Command:
+
+```console
+python tools/workload_audit.py
+```
+
+Result:
+
+- budget document: `docs/S3A_WORKLOAD_BUDGETS.md`;
+- audit: `tests/terrain_s3a_workload_audit.gd`;
+- runner: `tools/workload_audit.py`;
+- marker: `WT_SANDBOX_S3A_WORKLOAD_AUDIT_PASS engines=2
+  report=artifacts/s3a_workload/workload_report.json`;
+- Godot 4.6.3: startup 113 ms, settle 4,840 ms, render/collision 173 / 173,
+  active records 256, 240 idle frames, max movement frame 33.226 ms,
+  3 carve + exact-restore cycles, 6 edit commits, max carve submit 8,370 ms,
+  max carve total 8,717 ms, max restore 300 ms, edit-journal growth 62,844
+  bytes, max RSS 220,217,344 bytes, average process CPU 69.319%;
+- Godot 4.7: startup 99 ms, settle 4,780 ms, render/collision 173 / 173,
+  active records 256, 240 idle frames, max movement frame 31.666 ms,
+  3 carve + exact-restore cycles, 6 edit commits, max carve submit 9,577 ms,
+  max carve total 9,924 ms, max restore 333 ms, edit-journal growth 62,844
+  bytes, max RSS 220,110,848 bytes, average process CPU 66.364%;
+- proven: conservative fixed-center LOD0 active set is bounded and cold while
+  idle; fixed-anchor surface/underground movement does not trigger streaming;
+  repeated carve/exact-restore commits and journal growth are bounded under the
+  first S3a correctness/regression ceiling;
+- not proven: production-feel mining latency. The 8.4-9.6 second pre-carve
+  exact restoration capture and up-to-9.9 second carve total are too slow for
+  gameplay even after raising the temporary capture batch to 15, and remain the
+  next S3a implementation blocker. Graphical GPU/frustum cost, target-hardware
+  workload, dynamic mixed-LOD gameplay readiness, and final human qualitative
+  confirmation are also not proven.
 
 S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and
 region-bounds gates are complete.
@@ -547,15 +588,15 @@ S3a - conservative LOD0 workload budget and audit baseline.
 
 Scope:
 
-- define finite workload budgets for the conservative fixed-center LOD0 baseline
+- keep finite workload budgets for the conservative fixed-center LOD0 baseline
   before treating the sandbox as production-ready;
 - profile Godot frustum culling separately from terrain demand generation where
   it affects the LOD0 baseline;
 - test rapid camera movement, underground movement, and repeated mining against
   the conservative default; mixed-LOD diagnostics remain separate and do not
   imply mixed-LOD acceptance;
-- measure restoration capture latency and edit-journal growth before expanding
-  recovery systems;
+- reduce the measured 8.4-9.6 second exact pre-carve restoration capture before
+  treating mining as production-feel gameplay;
 - establish idle CPU, active CPU, render, physics, I/O, and memory budgets;
 - keep compute shaders deferred until a measured bottleneck justifies S4.
 
@@ -568,13 +609,13 @@ Exit:
 
 ## Next finite steps
 
-1. Add a finite S3a budget document/table for the conservative LOD0 baseline:
-   idle, active movement, repeated mining, restoration, render/collision counts,
-   I/O, memory, and edit-journal growth.
-2. Add or extend a Python/Godot audit that records those budgets without player
-   input.
-3. Only after measured S3 data exists, decide whether native policy changes or
-   compute acceleration are justified.
+1. S3a.2: replace or bypass the slow GDScript exact pre-carve restoration
+   capture with a native/batched delta path, then rerun `python
+   tools/workload_audit.py` with a lower mining-latency gate.
+2. Add a graphical fixed-LOD0 workload/frustum audit with autonomous input
+   disabled to measure real renderer cost and GPU/target-hardware behavior.
+3. Only after measured S3 data and the edit-latency fix exist, decide whether
+   native policy changes or compute acceleration are justified.
 
 ## Deferred by rule
 

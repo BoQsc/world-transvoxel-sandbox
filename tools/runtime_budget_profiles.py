@@ -54,15 +54,18 @@ def read_text(relative: str) -> str:
 
 
 def require(text: str, phrase: str, label: str, errors: list[str]) -> None:
-    if phrase not in text:
+    if phrase not in text and phrase not in " ".join(text.split()):
         errors.append(f"{label} missing phrase: {phrase}")
 
 
 def validate() -> list[str]:
     errors: list[str] = []
     contract = read_text("docs/TERRAIN_RUNTIME_BUDGETS.md")
+    workload = read_text("docs/S3A_WORKLOAD_BUDGETS.md")
     status = read_text("docs/CURRENT_STATUS.md")
     runtime_tool = read_text("tools/scale_runtime.py")
+    workload_tool = read_text("tools/workload_audit.py")
+    workload_audit = read_text("tests/terrain_s3a_workload_audit.gd")
     l2_audit = read_text("tests/terrain_l2_runtime_audit.gd")
     l3_audit = read_text("tests/terrain_l3_runtime_audit.gd")
     l4_audit = read_text("tests/terrain_l4_runtime_audit.gd")
@@ -75,6 +78,7 @@ def validate() -> list[str]:
         "Fast travel is not proven by L2 runtime acceptance",
         "| L3 | 1024 | staged movement | 3 | 1 | 1024 | 1 | 201 / 201",
         "| L4 | 2048 | staged movement | 3 | 1 | 1024 | 1 | 210 / 195",
+        "docs/S3A_WORKLOAD_BUDGETS.md",
         "A conservative full replacement bound is therefore 616 records",
         "Its only scale-specific",
         "The profile passed Godot 4.6.3 and 4.7",
@@ -83,9 +87,25 @@ def validate() -> list[str]:
         require(contract, phrase, "runtime budget contract", errors)
 
     for phrase in (
+        "S3a.1 budget baseline",
+        "fixed-center LOD0 reference",
+        "Autonomous input | disabled before scene entry",
+        "WT_SANDBOX_S3A_WORKLOAD_AUDIT_PASS",
+        "3 carve + exact-restore cycles",
+        "15-request capture batch",
+        "not the final gameplay interaction target",
+        "production-feel mining latency",
+        "GPU power and real rendered-frame cost are not available",
+    ):
+        require(workload, phrase, "S3a workload budget", errors)
+
+    for phrase in (
         "docs/TERRAIN_RUNTIME_BUDGETS.md",
         "L2 runtime budget: active chunk capacity 1,024",
         "L4 accepted runtime budget: staged movement",
+        "docs/S3A_WORKLOAD_BUDGETS.md",
+        "production-feel mining latency",
+        "temporary capture batch to 15",
         "fast travel or disjoint teleport movement",
     ):
         require(status, phrase, "current status", errors)
@@ -116,6 +136,10 @@ def validate() -> list[str]:
     )
     require(l4_audit, "active_capacity=%d", "L4 runtime audit", errors)
     require(l4_audit, "render_apply_budget=%d", "L4 runtime audit", errors)
+    require(workload_tool, "WT_SANDBOX_S3A_WORKLOAD_AUDIT_PASS", "S3a workload tool", errors)
+    require(workload_audit, "WT_SANDBOX_S3A_WORKLOAD_PASS", "S3a workload audit", errors)
+    require(workload_audit, "set(\"input_enabled\", false)", "S3a workload audit", errors)
+    require(workload_audit, "EDIT_CYCLES := 3", "S3a workload audit", errors)
     require(runtime_tool, '"L2": {', "scale runtime tool", errors)
     require(runtime_tool, '"L3": {', "scale runtime tool", errors)
     require(runtime_tool, '"L4": {', "scale runtime tool", errors)

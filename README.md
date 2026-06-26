@@ -54,6 +54,7 @@ qualified engine matrix.
 python tools/validate_sandbox.py
 python tools/generate_world.py --force
 python tools/test_sandbox.py
+python tools/workload_audit.py
 python tools/capture_visuals.py
 ```
 
@@ -133,6 +134,12 @@ map so digging and inspection rays do not silently miss visible terrain.
 Dynamic mixed-LOD streaming remains tested, but it is not the default
 playtest view until LOD popping is addressed as a separate visual-quality
 milestone.
+The conservative LOD0 workload gate is tracked in
+[`docs/S3A_WORKLOAD_BUDGETS.md`](docs/S3A_WORKLOAD_BUDGETS.md).
+It passes as a deterministic correctness/regression ceiling on both supported
+Godot engines, but it exposes pre-carve exact restoration capture around
+8.4-9.6 seconds and up-to-9.9 second carve total, which is not production-feel
+mining latency.
 
 On the current four-core / GTX 1060 Max-Q reference machine, a 12-second
 settled sample of the fixed full-map scene with autonomous input disabled
