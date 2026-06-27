@@ -37,8 +37,9 @@ separate game repository. The active post-S5 workstream is governed by
 `244db4c`, A1 public API/source-layout contract commit `f076597`, and A2
 addon-local smoke harness commit `8609c99`, plus A3 `world-transvoxel` bridge
 commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
-phase 2 bridge/storage fixture commit `4b8855c`; next work belongs there as A4
-phase 3 public `WtTerrainWorld` lifecycle ownership. S4 closed with CPU/native
+phase 2 bridge/storage fixture commit `4b8855c`, plus A4 phase 3 terrain-world
+lifecycle commit `b28c623`; next work belongs there as A4 phase 4
+reference-profile runtime/cold-idle validation. S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement unless a new explicit contract moves those items into scope.
@@ -451,6 +452,41 @@ Result:
   work;
 - decision: A4 remains active. Next work is A4 phase 3 public `WtTerrainWorld`
   lifecycle ownership in `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A4 phase 3 terrain-world lifecycle - completed outside
+this sandbox.
+
+Commands:
+
+```console
+python tools/validate_a4_phase3.py
+python tools/a4_phase3_terrain_world_lifecycle_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `b28c623 Add A4 phase 3 terrain world lifecycle`;
+- marker: `WT_TERRAIN_A4_PHASE3_CONTRACT_PASS
+  next=a4_phase4_reference_profile_runtime_cold_idle
+  implementation=terrain_world_lifecycle`;
+- Godot marker: `WT_TERRAIN_A4_PHASE3_SMOKE_PASS engines=2
+  report=artifacts/a4_phase3_terrain_world_lifecycle/a4_phase3_terrain_world_lifecycle_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- contents: `WtTerrainWorld.start_backend_world()`, `stop_backend_world()`,
+  `submit_edit_batch()`, owned backend terrain/config instantiation,
+  `object_root_path` on `WtTerrainStorageProfile`, phase 3 smoke, Python
+  runner, validator, docs, and committed `.gd.uid` metadata;
+- evidence: public `WtTerrainWorld` starts the official backend production
+  lifecycle fixture, submits an edit batch, verifies native `world.wtedit`,
+  stops, restarts, and verifies journal replay through the owned backend;
+- claim boundary: this is `terrain_world_lifecycle`; it does not prove 2048 x
+  2048 x 64 full profile runtime, viewer binding, terrain streaming policy,
+  collision readiness through the terrain-world API, debug UI, cold-idle
+  budgets, or game-ready terrain;
+- decision: A4 remains active. Next work is A4 phase 4 reference-profile
+  runtime/cold-idle validation in `world-transvoxel-terrain`, not a game
+  repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1153,8 +1189,8 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A4 phase 3 public `WtTerrainWorld`
-lifecycle ownership.
+moves to `world-transvoxel-terrain` A4 phase 4 reference-profile runtime/cold-idle
+validation.
 
 Scope:
 
@@ -1175,14 +1211,14 @@ Scope:
 Exit:
 
 - this handoff is satisfied when the sandbox status records the
-  `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2 commits and
-  points further work to that repo.
+  `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3
+  commits and points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A4 phase 3 public `WtTerrainWorld`
-   lifecycle ownership.
-2. A4 phase 3 must keep using the bridge without copying `world-transvoxel`,
+1. In `world-transvoxel-terrain`, do A4 phase 4 reference-profile runtime/cold-idle
+   validation.
+2. A4 phase 4 must keep using the bridge without copying `world-transvoxel`,
    sandbox implementation, or MIT Transvoxel topology data into this terrain
    repo.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
