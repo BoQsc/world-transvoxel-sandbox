@@ -34,6 +34,8 @@ uncontrolled rendering, streaming, editing, or memory behavior.
 The first target-machine budget profile is
 `docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md`. Its headless baseline runner is
 `tools/s3_visibility_workload.py`; it is baseline evidence, not S3 exit.
+Explicit base-terrain repair is audited separately by
+`tools/s3_restore_to_base_audit.py`.
 
 ## Out of scope
 
@@ -62,7 +64,8 @@ S3 cannot exit until these exist and pass:
 | workload report | `artifacts/s3_visibility_workload/workload_report.json` |
 | visibility/frustum audit | `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS` |
 | fast-travel policy | explicit supported/rejected/loading-screen decision |
-| restore-to-base audit | explicit pass marker or documented deferral |
+| restore-to-base audit | `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS` |
+| visual/GPU artifact acceptance | explicit visual/GPU S3 pass |
 | S3 exit review | `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 
 ## Exit condition

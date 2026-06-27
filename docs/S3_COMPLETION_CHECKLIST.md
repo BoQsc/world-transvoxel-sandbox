@@ -17,8 +17,9 @@ complete, S4 must not start except for documentation-only planning.
 | Forward-biased prefetch policy is implemented or rejected | Complete | `docs/S3_FORWARD_PREFETCH_POLICY.md`; secondary viewer, distance 64, radius 1 |
 | Fast travel / teleport policy is decided | Complete | loading-screen required; seamless disjoint teleport is not accepted by this profile |
 | Repeated mining while moving is measured | Complete | S3 baseline: two moving edits per engine |
-| Edit latency and edit-journal growth are measured in workload loop | Complete | S3 baseline: max edit 903 ms, journal growth 1,192 bytes |
-| `restore_to_base` is implemented/audited or explicitly deferred | Pending | pass marker or deferral decision |
+| Edit latency and edit-journal growth are measured in workload loop | Complete | S3 baseline: max edit 883 ms, journal growth 1,192 bytes |
+| `restore_to_base` is implemented/audited or explicitly deferred | Complete | `tools/s3_restore_to_base_audit.py`; `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS`; edited sphere samples restore to deterministic base density/material |
+| Visual/GPU artifact acceptance exists | Pending | visual/GPU S3 pass proving no visible holes, uncontrolled popping, or graphical frame-time regression |
 | S3 exit review exists | Pending | `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 
 ## Explicitly out of scope for S3
@@ -41,5 +42,9 @@ First baseline complete: `python tools/s3_visibility_workload.py` reports
 `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS` with
 `artifacts/s3_visibility_workload/workload_report.json`.
 
-Next valid action: implement/audit `restore_to_base` or explicitly defer it,
-then rerun the S3 workload baseline against that decision.
+Restore-to-base audit complete: `python tools/s3_restore_to_base_audit.py`
+reports `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS` with
+`artifacts/s3_restore_to_base/restore_to_base_report.json`.
+
+Next valid action: finish visual/GPU artifact acceptance for the S3 workload,
+then write the S3 exit review if the full S3 gate set is satisfied.

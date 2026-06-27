@@ -91,12 +91,12 @@ Result:
 - Godot script: `tests/terrain_s3_visibility_workload.gd`;
 - report: `artifacts/s3_visibility_workload/workload_report.json`;
 - marker: `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS engines=2`;
-- Godot 4.6.3: `startup_ms=290`, `settle_ms=6589`, `min_render=222`,
+- Godot 4.6.3: `startup_ms=208`, `settle_ms=6639`, `min_render=222`,
   `min_collision=222`, `max_active=322`, `max_edit_ms=883`,
-  `journal_growth_bytes=1192`, `max_frame_ms=128.143`;
-- Godot 4.7: `startup_ms=169`, `settle_ms=6584`, `min_render=222`,
-  `min_collision=222`, `max_active=322`, `max_edit_ms=903`,
-  `journal_growth_bytes=1192`, `max_frame_ms=69.196`;
+  `journal_growth_bytes=1192`, `max_frame_ms=76.395`;
+- Godot 4.7: `startup_ms=198`, `settle_ms=6566`, `min_render=222`,
+  `min_collision=222`, `max_active=322`, `max_edit_ms=867`,
+  `journal_growth_bytes=1192`, `max_frame_ms=95.950`;
 - forward prefetch: accepted by `docs/S3_FORWARD_PREFETCH_POLICY.md` with
   secondary viewer `603`, distance `64`, radius `1`, and
   `prefetch_updates=10`;
@@ -104,7 +104,30 @@ Result:
   `viewer_updates_delta=0`, `planned_demands_delta=0`;
 - fast-travel policy: `loading_screen_required`;
 - claim boundary: S3 headless baseline with forward prefetch only.
-  `restore_to_base`, visual/GPU acceptance, and S3 exit review remain pending.
+  Visual/GPU acceptance and S3 exit review remain pending.
+
+S3 restore-to-base audit - explicit base-terrain repair, not timed
+regeneration.
+
+Command:
+
+```console
+python tools/s3_restore_to_base_audit.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS
+  engines=2 report=artifacts/s3_restore_to_base/restore_to_base_report.json`;
+- Godot 4.6.3 marker: `points=33`, `carve_ms=599`, `restore_ms=501`,
+  `journal_growth_bytes=13428`, `active_capacity=1024`;
+- Godot 4.7 marker: `points=33`, `carve_ms=671`, `restore_ms=500`,
+  `journal_growth_bytes=13428`, `active_capacity=1024`;
+- proven: edited sphere-grid samples restore density/material to deterministic
+  base terrain;
+- claim boundary: this proves explicit restore-to-base for the audited region.
+  It does not enable automatic timed regeneration, smoothing, stability,
+  fluid equilibrium, visual/GPU S3 acceptance, or S3 exit.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -126,8 +149,8 @@ Result:
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
-- decision: continue S3 with `restore_to_base` implementation/audit or explicit
-  deferral only; do not treat S4/S5 or optional systems as complete.
+- decision: continue S3 with visual/GPU artifact acceptance and then S3 exit
+  review only; do not treat S4/S5 or optional systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.
 

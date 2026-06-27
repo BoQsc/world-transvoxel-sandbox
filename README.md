@@ -78,7 +78,8 @@ defined by
 and runs through `tools/s3_visibility_workload.py`. This is not S3 exit;
 forward-biased prefetch is accepted by
 [`docs/S3_FORWARD_PREFETCH_POLICY.md`](docs/S3_FORWARD_PREFETCH_POLICY.md), while
-`restore_to_base`, visual/GPU acceptance, and the S3 exit review remain pending.
+explicit `restore_to_base` is audited by `tools/s3_restore_to_base_audit.py`.
+Visual/GPU acceptance and the S3 exit review remain pending.
 
 ## Run
 

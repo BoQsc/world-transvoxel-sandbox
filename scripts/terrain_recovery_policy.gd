@@ -20,9 +20,9 @@ static func default_state() -> Dictionary:
 		"surface_relaxation": false,
 		"structural_stability": false,
 		"fluid_equilibrium": false,
+		"available_targets": [TARGET_PRE_EDIT_SNAPSHOT, TARGET_BASE_TERRAIN],
 		"enabled_targets": [TARGET_PRE_EDIT_SNAPSHOT],
 		"reserved_targets": [
-			TARGET_BASE_TERRAIN,
 			TARGET_CHECKPOINT,
 			TARGET_DESIGNER_STAMP,
 			TARGET_SETTLED_PHYSICS_STATE,

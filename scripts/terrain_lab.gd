@@ -41,7 +41,13 @@ var _sculpt_controller := SculptController.new()
 func _ready() -> void:
 	set_process_unhandled_input(bool(viewer.get("input_enabled")))
 	_sculpt_controller.configure(
-		terrain, mining_radius, mining_strength, construction_material, ore_material
+		terrain,
+		mining_radius,
+		mining_strength,
+		construction_material,
+		ore_material,
+		maxi(1, floori(world_max.x) + 1),
+		maxi(1, floori(world_max.y) + 1)
 	)
 	viewer.connect("position_changed", _on_viewer_position_changed)
 	terrain.connect("world_state_changed", _on_world_state_changed)
@@ -158,6 +164,10 @@ func submit_mining_at_aim(fill: bool = false, paint: bool = false) -> bool:
 
 func restore_last_carve() -> bool:
 	return _handle_sculpt_result(_sculpt_controller.restore_last_carve())
+
+
+func restore_last_carve_to_base() -> bool:
+	return _handle_sculpt_result(_sculpt_controller.restore_last_carve_to_base())
 
 
 func get_restorable_carve_count() -> int:

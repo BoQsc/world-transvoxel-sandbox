@@ -65,5 +65,6 @@ baseline. A visual/GPU S3 pass is still required before S3 exit.
 
 Passing this profile proves the S3 visibility/frustum production workload
 baseline with the accepted forward-biased prefetch policy. It does not prove S3
-exit, `restore_to_base`, compute acceleration, fluids, planets, structural
-stability, the future game repository, or `world-transvoxel-terrain`.
+exit, compute acceleration, fluids, planets, structural stability, the future
+game repository, or `world-transvoxel-terrain`. Explicit `restore_to_base` is
+covered by `tools/s3_restore_to_base_audit.py`, not by this visibility baseline.

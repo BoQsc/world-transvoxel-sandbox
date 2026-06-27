@@ -12,6 +12,8 @@ The default policy is `manual_exact_restore`.
 - mining is permanent after commit;
 - `Ctrl+Z` restores the last committed carve from exact pre-edit density
   samples at the original brush coordinates;
+- explicit `restore_to_base` is available for audited/manual use and restores
+  affected samples to deterministic generated base density/material;
 - construction and material painting are separate operations, not undo;
 - construction invalidates older carve snapshots because those snapshots no
   longer describe the current terrain state;
@@ -54,9 +56,9 @@ targets are:
 4. `designer_stamp` - an authored repair/rebuild shape.
 5. `settled_physics_state` - a new result after an enabled stability system.
 
-Only `pre_edit_snapshot` is implemented today. `base_terrain` is the next
-useful restore target because it supports "heal mined area back to generated
-terrain" without implying time-based regeneration or physics.
+`pre_edit_snapshot` is the default restore target. `base_terrain` is now
+implemented as explicit `restore_to_base` and supports "heal mined area back to
+generated terrain" without implying time-based regeneration or physics.
 
 ## Brush command standard
 
@@ -87,7 +89,8 @@ or performance format.
 These systems are allowed only behind explicit toggles and separate tests:
 
 - `restore_to_base`: restore density/material from the deterministic base
-  generator inside a bounded region;
+  generator inside a bounded region; S3 audits this as an explicit operation,
+  not automatic regeneration;
 - `timed_regeneration`: schedule bounded restoration over time;
 - `surface_relaxation`: smooth or rebuild an edited signed-distance field in a
   bounded dirty region;
@@ -108,8 +111,8 @@ The sandbox must keep these checks:
 - construction paints its material and is not treated as undo;
 - no automatic recovery policy is enabled by default;
 - settled default terrain performs no background work;
-- future restore-to-base must prove restored density/material equals the
-  deterministic base terrain for the edited region;
+- restore-to-base must prove restored density/material equals the deterministic
+  base terrain for the edited region;
 - future timed regeneration must prove bounded work per frame and stable idle
   after completion;
 - future stability must prove bounded dirty-region recomputation and must not

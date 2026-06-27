@@ -15,6 +15,8 @@ REQUIRED = {
         "tools/s3_visibility_workload.py",
         "visibility/frustum behavior",
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
+        "tools/s3_restore_to_base_audit.py",
+        "WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS",
         "WT_SANDBOX_S3_EXIT_REVIEW_PASS",
         "GPU compute acceleration",
         "Out of scope",
@@ -23,8 +25,11 @@ REQUIRED = {
         "S3 status: not complete",
         "Workload classes are defined",
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS",
+        "WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS",
         "Fast travel / teleport policy",
         "Forward-biased prefetch policy is implemented or rejected | Complete",
+        "`restore_to_base` is implemented/audited or explicitly deferred | Complete",
+        "Visual/GPU artifact acceptance exists | Pending",
         "Current decision: do not proceed to S4",
     ),
     "docs/S3_FORWARD_PREFETCH_POLICY.md": (
@@ -42,6 +47,7 @@ REQUIRED = {
         "fast travel policy | loading-screen required",
         "GPU frame time and visual artifact acceptance are not measured",
         "Passing this profile proves the S3 visibility/frustum production workload baseline with the accepted forward-biased prefetch policy",
+        "Explicit `restore_to_base` is covered by `tools/s3_restore_to_base_audit.py`, not by this visibility baseline",
     ),
     "tools/s3_visibility_workload.py": (
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
@@ -57,6 +63,34 @@ REQUIRED = {
         "planned_demands_delta",
         "prefetch_distance=%.1f",
         "fast_travel_policy=loading_screen_required",
+    ),
+    "tools/s3_restore_to_base_audit.py": (
+        "WT_SANDBOX_S3_RESTORE_TO_BASE_PASS",
+        "world-transvoxel-sandbox.s3-restore-to-base.v1",
+        "restore_to_base is explicit",
+        "WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS",
+    ),
+    "tests/terrain_s3_restore_to_base_audit.gd": (
+        "WT_SANDBOX_S3_RESTORE_TO_BASE_PASS",
+        "set(\"input_enabled\", false)",
+        "BaseSampler.l4_sample",
+        "restore_last_carve_to_base",
+    ),
+    "scripts/terrain_base_sampler.gd": (
+        "class_name WtSandboxTerrainBaseSampler",
+        "terrain_sample",
+        "sphere_grid_points",
+    ),
+    "scripts/terrain_sculpt_controller.gd": (
+        "restore_last_carve_to_base",
+        "MODE_RESTORE_BASE",
+        "BaseSampler.terrain_sample",
+        "_base_horizontal_cells",
+    ),
+    "scripts/terrain_recovery_policy.gd": (
+        "\"available_targets\"",
+        "TARGET_BASE_TERRAIN",
+        "\"enabled_targets\": [TARGET_PRE_EDIT_SNAPSHOT]",
     ),
     "docs/S4_M6_DECISION_CONTRACT.md": (
         "S4 starts only after S3 exits",

@@ -277,8 +277,9 @@ unless the S3 contract explicitly moves them in.
 - measure restoration capture latency and edit-journal growth; replace the
   correctness-first point-command snapshot with a compressed native delta path
   if it misses the production interaction or storage budgets;
-- implement and audit restore-to-base as the next recovery target before any
-  timed regeneration, surface relaxation, or stability/collapse module;
+- keep explicit restore-to-base audited before any timed regeneration, surface
+  relaxation, or stability/collapse module;
+- finish visual/GPU artifact acceptance before S3 exit review;
 - establish idle CPU, active CPU, render, physics, I/O, and memory budgets.
 
 Exit: the representative small-game workload meets its budgets without

@@ -154,7 +154,8 @@ Optional systems may be designed now, but they must not become default behavior
 until they have their own contract and tests.
 
 - Recovery follows `docs/TERRAIN_RECOVERY_CONTRACT.md`.
-- Timed regeneration is off until restore-to-base exists and is measured.
+- Timed regeneration remains off. Explicit restore-to-base exists and is
+  measured, but time-based recovery needs a separate contract and tests.
 - Surface smoothing is off until the desired terrain style is defined.
 - Structural collapse is off until support-graph rules are specified.
 - Water and lava are separate fluid systems, not implicit terrain recovery.

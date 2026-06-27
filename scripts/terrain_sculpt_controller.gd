@@ -2,16 +2,20 @@ class_name WtSandboxTerrainSculptController
 extends RefCounted
 
 const Capture = preload("res://scripts/terrain_sculpt_capture.gd")
+const BaseSampler = preload("res://scripts/terrain_base_sampler.gd")
 const MODE_CARVE := "carve"
 const MODE_CONSTRUCT := "construct rock"
 const MODE_PAINT := "paint ore"
 const MODE_RESTORE := "restore carve"
+const MODE_RESTORE_BASE := "restore to base"
 
 var _terrain: Node
 var _radius := 2.0
 var _strength := 6.0
 var _construction_material := 3
 var _ore_material := 4
+var _base_horizontal_cells := 128
+var _base_vertical_cells := 64
 var _capture := Capture.new()
 var _committed_carves: Array[Dictionary] = []
 var _pending: Dictionary = {}
@@ -23,13 +27,17 @@ func configure(
 		radius: float,
 		strength: float,
 		construction_material: int,
-		ore_material: int
+		ore_material: int,
+		base_horizontal_cells: int = 128,
+		base_vertical_cells: int = 64
 ) -> void:
 	_terrain = terrain
 	_radius = radius
 	_strength = strength
 	_construction_material = construction_material
 	_ore_material = ore_material
+	_base_horizontal_cells = maxi(1, base_horizontal_cells)
+	_base_vertical_cells = maxi(1, base_vertical_cells)
 	_capture.configure(_terrain)
 
 
@@ -121,6 +129,44 @@ func restore_last_carve() -> Dictionary:
 	)
 
 
+func restore_last_carve_to_base() -> Dictionary:
+	if _terrain == null or not _terrain.call("is_world_running"):
+		return _failure("restore_to_base ignored: world is not running")
+	if not _pending.is_empty():
+		return _failure("restore_to_base ignored: another edit is still pending")
+	if _committed_carves.is_empty():
+		return _failure("restore_to_base ignored: no committed carve is available")
+	var record: Dictionary = _committed_carves.pop_back()
+	var transaction: Object = _terrain.call("begin_edit_transaction", 1)
+	if transaction == null:
+		_committed_carves.append(record)
+		return _failure("restore_to_base rejected: " + str(_terrain.call("get_world_error")))
+	var command_ok := true
+	for sample: Dictionary in record["samples"]:
+		var point := Vector3i(sample["point"])
+		var base: Dictionary = BaseSampler.terrain_sample(
+			point, _base_horizontal_cells, _base_vertical_cells
+		)
+		var box_point := Vector3(point)
+		if not transaction.call("set_density_box", box_point, box_point, float(base["density"])) or \
+				not transaction.call("paint_material_box", box_point, box_point, int(base["material"])):
+			command_ok = false
+			break
+	if not command_ok:
+		_committed_carves.append(record)
+		return _failure("restore_to_base rejected: " + str(transaction.call("get_error")))
+	_pending = {"kind": MODE_RESTORE_BASE, "record": record}
+	if not _terrain.call("commit_edit_transaction", transaction):
+		_pending = {}
+		_committed_carves.append(record)
+		return _failure("restore_to_base rejected: " + str(transaction.call("get_error")))
+	return _success(
+		"restore_to_base submitted at " + str((record["center"] as Vector3).round()),
+		record["center"],
+		MODE_RESTORE_BASE
+	)
+
+
 func edit_committed() -> String:
 	if _pending.is_empty():
 		return "edit"
@@ -139,7 +185,7 @@ func edit_failed() -> String:
 	if _pending.is_empty():
 		return "edit"
 	var kind := str(_pending["kind"])
-	if kind == MODE_RESTORE:
+	if kind == MODE_RESTORE or kind == MODE_RESTORE_BASE:
 		_committed_carves.append(_pending["record"])
 	_pending = {}
 	return kind
