@@ -35,9 +35,10 @@ separate game repository. The active post-S5 workstream is governed by
 `tools/world_transvoxel_terrain_contract_check.py`. The separate
 `world-transvoxel-terrain` repository now exists with A0 skeleton commit
 `244db4c`, A1 public API/source-layout contract commit `f076597`, and A2
-addon-local smoke harness commit `8609c99`; next work belongs there as A3
-`world-transvoxel` bridge work. S4 closed with CPU/native retained and compute
-rejected for now. Do not start broad GPU compute, water/lava, planets,
+addon-local smoke harness commit `8609c99`, plus A3 `world-transvoxel` bridge
+commit `ef03d55`; next work belongs there as A4 terrain
+profile/edit/storage/recovery work. S4 closed with CPU/native retained and
+compute rejected for now. Do not start broad GPU compute, water/lava, planets,
 structural collapse, a game repository, or 0BSD backend replacement unless a new
 explicit contract moves those items into scope.
 
@@ -358,6 +359,34 @@ Result:
   runner, A2 validator, and committed `.gd.uid` metadata;
 - decision: A2 is complete. Next work is A3 `world-transvoxel` bridge in
   `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A3 `world-transvoxel` bridge - completed outside this
+sandbox.
+
+Commands:
+
+```console
+python tools/validate_a3_bridge.py
+python tools/a3_bridge_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `ef03d55 Complete terrain addon A3 bridge`;
+- marker: `WT_TERRAIN_A3_CONTRACT_PASS
+  next=a4_terrain_profile_edit_storage_recovery implementation=bridge_only`;
+- Godot marker: `WT_TERRAIN_A3_BRIDGE_PASS engines=2
+  report=artifacts/a3_bridge_smoke/a3_bridge_smoke_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- bridge evidence: temporary ignored Godot fixture loads sibling
+  `world-transvoxel`, detects `WorldTransvoxelTerrain` and
+  `WorldTransvoxelConfig`, reads backend identity
+  `transvoxel_mit_official`, license `MIT`, config schema `1`, and addon version
+  `1.0.11-dev`;
+- decision: A3 is complete. Next work is A4 terrain
+  profile/edit/storage/recovery implementation in `world-transvoxel-terrain`,
+  not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1060,7 +1089,8 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A3 `world-transvoxel` bridge work.
+moves to `world-transvoxel-terrain` A4 terrain profile/edit/storage/recovery
+work.
 
 Scope:
 
@@ -1081,15 +1111,16 @@ Scope:
 Exit:
 
 - this handoff is satisfied when the sandbox status records the
-  `world-transvoxel-terrain` A0/A1/A2 commits and points further work to that
+  `world-transvoxel-terrain` A0/A1/A2/A3 commits and points further work to that
   repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A3 `world-transvoxel` bridge work.
-2. A3 must define and test the dependency bridge without copying
-   `world-transvoxel`, sandbox implementation, or MIT Transvoxel topology data
-   into this terrain repo.
+1. In `world-transvoxel-terrain`, do A4 terrain
+   profile/edit/storage/recovery work.
+2. A4 must implement through the bridge without copying `world-transvoxel`,
+   sandbox implementation, or MIT Transvoxel topology data into this terrain
+   repo.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
    has its own package boundary and local smoke tests.
 
