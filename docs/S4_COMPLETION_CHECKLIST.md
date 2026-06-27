@@ -1,15 +1,16 @@
 # S4 Completion Checklist
 
-S4 status: not started.
+S4 status: active decision work, not implementation.
 
-S4 may not start implementation until S3 identifies a measured bottleneck.
+S4 may not start implementation until the selected S3 bottleneck has a
+CPU/native phase baseline.
 
 ## Required for S4
 
 | Requirement | Status | Evidence |
 | --- | --- | --- |
 | S4 contract exists | Complete | `docs/S4_M6_DECISION_CONTRACT.md` |
-| S3 bottleneck selected | Pending | S3 workload report reference |
+| S3 bottleneck selected | Complete | `tools/s4_bottleneck_selection.py`; `docs/S4_BOTTLENECK_SELECTION.md`; `WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS`; selected `interactive_edit_settle_latency` |
 | CPU/native baseline measured | Pending | baseline report |
 | Compute prototype scoped to one bottleneck | Pending | implementation/report |
 | Transfer/readback/synchronization measured | Pending | comparison report |
@@ -31,9 +32,8 @@ S4 may not start implementation until S3 identifies a measured bottleneck.
 
 ## Go/no-go
 
-Current decision: S4 decision work may start after S3 exit; do not start S4
-implementation until one measured bottleneck or CPU/native fallback decision is
-selected.
+Current decision: S4 selected interactive edit-settle latency for CPU/native
+phase attribution. Do not start S4 implementation until that baseline exists.
 
-Next valid action after S3: choose one measured bottleneck or close S4 with CPU
-retained.
+Next valid action: create the CPU/native edit phase baseline or close S4 with
+CPU retained if attribution cannot justify a targeted compute path.

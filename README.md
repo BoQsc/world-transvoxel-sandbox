@@ -81,7 +81,9 @@ forward-biased prefetch is accepted by
 explicit `restore_to_base` is audited by `tools/s3_restore_to_base_audit.py`.
 Visual/GPU acceptance is audited by `tools/s3_visual_gpu_audit.py`. The S3
 exit review is audited by `tools/s3_exit_review.py`. S4 decision work is the
-next milestone; broad GPU implementation is not authorized by S3 exit alone.
+current milestone; `tools/s4_bottleneck_selection.py` selected interactive
+edit-settle latency for CPU/native phase attribution. Broad GPU implementation
+is not authorized.
 
 ## Run
 
@@ -99,6 +101,7 @@ python tools/future_milestone_contracts_check.py
 python tools/s3_visibility_workload.py
 python tools/s3_visual_gpu_audit.py
 python tools/s3_exit_review.py
+python tools/s4_bottleneck_selection.py
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest

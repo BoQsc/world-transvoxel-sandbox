@@ -128,13 +128,28 @@ REQUIRED = {
     "docs/S4_M6_DECISION_CONTRACT.md": (
         "S4 starts only after S3 exits",
         "measured bottleneck",
+        "tools/s4_bottleneck_selection.py",
+        "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
         "WT_SANDBOX_S4_M6_DECISION_PASS",
         "CPU/headless fallback",
     ),
     "docs/S4_COMPLETION_CHECKLIST.md": (
-        "S4 status: not started",
-        "S3 bottleneck selected",
-        "Current decision: S4 decision work may start after S3 exit",
+        "S4 status: active decision work, not implementation",
+        "S3 bottleneck selected | Complete",
+        "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
+        "Current decision: S4 selected interactive edit-settle latency",
+    ),
+    "tools/s4_bottleneck_selection.py": (
+        "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
+        "world-transvoxel-sandbox.s4-bottleneck-selection.v1",
+        "interactive_edit_settle_latency",
+        "CPU/native phase baseline",
+    ),
+    "docs/S4_BOTTLENECK_SELECTION.md": (
+        "S4 status: active decision work, not implementation",
+        "Selected bottleneck: interactive edit-settle latency",
+        "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
+        "Compute remains blocked",
     ),
     "docs/S5_SMALL_GAME_DECISION_CONTRACT.md": (
         "S5 starts only after S3 production workload evidence",
@@ -187,7 +202,7 @@ def main() -> None:
         raise SystemExit(1)
     print(
         "WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS "
-        "s3=exit_review_pass s4=decision_not_implemented s5=defined_not_started"
+        "s3=exit_review_pass s4=bottleneck_selected_not_implemented s5=defined_not_started"
     )
 
 

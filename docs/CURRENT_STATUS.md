@@ -28,7 +28,8 @@ storage, recovery, fluids, or stability algorithms should live.
 
 S2 automated scale-ladder exit evidence is complete, and S3 automated exit
 evidence is complete. The current in-order milestone is S4 decision work, not
-GPU implementation. S3, S4, and S5 have
+GPU implementation. S4 has selected interactive edit-settle latency for
+CPU/native phase attribution. S3, S4, and S5 have
 contract/checklist skeletons so their scope is known before implementation. S3
 has exited through its review. Do not start broad GPU compute, water/lava,
 planets, structural collapse, a game repository, or 0BSD backend replacement
@@ -181,6 +182,28 @@ Result:
 - decision: S3 complete; next valid milestone is S4 decision work, not broad
   GPU implementation.
 
+S4 bottleneck selection - first M6 decision gate.
+
+Command:
+
+```console
+python tools/s4_bottleneck_selection.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS
+  selected=interactive_edit_settle_latency max_edit_ms=867
+  report=artifacts/s4_bottleneck_selection/bottleneck_selection_report.json`;
+- decision doc: `docs/S4_BOTTLENECK_SELECTION.md`;
+- selected bottleneck: interactive edit-settle latency from S3 visibility
+  workload evidence;
+- supporting pressure: S3 restore-to-base reached `carve_ms=671` and
+  `restore_ms=501`; S3 process sampling reached `54.068%` average CPU and
+  `206.0%` peak CPU;
+- boundary: this does not authorize compute implementation. The next valid S4
+  action is a CPU/native edit phase baseline.
+
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
 
@@ -200,7 +223,8 @@ Result:
 - S5 checklist: `docs/S5_COMPLETION_CHECKLIST.md`;
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
-  s3=exit_review_pass s4=decision_not_implemented s5=defined_not_started`;
+  s3=exit_review_pass s4=bottleneck_selected_not_implemented
+  s5=defined_not_started`;
 - decision: continue with S4 decision work only; do not treat S4/S5 or optional
   systems as complete.
 

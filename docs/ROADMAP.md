@@ -288,14 +288,15 @@ visible holes or uncontrolled resource growth.
 
 ## S4 - M6 decision
 
-Status: next, evidence-gated, and contract-defined by
+Status: active decision work, evidence-gated, and contract-defined by
 `docs/S4_M6_DECISION_CONTRACT.md` plus `docs/S4_COMPLETION_CHECKLIST.md`.
 
-S4 starts as a decision milestone after S3 exit. It must select a measured
-bottleneck or close with a CPU/native fallback decision before any
-compute/shader implementation.
+S4 starts as a decision milestone after S3 exit. It selected interactive
+edit-settle latency by `WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS`. The next gate
+is a CPU/native edit phase baseline before any compute/shader implementation.
 
 - select only a measured bottleneck;
+- attribute the selected edit-settle latency across CPU/native phases;
 - compare complete CPU and compute paths, including transfer/readback;
 - keep deterministic CPU/headless fallback;
 - enable compute only when end-to-end behavior improves.

@@ -29,11 +29,15 @@ compute acceleration ships with proof, or the CPU/native path is retained.
 | Gate | Required marker or artifact |
 | --- | --- |
 | S4 completion checklist | `docs/S4_COMPLETION_CHECKLIST.md` |
-| selected bottleneck report | S3 report reference |
+| selected bottleneck report | `tools/s4_bottleneck_selection.py`; `WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS` |
 | CPU baseline | measured before compute comparison |
 | compute comparison | complete end-to-end report |
 | fallback proof | deterministic CPU/headless fallback |
 | decision marker | `WT_SANDBOX_S4_M6_DECISION_PASS` |
+
+The selected bottleneck report is a decision gate only. It does not authorize a
+compute prototype until the CPU/native baseline attributes the selected latency
+to a phase that compute can improve end to end.
 
 ## Exit condition
 
