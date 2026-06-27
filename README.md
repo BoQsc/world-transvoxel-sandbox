@@ -93,8 +93,9 @@ terrain-addon architecture contract. The separate `world-transvoxel-terrain`
 repository now has its A0 skeleton at commit `244db4c` and A1 public
 API/source-layout contract at commit `f076597`, plus A2 addon-local smoke
 harness at commit `8609c99`, plus A3 `world-transvoxel` bridge at commit
-`ef03d55`; next work belongs there as A4 terrain profile/edit/storage/recovery
-work. Broad GPU implementation is not authorized.
+`ef03d55`, plus A4 phase 1 resource semantics at commit `2774664`; next work
+belongs there as A4 phase 2 bridge edit submission and storage fixture. Broad
+GPU implementation is not authorized.
 
 ## Run
 
