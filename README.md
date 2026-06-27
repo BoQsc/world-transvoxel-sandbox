@@ -91,8 +91,9 @@ creating/designing `world-transvoxel-terrain`; do not create the game repository
 yet. `tools/world_transvoxel_terrain_contract_check.py` gates the post-S5
 terrain-addon architecture contract. The separate `world-transvoxel-terrain`
 repository now has its A0 skeleton at commit `244db4c` and A1 public
-API/source-layout contract at commit `f076597`; next work belongs there as A2
-addon-local smoke harness work. Broad GPU implementation is not authorized.
+API/source-layout contract at commit `f076597`, plus A2 addon-local smoke
+harness at commit `8609c99`; next work belongs there as A3
+`world-transvoxel` bridge work. Broad GPU implementation is not authorized.
 
 ## Run
 

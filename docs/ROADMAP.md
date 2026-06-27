@@ -346,6 +346,7 @@ created.
 
 Exit: complete for the sandbox-side post-S5 handoff. The
 `world-transvoxel-terrain` repository exists with A0 skeleton commit `244db4c`
-and A1 public API/source-layout contract commit `f076597`. The next valid action
-is A2 addon-local smoke harness work in `world-transvoxel-terrain`, not a game
+and A1 public API/source-layout contract commit `f076597`, plus A2
+addon-local smoke harness commit `8609c99`. The next valid action is A3
+`world-transvoxel` bridge work in `world-transvoxel-terrain`, not a game
 repository.

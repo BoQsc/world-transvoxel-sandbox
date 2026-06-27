@@ -34,11 +34,12 @@ separate game repository. The active post-S5 workstream is governed by
 `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
 `tools/world_transvoxel_terrain_contract_check.py`. The separate
 `world-transvoxel-terrain` repository now exists with A0 skeleton commit
-`244db4c` and A1 public API/source-layout contract commit `f076597`; next work
-belongs there as A2 addon-local smoke harness work. S4 closed with CPU/native
-retained and compute rejected for now. Do not start broad GPU compute,
-water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement unless a new explicit contract moves those items into scope.
+`244db4c`, A1 public API/source-layout contract commit `f076597`, and A2
+addon-local smoke harness commit `8609c99`; next work belongs there as A3
+`world-transvoxel` bridge work. S4 closed with CPU/native retained and compute
+rejected for now. Do not start broad GPU compute, water/lava, planets,
+structural collapse, a game repository, or 0BSD backend replacement unless a new
+explicit contract moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -330,6 +331,32 @@ Result:
   old marching-cubes maintainability audit, reference manifest, and A1
   validator;
 - decision: A1 is complete. Next work is A2 addon-local smoke harness in
+  `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A2 addon-local smoke harness - completed outside this
+sandbox.
+
+Commands:
+
+```console
+python tools/validate_a2_smoke.py
+python tools/a2_addon_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `8609c99 Complete terrain addon A2 smoke harness`;
+- marker: `WT_TERRAIN_A2_CONTRACT_PASS
+  next=a3_world_transvoxel_bridge implementation=smoke_only`;
+- Godot marker: `WT_TERRAIN_A2_SMOKE_PASS engines=2
+  report=artifacts/a2_addon_smoke/a2_addon_smoke_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- contents: dependency-status detection without vendoring `world-transvoxel`,
+  placeholder `WtTerrainWorld`, `WtTerrainProfile`, and
+  `WtTerrainGenerationProfile`, Godot headless smoke script, Python smoke
+  runner, A2 validator, and committed `.gd.uid` metadata;
+- decision: A2 is complete. Next work is A3 `world-transvoxel` bridge in
   `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
@@ -1033,7 +1060,7 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A2 addon-local smoke harness work.
+moves to `world-transvoxel-terrain` A3 `world-transvoxel` bridge work.
 
 Scope:
 
@@ -1054,13 +1081,15 @@ Scope:
 Exit:
 
 - this handoff is satisfied when the sandbox status records the
-  `world-transvoxel-terrain` A0/A1 commits and points further work to that repo.
+  `world-transvoxel-terrain` A0/A1/A2 commits and points further work to that
+  repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A2 addon-local smoke harness work.
-2. A2 must prove plugin loading and dependency detection without vendoring
-   `world-transvoxel` or implementing terrain hot paths in GDScript.
+1. In `world-transvoxel-terrain`, do A3 `world-transvoxel` bridge work.
+2. A3 must define and test the dependency bridge without copying
+   `world-transvoxel`, sandbox implementation, or MIT Transvoxel topology data
+   into this terrain repo.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
    has its own package boundary and local smoke tests.
 
