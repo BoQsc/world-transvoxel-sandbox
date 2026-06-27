@@ -31,7 +31,9 @@ S4 may not start implementation until S3 identifies a measured bottleneck.
 
 ## Go/no-go
 
-Current decision: do not start S4 implementation.
+Current decision: S4 decision work may start after S3 exit; do not start S4
+implementation until one measured bottleneck or CPU/native fallback decision is
+selected.
 
 Next valid action after S3: choose one measured bottleneck or close S4 with CPU
 retained.

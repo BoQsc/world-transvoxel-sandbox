@@ -19,21 +19,24 @@ REQUIRED = {
         "WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS",
         "tools/s3_visual_gpu_audit.py",
         "WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS",
+        "tools/s3_exit_review.py",
         "WT_SANDBOX_S3_EXIT_REVIEW_PASS",
         "GPU compute acceleration",
         "Out of scope",
     ),
     "docs/S3_COMPLETION_CHECKLIST.md": (
-        "S3 status: not complete",
+        "S3 status: complete",
         "Workload classes are defined",
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS",
         "WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS",
         "WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS",
+        "WT_SANDBOX_S3_EXIT_REVIEW_PASS",
         "Fast travel / teleport policy",
         "Forward-biased prefetch policy is implemented or rejected | Complete",
         "`restore_to_base` is implemented/audited or explicitly deferred | Complete",
         "Visual/GPU artifact acceptance exists | Complete",
-        "Current decision: do not proceed to S4",
+        "S3 exit review exists | Complete",
+        "Current decision: S3 is complete; proceed only to S4 decision work",
     ),
     "docs/S3_FORWARD_PREFETCH_POLICY.md": (
         "secondary viewer id | `603`",
@@ -93,6 +96,19 @@ REQUIRED = {
         "render_fading_resources",
         "ProbeUtil.probe_render_and_collision",
     ),
+    "tools/s3_exit_review.py": (
+        "WT_SANDBOX_S3_EXIT_REVIEW_PASS",
+        "world-transvoxel-sandbox.s3-exit-review.v1",
+        "visibility_workload_baseline_pass",
+        "visual_gpu_acceptance_pass",
+        "restore_to_base_pass",
+    ),
+    "docs/S3_EXIT_REVIEW.md": (
+        "S3 status: complete",
+        "WT_SANDBOX_S3_EXIT_REVIEW_PASS",
+        "GPU compute acceleration",
+        "Next valid action after S3 is S4 decision work",
+    ),
     "scripts/terrain_base_sampler.gd": (
         "class_name WtSandboxTerrainBaseSampler",
         "terrain_sample",
@@ -118,7 +134,7 @@ REQUIRED = {
     "docs/S4_COMPLETION_CHECKLIST.md": (
         "S4 status: not started",
         "S3 bottleneck selected",
-        "Current decision: do not start S4 implementation",
+        "Current decision: S4 decision work may start after S3 exit",
     ),
     "docs/S5_SMALL_GAME_DECISION_CONTRACT.md": (
         "S5 starts only after S3 production workload evidence",
@@ -130,7 +146,7 @@ REQUIRED = {
     ),
     "docs/S5_COMPLETION_CHECKLIST.md": (
         "S5 status: not started",
-        "Repository boundary contract exists",
+        "S3 production workload evidence exists | Complete",
         "future game repository validates `world-transvoxel-terrain`",
         "Official MIT-backed backend is used first",
         "Current decision: do not start S5",
@@ -160,7 +176,10 @@ def main() -> None:
         for phrase in phrases:
             if not has_phrase(text, phrase):
                 errors.append(f"{relative} missing phrase: {phrase}")
-        if "status: complete" in text.lower():
+        if (
+            relative.startswith("docs/S4")
+            or relative.startswith("docs/S5")
+        ) and "status: complete" in text.lower():
             errors.append(f"{relative} is prematurely marked complete")
     for error in errors:
         print(f"ERROR: {error}")
@@ -168,7 +187,7 @@ def main() -> None:
         raise SystemExit(1)
     print(
         "WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS "
-        "s3=defined_not_complete s4=defined_not_started s5=defined_not_started"
+        "s3=exit_review_pass s4=decision_not_implemented s5=defined_not_started"
     )
 
 

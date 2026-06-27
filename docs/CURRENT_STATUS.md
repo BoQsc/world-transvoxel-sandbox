@@ -26,14 +26,13 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S2 automated scale-ladder exit evidence is complete. The current in-order
-milestone is S3 visibility and production workload. S3, S4, and S5 now have
+S2 automated scale-ladder exit evidence is complete, and S3 automated exit
+evidence is complete. The current in-order milestone is S4 decision work, not
+GPU implementation. S3, S4, and S5 have
 contract/checklist skeletons so their scope is known before implementation. S3
-has its headless L4 visibility/frustum baseline, restore-to-base audit, and
-graphical visual/GPU artifact audit, but S3 is not complete until the S3 exit
-review lands. Do not start GPU compute, water/lava, planets, structural
-collapse, a game repository, or 0BSD backend replacement inside S3 unless the
-S3 contract explicitly moves those items into scope.
+has exited through its review. Do not start broad GPU compute, water/lava,
+planets, structural collapse, a game repository, or 0BSD backend replacement
+unless the relevant later contract explicitly moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -106,8 +105,8 @@ Result:
   `viewer_updates_delta=0`, `planned_demands_delta=0`;
 - fast-travel policy: `loading_screen_required`;
 - claim boundary: S3 headless baseline with forward prefetch only.
-  Graphical visual/GPU acceptance is covered separately by
-  `tools/s3_visual_gpu_audit.py`; S3 exit review remains pending.
+  Graphical visual/GPU acceptance and S3 exit review are covered separately by
+  `tools/s3_visual_gpu_audit.py` and `tools/s3_exit_review.py`.
 
 S3 restore-to-base audit - explicit base-terrain repair, not timed
 regeneration.
@@ -164,6 +163,24 @@ Result:
   vendor GPU timing beyond Godot graphical frame interval, compute acceleration,
   final human aesthetic acceptance, fluids, planets, stability, or S3 exit.
 
+S3 exit review - visibility and production workload milestone closed.
+
+Command:
+
+```console
+python tools/s3_exit_review.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S3_EXIT_REVIEW_PASS
+  report=artifacts/s3_exit_review/s3_exit_review_report.json`;
+- review doc: `docs/S3_EXIT_REVIEW.md`;
+- validated inputs: S3 visibility/frustum workload, restore-to-base audit,
+  visual/GPU artifact audit, S3 checklist, S3 contract, and S3 logs;
+- decision: S3 complete; next valid milestone is S4 decision work, not broad
+  GPU implementation.
+
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
 
@@ -183,8 +200,8 @@ Result:
 - S5 checklist: `docs/S5_COMPLETION_CHECKLIST.md`;
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
-  s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
-- decision: continue S3 with exit review only; do not treat S4/S5 or optional
+  s3=exit_review_pass s4=decision_not_implemented s5=defined_not_started`;
+- decision: continue with S4 decision work only; do not treat S4/S5 or optional
   systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.

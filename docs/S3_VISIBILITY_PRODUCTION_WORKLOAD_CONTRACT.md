@@ -38,6 +38,8 @@ Explicit base-terrain repair is audited separately by
 `tools/s3_restore_to_base_audit.py`.
 Graphical visual artifact acceptance is audited separately by
 `tools/s3_visual_gpu_audit.py`.
+S3 exit is audited by `tools/s3_exit_review.py` and recorded in
+`docs/S3_EXIT_REVIEW.md`.
 
 ## Out of scope
 

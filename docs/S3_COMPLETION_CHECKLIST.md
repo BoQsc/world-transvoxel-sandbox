@@ -1,9 +1,10 @@
 # S3 Completion Checklist
 
-S3 status: not complete.
+S3 status: complete.
 
-This checklist must be updated as S3 work lands. Until every required row is
-complete, S4 must not start except for documentation-only planning.
+This checklist records the completed S3 gate set. S4 implementation must not
+start until S4 decision work selects a measured bottleneck or closes the compute
+path with a CPU/native fallback decision.
 
 ## Required for S3
 
@@ -20,7 +21,7 @@ complete, S4 must not start except for documentation-only planning.
 | Edit latency and edit-journal growth are measured in workload loop | Complete | S3 baseline: max edit 867 ms, journal growth 1,192 bytes |
 | `restore_to_base` is implemented/audited or explicitly deferred | Complete | `tools/s3_restore_to_base_audit.py`; `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS`; edited sphere samples restore to deterministic base density/material |
 | Visual/GPU artifact acceptance exists | Complete | `tools/s3_visual_gpu_audit.py`; `WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS`; 13 graphical captures, max frame interval 169.634 ms, no queued/fading resources at capture points |
-| S3 exit review exists | Pending | `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
+| S3 exit review exists | Complete | `tools/s3_exit_review.py`; `docs/S3_EXIT_REVIEW.md`; `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 
 ## Explicitly out of scope for S3
 
@@ -36,7 +37,7 @@ complete, S4 must not start except for documentation-only planning.
 
 ## Go/no-go
 
-Current decision: do not proceed to S4.
+Current decision: S3 is complete; proceed only to S4 decision work.
 
 First baseline complete: `python tools/s3_visibility_workload.py` reports
 `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS` with
@@ -51,5 +52,9 @@ Visual/GPU audit complete: `python tools/s3_visual_gpu_audit.py` reports
 `artifacts/s3_visual_gpu/visual_gpu_report.json` and
 `artifacts/s3_visual_gpu/contact_sheet.png`.
 
-Next valid action: write the S3 exit review if the full S3 gate set is
-satisfied.
+S3 exit review complete: `python tools/s3_exit_review.py` reports
+`WT_SANDBOX_S3_EXIT_REVIEW_PASS` with
+`artifacts/s3_exit_review/s3_exit_review_report.json`.
+
+Next valid action: start S4 decision work. Do not begin broad GPU
+implementation without a selected S3-measured bottleneck.

@@ -262,7 +262,7 @@ this does not complete S3 systems.
 
 ## S3 - Visibility and production workload
 
-Status: active, contract-defined, and not complete. Scope is governed by
+Status: complete. Scope is governed by
 `docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md` and
 `docs/S3_COMPLETION_CHECKLIST.md`. GPU compute, water/lava, planets, structural
 collapse, a game repository, and 0BSD backend replacement remain out of scope
@@ -279,16 +279,21 @@ unless the S3 contract explicitly moves them in.
   if it misses the production interaction or storage budgets;
 - keep explicit restore-to-base audited before any timed regeneration, surface
   relaxation, or stability/collapse module;
-- keep graphical visual/GPU artifact acceptance audited before S3 exit review;
-- establish idle CPU, active CPU, render, physics, I/O, and memory budgets.
+- keep graphical visual/GPU artifact acceptance audited as part of S3 exit review;
+- establish idle CPU, active CPU, render, physics, I/O, and memory budgets;
+- close with `docs/S3_EXIT_REVIEW.md` and `WT_SANDBOX_S3_EXIT_REVIEW_PASS`.
 
 Exit: the representative small-game workload meets its budgets without
 visible holes or uncontrolled resource growth.
 
 ## S4 - M6 decision
 
-Status: pending, evidence-gated, and contract-defined by
+Status: next, evidence-gated, and contract-defined by
 `docs/S4_M6_DECISION_CONTRACT.md` plus `docs/S4_COMPLETION_CHECKLIST.md`.
+
+S4 starts as a decision milestone after S3 exit. It must select a measured
+bottleneck or close with a CPU/native fallback decision before any
+compute/shader implementation.
 
 - select only a measured bottleneck;
 - compare complete CPU and compute paths, including transfer/readback;
