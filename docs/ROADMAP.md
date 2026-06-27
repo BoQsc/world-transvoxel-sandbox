@@ -323,8 +323,8 @@ is deferred until `world-transvoxel-terrain` exists.
 
 ## Post-S5 - world-transvoxel-terrain addon architecture
 
-Status: architecture gate complete; separate addon repository A4 phase 1
-resource semantics complete.
+Status: architecture gate complete; separate addon repository A4 phase 2
+bridge/storage fixture complete.
 Scope is governed by `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md`
 and checked by `tools/world_transvoxel_terrain_contract_check.py`.
 
@@ -349,6 +349,7 @@ Exit: complete for the sandbox-side post-S5 handoff. The
 `world-transvoxel-terrain` repository exists with A0 skeleton commit `244db4c`
 and A1 public API/source-layout contract commit `f076597`, plus A2
 addon-local smoke harness commit `8609c99`, plus A3 `world-transvoxel` bridge
-commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`. The
-next valid action is A4 phase 2 bridge edit submission and storage fixture work
-in `world-transvoxel-terrain`, not a game repository.
+commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
+phase 2 bridge/storage fixture commit `4b8855c`. The next valid action is A4
+phase 3 public `WtTerrainWorld` lifecycle ownership in
+`world-transvoxel-terrain`, not a game repository.

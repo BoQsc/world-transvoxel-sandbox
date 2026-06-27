@@ -36,12 +36,12 @@ separate game repository. The active post-S5 workstream is governed by
 `world-transvoxel-terrain` repository now exists with A0 skeleton commit
 `244db4c`, A1 public API/source-layout contract commit `f076597`, and A2
 addon-local smoke harness commit `8609c99`, plus A3 `world-transvoxel` bridge
-commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`; next
-work belongs there as A4 phase 2 bridge edit submission and storage fixture
-work. S4 closed with CPU/native retained and compute rejected for now. Do not
-start broad GPU compute, water/lava, planets, structural collapse, a game
-repository, or 0BSD backend replacement unless a new explicit contract moves
-those items into scope.
+commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
+phase 2 bridge/storage fixture commit `4b8855c`; next work belongs there as A4
+phase 3 public `WtTerrainWorld` lifecycle ownership. S4 closed with CPU/native
+retained and compute rejected for now. Do not start broad GPU compute,
+water/lava, planets, structural collapse, a game repository, or 0BSD backend
+replacement unless a new explicit contract moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -416,6 +416,41 @@ Result:
   collision readiness, or prove game-ready terrain;
 - decision: A4 remains active. Next work is A4 phase 2 bridge edit submission
   and storage fixture in `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A4 phase 2 bridge/storage fixture - completed outside
+this sandbox.
+
+Commands:
+
+```console
+python tools/validate_a4_phase2.py
+python tools/a4_phase2_bridge_storage_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `4b8855c Add A4 phase 2 edit bridge storage fixture`;
+- marker: `WT_TERRAIN_A4_PHASE2_CONTRACT_PASS
+  next=a4_phase3_public_terrain_world_lifecycle
+  implementation=bridge_storage_fixture`;
+- Godot marker: `WT_TERRAIN_A4_PHASE2_SMOKE_PASS engines=2
+  report=artifacts/a4_phase2_bridge_storage/a4_phase2_bridge_storage_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- contents: `WtTerrainEditBridge`, `density_value` on edit operations, A4 phase
+  2 backend fixture smoke, Python runner, validator, docs, and committed
+  `.gd.uid` metadata;
+- evidence: the temporary fixture starts the official backend production
+  lifecycle world, converts five terrain operations into eight native backend
+  edit commands, commits one transaction, verifies native `world.wtedit`, stops,
+  restarts, and verifies journal replay through an authoritative sample query;
+- claim boundary: this is `bridge_storage_fixture`; it does not make
+  `WtTerrainWorld` own backend lifecycle, does not prove a final game-facing
+  terrain scene, does not prove 2048 x 2048 x 64 full terrain scene operation,
+  and does not authorize GPU/water/planets/stability/game-repo/0BSD backend
+  work;
+- decision: A4 remains active. Next work is A4 phase 3 public `WtTerrainWorld`
+  lifecycle ownership in `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1118,8 +1153,8 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A4 phase 2 bridge edit submission and
-storage fixture work.
+moves to `world-transvoxel-terrain` A4 phase 3 public `WtTerrainWorld`
+lifecycle ownership.
 
 Scope:
 
@@ -1140,14 +1175,14 @@ Scope:
 Exit:
 
 - this handoff is satisfied when the sandbox status records the
-  `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1 commits and points further
-  work to that repo.
+  `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2 commits and
+  points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A4 phase 2 bridge edit submission and
-   storage fixture work.
-2. A4 phase 2 must implement through the bridge without copying `world-transvoxel`,
+1. In `world-transvoxel-terrain`, do A4 phase 3 public `WtTerrainWorld`
+   lifecycle ownership.
+2. A4 phase 3 must keep using the bridge without copying `world-transvoxel`,
    sandbox implementation, or MIT Transvoxel topology data into this terrain
    repo.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
