@@ -279,7 +279,7 @@ unless the S3 contract explicitly moves them in.
   if it misses the production interaction or storage budgets;
 - keep explicit restore-to-base audited before any timed regeneration, surface
   relaxation, or stability/collapse module;
-- finish visual/GPU artifact acceptance before S3 exit review;
+- keep graphical visual/GPU artifact acceptance audited before S3 exit review;
 - establish idle CPU, active CPU, render, physics, I/O, and memory budgets.
 
 Exit: the representative small-game workload meets its budgets without

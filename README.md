@@ -79,7 +79,8 @@ and runs through `tools/s3_visibility_workload.py`. This is not S3 exit;
 forward-biased prefetch is accepted by
 [`docs/S3_FORWARD_PREFETCH_POLICY.md`](docs/S3_FORWARD_PREFETCH_POLICY.md), while
 explicit `restore_to_base` is audited by `tools/s3_restore_to_base_audit.py`.
-Visual/GPU acceptance and the S3 exit review remain pending.
+Visual/GPU acceptance is audited by `tools/s3_visual_gpu_audit.py`. The S3
+exit review remains pending.
 
 ## Run
 
@@ -95,6 +96,7 @@ python tools/capture_visuals.py
 python tools/s1_s2_completion_checklist.py --refresh-fast
 python tools/future_milestone_contracts_check.py
 python tools/s3_visibility_workload.py
+python tools/s3_visual_gpu_audit.py
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest

@@ -17,9 +17,9 @@ complete, S4 must not start except for documentation-only planning.
 | Forward-biased prefetch policy is implemented or rejected | Complete | `docs/S3_FORWARD_PREFETCH_POLICY.md`; secondary viewer, distance 64, radius 1 |
 | Fast travel / teleport policy is decided | Complete | loading-screen required; seamless disjoint teleport is not accepted by this profile |
 | Repeated mining while moving is measured | Complete | S3 baseline: two moving edits per engine |
-| Edit latency and edit-journal growth are measured in workload loop | Complete | S3 baseline: max edit 883 ms, journal growth 1,192 bytes |
+| Edit latency and edit-journal growth are measured in workload loop | Complete | S3 baseline: max edit 867 ms, journal growth 1,192 bytes |
 | `restore_to_base` is implemented/audited or explicitly deferred | Complete | `tools/s3_restore_to_base_audit.py`; `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS`; edited sphere samples restore to deterministic base density/material |
-| Visual/GPU artifact acceptance exists | Pending | visual/GPU S3 pass proving no visible holes, uncontrolled popping, or graphical frame-time regression |
+| Visual/GPU artifact acceptance exists | Complete | `tools/s3_visual_gpu_audit.py`; `WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS`; 13 graphical captures, max frame interval 169.634 ms, no queued/fading resources at capture points |
 | S3 exit review exists | Pending | `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 
 ## Explicitly out of scope for S3
@@ -46,5 +46,10 @@ Restore-to-base audit complete: `python tools/s3_restore_to_base_audit.py`
 reports `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS` with
 `artifacts/s3_restore_to_base/restore_to_base_report.json`.
 
-Next valid action: finish visual/GPU artifact acceptance for the S3 workload,
-then write the S3 exit review if the full S3 gate set is satisfied.
+Visual/GPU audit complete: `python tools/s3_visual_gpu_audit.py` reports
+`WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS` with
+`artifacts/s3_visual_gpu/visual_gpu_report.json` and
+`artifacts/s3_visual_gpu/contact_sheet.png`.
+
+Next valid action: write the S3 exit review if the full S3 gate set is
+satisfied.

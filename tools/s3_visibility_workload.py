@@ -42,7 +42,10 @@ TARGET_BUDGET = {
     "max_edit_ms": 15000,
     "max_journal_growth_bytes": 2 * 1024 * 1024,
     "max_rss_bytes": 768 * 1024 * 1024,
-    "gpu_frame_time": "not measured by headless baseline; required before S3 exit",
+    "gpu_frame_time": (
+        "not measured by headless baseline; graphical visual acceptance is "
+        "covered by tools/s3_visual_gpu_audit.py"
+    ),
 }
 
 
@@ -210,8 +213,9 @@ def main() -> None:
         ],
         "not_proven": [
             "S3 exit acceptance",
-            "GPU frame-time or visual artifact acceptance",
-            "restore_to_base",
+            "hardware vendor GPU frame-time beyond graphical frame interval",
+            "graphical visual acceptance is covered by tools/s3_visual_gpu_audit.py",
+            "restore_to_base is covered by tools/s3_restore_to_base_audit.py",
             "seamless fast travel without loading-screen semantics",
         ],
     }

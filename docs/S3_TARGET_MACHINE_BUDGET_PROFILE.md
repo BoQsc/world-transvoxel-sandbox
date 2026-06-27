@@ -59,7 +59,9 @@ available. RSS has a hard local cap in this profile. CPU percent remains
 host-dependent and is recorded for trend comparison instead of final acceptance.
 
 GPU frame time and visual artifact acceptance are not measured by the headless
-baseline. A visual/GPU S3 pass is still required before S3 exit.
+baseline. Graphical visual artifact acceptance is covered by
+`tools/s3_visual_gpu_audit.py`; portable vendor GPU timing remains outside this
+headless profile.
 
 ## Current claim boundary
 
@@ -68,3 +70,4 @@ baseline with the accepted forward-biased prefetch policy. It does not prove S3
 exit, compute acceleration, fluids, planets, structural stability, the future
 game repository, or `world-transvoxel-terrain`. Explicit `restore_to_base` is
 covered by `tools/s3_restore_to_base_audit.py`, not by this visibility baseline.
+Graphical visual acceptance is covered by `tools/s3_visual_gpu_audit.py`.

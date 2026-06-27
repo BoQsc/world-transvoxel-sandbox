@@ -36,6 +36,8 @@ The first target-machine budget profile is
 `tools/s3_visibility_workload.py`; it is baseline evidence, not S3 exit.
 Explicit base-terrain repair is audited separately by
 `tools/s3_restore_to_base_audit.py`.
+Graphical visual artifact acceptance is audited separately by
+`tools/s3_visual_gpu_audit.py`.
 
 ## Out of scope
 
@@ -65,7 +67,7 @@ S3 cannot exit until these exist and pass:
 | visibility/frustum audit | `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS` |
 | fast-travel policy | explicit supported/rejected/loading-screen decision |
 | restore-to-base audit | `WT_SANDBOX_S3_RESTORE_TO_BASE_AUDIT_PASS` |
-| visual/GPU artifact acceptance | explicit visual/GPU S3 pass |
+| visual/GPU artifact acceptance | `WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS` |
 | S3 exit review | `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 
 ## Exit condition

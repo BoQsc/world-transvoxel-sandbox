@@ -29,10 +29,11 @@ storage, recovery, fluids, or stability algorithms should live.
 S2 automated scale-ladder exit evidence is complete. The current in-order
 milestone is S3 visibility and production workload. S3, S4, and S5 now have
 contract/checklist skeletons so their scope is known before implementation. S3
-has its first headless L4 visibility/frustum workload baseline, but S3 is not
-complete. Do not start GPU compute, water/lava, planets, structural collapse, a
-game repository, or 0BSD backend replacement inside S3 unless the S3 contract
-explicitly moves those items into scope.
+has its headless L4 visibility/frustum baseline, restore-to-base audit, and
+graphical visual/GPU artifact audit, but S3 is not complete until the S3 exit
+review lands. Do not start GPU compute, water/lava, planets, structural
+collapse, a game repository, or 0BSD backend replacement inside S3 unless the
+S3 contract explicitly moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -66,8 +67,9 @@ move those items into scope.
 - accepted fixed-center LOD0 gallery and restart persistence now have an S1.11
   gate. No automated hard gallery blocker is detected; final human qualitative
   confirmation remains external;
-- graphical GPU/frustum behavior and target hardware remain deferred unless
-  they are explicitly moved into S1 exit criteria;
+- S3 graphical visual/GPU artifact acceptance is now covered by its own audit;
+  portable vendor GPU timing and target-hardware game readiness remain later
+  concerns;
 - full terrain/game readiness still requires later workload and feature gates;
   S1.11 closes S1 technical exit evidence, not full game readiness;
 - compute shaders and optional systems remain deferred until measured workload
@@ -91,12 +93,12 @@ Result:
 - Godot script: `tests/terrain_s3_visibility_workload.gd`;
 - report: `artifacts/s3_visibility_workload/workload_report.json`;
 - marker: `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS engines=2`;
-- Godot 4.6.3: `startup_ms=208`, `settle_ms=6639`, `min_render=222`,
-  `min_collision=222`, `max_active=322`, `max_edit_ms=883`,
-  `journal_growth_bytes=1192`, `max_frame_ms=76.395`;
-- Godot 4.7: `startup_ms=198`, `settle_ms=6566`, `min_render=222`,
+- Godot 4.6.3: `startup_ms=213`, `settle_ms=6838`, `min_render=222`,
   `min_collision=222`, `max_active=322`, `max_edit_ms=867`,
-  `journal_growth_bytes=1192`, `max_frame_ms=95.950`;
+  `journal_growth_bytes=1192`, `max_frame_ms=66.296`;
+- Godot 4.7: `startup_ms=206`, `settle_ms=6600`, `min_render=222`,
+  `min_collision=222`, `max_active=322`, `max_edit_ms=867`,
+  `journal_growth_bytes=1192`, `max_frame_ms=50.851`;
 - forward prefetch: accepted by `docs/S3_FORWARD_PREFETCH_POLICY.md` with
   secondary viewer `603`, distance `64`, radius `1`, and
   `prefetch_updates=10`;
@@ -104,7 +106,8 @@ Result:
   `viewer_updates_delta=0`, `planned_demands_delta=0`;
 - fast-travel policy: `loading_screen_required`;
 - claim boundary: S3 headless baseline with forward prefetch only.
-  Visual/GPU acceptance and S3 exit review remain pending.
+  Graphical visual/GPU acceptance is covered separately by
+  `tools/s3_visual_gpu_audit.py`; S3 exit review remains pending.
 
 S3 restore-to-base audit - explicit base-terrain repair, not timed
 regeneration.
@@ -129,6 +132,38 @@ Result:
   It does not enable automatic timed regeneration, smoothing, stability,
   fluid equilibrium, visual/GPU S3 acceptance, or S3 exit.
 
+S3 visual/GPU artifact audit - graphical L4 S3 capture gate.
+
+Command:
+
+```console
+python tools/s3_visual_gpu_audit.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S3_VISUAL_GPU_AUDIT_PASS
+  images=13 report=artifacts/s3_visual_gpu/visual_gpu_report.json
+  contact_sheet=artifacts/s3_visual_gpu/contact_sheet.png`;
+- graphical engine: Godot 4.7, OpenGL 3.3, NVIDIA GTX 1060 Max-Q;
+- Godot marker: `images=13`, `max_frame_ms=169.634`, `min_render=172`,
+  `min_collision=172`, `max_active=322`, `rapid_turns=4`,
+  `viewer_updates_delta=0`, `planned_demands_delta=0`;
+- captures: stable overview/material, four normal movement views, four rapid
+  turns, underground tunnel, pre-edit, and post-edit;
+- capture-time gates: player input disabled before scene entry, nonblank
+  1280 x 720 images, zero queued render/collision work, zero pending
+  retirements, zero render fading resources at capture points, and
+  render/collision probes for surface views;
+- contact-sheet inspection in this run: no obvious hard holes, upside-down
+  terrain, or chunk disappearance in captured views; the underground view is
+  dark but nonblank and structurally visible; procedural visual style remains
+  simple;
+- claim boundary: this proves the S3 graphical still-capture artifact gate and
+  graphical frame-interval budget for the captured workload. It does not prove
+  vendor GPU timing beyond Godot graphical frame interval, compute acceleration,
+  final human aesthetic acceptance, fluids, planets, stability, or S3 exit.
+
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
 
@@ -149,8 +184,8 @@ Result:
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
-- decision: continue S3 with visual/GPU artifact acceptance and then S3 exit
-  review only; do not treat S4/S5 or optional systems as complete.
+- decision: continue S3 with exit review only; do not treat S4/S5 or optional
+  systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.
 
