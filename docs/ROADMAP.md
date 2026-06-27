@@ -323,9 +323,9 @@ is deferred until `world-transvoxel-terrain` exists.
 
 ## Post-S5 - world-transvoxel-terrain addon architecture
 
-Status: active architecture gate. Scope is governed by
-`docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
-`tools/world_transvoxel_terrain_contract_check.py`.
+Status: architecture gate complete; separate addon repository skeleton created.
+Scope is governed by `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md`
+and checked by `tools/world_transvoxel_terrain_contract_check.py`.
 
 This is the next valid workstream after S5. It defines the reusable
 `world-transvoxel-terrain` addon boundary before any separate game repository is
@@ -344,7 +344,7 @@ created.
   inventory/economy systems, advanced mining effects, timed regeneration,
   independent 0BSD backend replacement, and the game repository deferred.
 
-Exit: the terrain-addon architecture contract is tracked, checked, and visible
-from the README/status/roadmap. After that, the next valid action is
-`world-transvoxel-terrain` addon architecture/skeleton work, not a game
-repository.
+Exit: complete for the sandbox-side post-S5 handoff. The
+`world-transvoxel-terrain` repository exists with A0 skeleton commit `244db4c`.
+The next valid action is A1 public API/source-layout contract work in
+`world-transvoxel-terrain`, not a game repository.

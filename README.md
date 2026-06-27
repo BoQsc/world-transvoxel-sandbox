@@ -88,9 +88,11 @@ edit-settle latency for CPU/native phase attribution, then closed with
 CPU/native retained by `tools/s4_m6_decision.py`. S5 closed with
 `tools/s5_small_game_decision.py`: revise terrain architecture first by
 creating/designing `world-transvoxel-terrain`; do not create the game repository
-yet. `tools/world_transvoxel_terrain_contract_check.py` is the current finite
-post-S5 gate before addon architecture/skeleton work. Broad GPU implementation
-is not authorized.
+yet. `tools/world_transvoxel_terrain_contract_check.py` gates the post-S5
+terrain-addon architecture contract. The separate `world-transvoxel-terrain`
+repository now has its A0 skeleton at commit `244db4c`; next work belongs there
+as A1 public API/source-layout contract work. Broad GPU implementation is not
+authorized.
 
 ## Run
 

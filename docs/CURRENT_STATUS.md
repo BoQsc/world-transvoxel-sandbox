@@ -32,10 +32,13 @@ decision evidence is complete. The roadmap decision is to revise terrain
 architecture first: create/design `world-transvoxel-terrain` before creating a
 separate game repository. The active post-S5 workstream is governed by
 `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
-`tools/world_transvoxel_terrain_contract_check.py`. S4 closed with CPU/native
-retained and compute rejected for now. Do not start broad GPU compute,
-water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement unless a new explicit contract moves those items into scope.
+`tools/world_transvoxel_terrain_contract_check.py`. The separate
+`world-transvoxel-terrain` repository now exists with A0 skeleton commit
+`244db4c`; next implementation-planning work belongs there as A1 public
+API/source-layout contract work. S4 closed with CPU/native retained and compute
+rejected for now. Do not start broad GPU compute, water/lava, planets,
+structural collapse, a game repository, or 0BSD backend replacement unless a new
+explicit contract moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -287,6 +290,27 @@ Result:
   now; GDScript stays glue/scaffolding; hot terrain work belongs in native code,
   low-level addon paths, binary formats, shaders when justified, or Python
   offline tooling.
+
+World Transvoxel Terrain A0 skeleton repository - created outside this sandbox.
+
+Command:
+
+```console
+python tools/validate_terrain_skeleton.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `244db4c Create world-transvoxel-terrain skeleton`;
+- marker: `WT_TERRAIN_SKELETON_PASS
+  addon=world-transvoxel-terrain implementation=deferred
+  game_repository=deferred`;
+- contents: canonical charter, 0BSD license scope, Godot addon manifest,
+  minimal editor-plugin glue, roadmap, references/tests placeholders, and
+  skeleton validator;
+- decision: A0 is complete. Next work is A1 public API/source-layout contract in
+  `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -988,15 +1012,16 @@ Result:
 
 ## Current active task
 
-Post-S5 active task - lock the `world-transvoxel-terrain` addon architecture
-contract before any separate game repository is created.
+Post-S5 active task - hand off from sandbox planning to
+`world-transvoxel-terrain` A1 public API/source-layout contract work.
 
 Scope:
 
 - keep `world-transvoxel-sandbox` as the reference/evidence project for
   `world-transvoxel`;
-- define `world-transvoxel-terrain` as the reusable terrain addon above
+- keep `world-transvoxel-terrain` as the reusable terrain addon above
   `world-transvoxel`;
+- keep the separate game repository deferred;
 - use the official MIT-backed backend first;
 - keep GDScript limited to scaffolding, input, debug UI, and test harness glue;
 - keep hot terrain work in native code, low-level addon paths, binary formats,
@@ -1008,19 +1033,17 @@ Scope:
 
 Exit:
 
-- this architecture gate is satisfied when
-  `python tools/world_transvoxel_terrain_contract_check.py` and
-  `python tools/future_milestone_contracts_check.py` pass and README/status/
-  roadmap all point to the post-S5 terrain-addon contract.
+- this handoff is satisfied when the sandbox status records the
+  `world-transvoxel-terrain` A0 skeleton and points further work to that repo.
 
 ## Next finite steps
 
-1. Validate and commit the post-S5 `world-transvoxel-terrain` architecture
-   contract gate.
-2. After the gate is committed, create the `world-transvoxel-terrain` addon
-   architecture/skeleton plan.
+1. In `world-transvoxel-terrain`, do A1 public API/source-layout contract work.
+2. Before substantial implementation, inspect the old marching-cubes project for
+   maintainability failures and pin/download required references under ignored
+   reference storage.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
-   exists with its own package boundary and local smoke tests.
+   has its own package boundary and local smoke tests.
 
 ## Deferred by rule
 
