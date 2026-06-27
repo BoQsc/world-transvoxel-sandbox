@@ -128,6 +128,8 @@ def main() -> int:
         "docs/S1_S2_COMPLETION_CHECKLIST.md",
         "docs/S2_SCALE_LADDER_EXIT_REVIEW.md",
         "docs/S1_DYNAMIC_LOD_POLICY.md",
+        "docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md",
+        "tools/world_transvoxel_terrain_contract_check.py",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
     )
@@ -340,6 +342,8 @@ def main() -> int:
             "Unresolved blockers kept visible",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
             "docs/S1_LOD0_GALLERY_AUDIT.md",
+            "docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md",
+            "tools/world_transvoxel_terrain_contract_check.py",
             "Do not start later-milestone work",
             "dynamic mixed LOD is rejected/demoted as default gameplay by S1.10",
             "Human review remains final",

@@ -320,3 +320,31 @@ before creating the separate game repository.
 
 Exit: complete. Decision is revise terrain architecture first; game repository
 is deferred until `world-transvoxel-terrain` exists.
+
+## Post-S5 - world-transvoxel-terrain addon architecture
+
+Status: active architecture gate. Scope is governed by
+`docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
+`tools/world_transvoxel_terrain_contract_check.py`.
+
+This is the next valid workstream after S5. It defines the reusable
+`world-transvoxel-terrain` addon boundary before any separate game repository is
+created.
+
+- use the official MIT-backed `world-transvoxel` backend first;
+- package proven sandbox terrain patterns into addon APIs, resources, presets,
+  materials, debug tools, save/load hooks, and edit/recovery conventions;
+- keep performance-sensitive generation, meshing, storage, streaming, and
+  recovery work out of GDScript hot paths;
+- avoid giant source files by separating public API, runtime implementation,
+  storage, editor/debug, and tests;
+- keep compute rejected for now by S4 unless a later measured bottleneck contract
+  reopens it;
+- keep water/lava, planets, structural stability, vegetation, building blocks,
+  inventory/economy systems, advanced mining effects, timed regeneration,
+  independent 0BSD backend replacement, and the game repository deferred.
+
+Exit: the terrain-addon architecture contract is tracked, checked, and visible
+from the README/status/roadmap. After that, the next valid action is
+`world-transvoxel-terrain` addon architecture/skeleton work, not a game
+repository.

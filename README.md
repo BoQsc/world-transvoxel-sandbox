@@ -69,10 +69,13 @@ Future milestones are also contract-gated before implementation:
 [`docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md`](docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md),
 [`docs/S4_M6_DECISION_CONTRACT.md`](docs/S4_M6_DECISION_CONTRACT.md), and
 [`docs/S5_SMALL_GAME_DECISION_CONTRACT.md`](docs/S5_SMALL_GAME_DECISION_CONTRACT.md).
+The active post-S5 terrain-addon architecture gate is
+[`docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md`](docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md).
 `tools/future_milestone_contracts_check.py` also checks the repository boundary
-contract before those scopes are treated as governed.
+and terrain-addon architecture contracts before those scopes are treated as
+governed.
 
-S3 has started. The first headless L4 visibility/frustum workload baseline is
+S3 is complete. The first headless L4 visibility/frustum workload baseline is
 defined by
 [`docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md`](docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md)
 and runs through `tools/s3_visibility_workload.py`. This is not S3 exit;
@@ -85,7 +88,9 @@ edit-settle latency for CPU/native phase attribution, then closed with
 CPU/native retained by `tools/s4_m6_decision.py`. S5 closed with
 `tools/s5_small_game_decision.py`: revise terrain architecture first by
 creating/designing `world-transvoxel-terrain`; do not create the game repository
-yet. Broad GPU implementation is not authorized.
+yet. `tools/world_transvoxel_terrain_contract_check.py` is the current finite
+post-S5 gate before addon architecture/skeleton work. Broad GPU implementation
+is not authorized.
 
 ## Run
 
@@ -107,6 +112,7 @@ python tools/s4_bottleneck_selection.py
 python tools/s4_cpu_edit_phase_baseline.py
 python tools/s4_m6_decision.py
 python tools/s5_small_game_decision.py
+python tools/world_transvoxel_terrain_contract_check.py
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest
@@ -226,9 +232,10 @@ appearance and game feel confirmation, not for proving Transvoxel topology and
 not for deciding technical correctness in place of tests, captures, and
 measured evidence.
 
-This does not yet prove game-ready 2K exploration, GPU compute, water, lava,
-planetary terrain, or structural stability. Those gates are finite and recorded
-in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+This does not yet prove a packaged `world-transvoxel-terrain` addon, game-ready
+2K exploration, GPU compute, water, lava, planetary terrain, or structural
+stability. Those gates are finite and recorded in
+[`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## License
 

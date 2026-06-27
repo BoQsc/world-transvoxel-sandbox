@@ -38,5 +38,8 @@ Current decision: S5 is complete. Revise terrain architecture first by
 creating/designing `world-transvoxel-terrain`; do not start the game repository
 yet.
 
-Next valid action: start the `world-transvoxel-terrain` addon architecture
-workstream, using the official MIT-backed backend first.
+Next valid action: use
+`docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and
+`tools/world_transvoxel_terrain_contract_check.py` as the post-S5 gate, then
+start `world-transvoxel-terrain` addon architecture/skeleton work using the
+official MIT-backed backend first.

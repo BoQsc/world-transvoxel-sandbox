@@ -227,6 +227,22 @@ REQUIRED = {
         "revise_terrain_architecture_first",
         "defer_game_repository_until_world_transvoxel_terrain_exists",
     ),
+    "docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md": (
+        "Status: active post-S5 architecture gate",
+        "WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS",
+        "`world-transvoxel-terrain` is the reusable Godot terrain addon",
+        "official MIT-backed World Transvoxel backend is used first",
+        "Compute shaders remain rejected for now by S4",
+        "GDScript is not the place for",
+        "avoid the old single-large-source-file failure mode",
+        "settled terrain must be cold",
+        "After this gate passes, the next valid action is to create the",
+    ),
+    "tools/world_transvoxel_terrain_contract_check.py": (
+        "WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS",
+        "create_world_transvoxel_terrain_addon_architecture",
+        "game_repository=deferred",
+    ),
     "docs/REPOSITORY_BOUNDARY_CONTRACT.md": (
         "world-transvoxel-sandbox validates world-transvoxel",
         "future game repository validates world-transvoxel-terrain",
@@ -259,7 +275,8 @@ def main() -> None:
     print(
         "WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS "
         "s3=exit_review_pass s4=complete_cpu_native_retained "
-        "s5=complete_revise_terrain_architecture_first"
+        "s5=complete_revise_terrain_architecture_first "
+        "terrain_contract=active_post_s5"
     )
 
 

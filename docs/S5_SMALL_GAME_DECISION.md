@@ -36,6 +36,10 @@ the reusable terrain addon that packages the proven sandbox patterns into
 game-facing APIs, resources, presets, materials, debug tools, save/load hooks,
 and terrain interaction conventions.
 
+That post-S5 workstream is governed by
+`docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
+`tools/world_transvoxel_terrain_contract_check.py`.
+
 After `world-transvoxel-terrain` exists, a separate game repository may validate
 it by importing:
 

@@ -26,14 +26,16 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S2 automated scale-ladder exit evidence is complete, and S3 automated exit
-evidence is complete, S4 M6 compute decision evidence is complete, and S5
-small-game decision evidence is complete. The roadmap decision is to revise
-terrain architecture first: create/design `world-transvoxel-terrain` before
-creating a separate game repository. S4 closed with CPU/native retained and
-compute rejected for now. Do not start broad GPU compute, water/lava, planets,
-structural collapse, a game repository, or 0BSD backend replacement unless a
-new explicit contract moves those items into scope.
+S2 automated scale-ladder exit evidence is complete, S3 automated exit evidence
+is complete, S4 M6 compute decision evidence is complete, and S5 small-game
+decision evidence is complete. The roadmap decision is to revise terrain
+architecture first: create/design `world-transvoxel-terrain` before creating a
+separate game repository. The active post-S5 workstream is governed by
+`docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
+`tools/world_transvoxel_terrain_contract_check.py`. S4 closed with CPU/native
+retained and compute rejected for now. Do not start broad GPU compute,
+water/lava, planets, structural collapse, a game repository, or 0BSD backend
+replacement unless a new explicit contract moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -264,6 +266,28 @@ Result:
   workstream is `world-transvoxel-terrain`, using the official MIT-backed
   backend first.
 
+World Transvoxel Terrain architecture contract - active post-S5 addon gate.
+
+Command:
+
+```console
+python tools/world_transvoxel_terrain_contract_check.py
+```
+
+Result:
+
+- contract: `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md`;
+- checker: `tools/world_transvoxel_terrain_contract_check.py`;
+- marker: `WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS
+  next=create_world_transvoxel_terrain_addon_architecture
+  game_repository=deferred`;
+- decision: next work is `world-transvoxel-terrain` addon
+  architecture/skeleton, not a separate game repository;
+- constraints: official MIT-backed backend first; compute remains rejected for
+  now; GDScript stays glue/scaffolding; hot terrain work belongs in native code,
+  low-level addon paths, binary formats, shaders when justified, or Python
+  offline tooling.
+
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
 
@@ -282,9 +306,12 @@ Result:
 - S5 contract: `docs/S5_SMALL_GAME_DECISION_CONTRACT.md`;
 - S5 checklist: `docs/S5_COMPLETION_CHECKLIST.md`;
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
+- terrain addon architecture contract:
+  `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=exit_review_pass s4=complete_cpu_native_retained
-  s5=complete_revise_terrain_architecture_first`;
+  s5=complete_revise_terrain_architecture_first
+  terrain_contract=active_post_s5`;
 - decision: roadmap decision is complete; next work belongs to the
   `world-transvoxel-terrain` addon architecture, not a game repository.
 
@@ -961,36 +988,39 @@ Result:
 
 ## Current active task
 
-S1 active task - lock and preserve the accepted default playtest policy.
+Post-S5 active task - lock the `world-transvoxel-terrain` addon architecture
+contract before any separate game repository is created.
 
 Scope:
 
-- keep finite workload budgets for the conservative fixed-center LOD0 baseline
-  inside S1 because they affect interaction feel and visible correctness;
-- test movement, underground positioning, and repeated mining against the
-  conservative default where needed for S1 exit;
-- keep the native batched exact-restore capture under the S1 workload latency
-  gate while testing interaction feel;
-- keep mixed-LOD diagnostics explicit and out of the accepted default playtest
-  path;
-- keep compute shaders deferred until S1 exits and a measured bottleneck
-  justifies later milestone work.
+- keep `world-transvoxel-sandbox` as the reference/evidence project for
+  `world-transvoxel`;
+- define `world-transvoxel-terrain` as the reusable terrain addon above
+  `world-transvoxel`;
+- use the official MIT-backed backend first;
+- keep GDScript limited to scaffolding, input, debug UI, and test harness glue;
+- keep hot terrain work in native code, low-level addon paths, binary formats,
+  shaders when justified, or Python offline tooling;
+- avoid giant source files by requiring separate public API, runtime
+  implementation, storage, editor/debug, and test ownership;
+- keep compute, fluids, planets, stability, game repository creation, and 0BSD
+  backend replacement deferred until separately contracted.
 
 Exit:
 
-- S1 technical exit is satisfied when the accepted playtest mode has no visible
-  correctness blocker, mining latency stays within the native-batch standard,
-  and dynamic mixed LOD remains explicitly rejected/demoted as default gameplay
-  by the S1.10 policy gate.
+- this architecture gate is satisfied when
+  `python tools/world_transvoxel_terrain_contract_check.py` and
+  `python tools/future_milestone_contracts_check.py` pass and README/status/
+  roadmap all point to the post-S5 terrain-addon contract.
 
 ## Next finite steps
 
-1. Run and keep `python tools/test_sandbox.py` as the matrix gate for the
-   accepted default-policy audit.
-2. Keep `python tools/s1_lod0_workload_audit.py` as the regression gate for
-   fixed-center LOD0 mining/restoration and cold-idle behavior.
-3. Do not start S3/S4 work unless S1.10 is committed and the current milestone
-   tracker is explicitly advanced.
+1. Validate and commit the post-S5 `world-transvoxel-terrain` architecture
+   contract gate.
+2. After the gate is committed, create the `world-transvoxel-terrain` addon
+   architecture/skeleton plan.
+3. Do not create the separate game repository until `world-transvoxel-terrain`
+   exists with its own package boundary and local smoke tests.
 
 ## Deferred by rule
 
