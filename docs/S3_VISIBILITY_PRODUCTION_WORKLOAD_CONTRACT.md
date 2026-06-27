@@ -21,6 +21,7 @@ uncontrolled rendering, streaming, editing, or memory behavior.
   - repeated mining while moving;
   - fast travel / disjoint teleport policy.
 - Define forward-biased prefetch without losing an all-direction safety ring.
+  The accepted S3 policy is `docs/S3_FORWARD_PREFETCH_POLICY.md`.
 - Define whether fast travel is supported, rejected, or requires loading-screen
   semantics.
 - Measure edit latency, restoration latency, and edit-journal growth under a
@@ -56,6 +57,7 @@ S3 cannot exit until these exist and pass:
 | --- | --- |
 | S3 completion checklist | `docs/S3_COMPLETION_CHECKLIST.md` |
 | target-machine budget profile | `docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md` |
+| forward prefetch policy | `docs/S3_FORWARD_PREFETCH_POLICY.md` |
 | workload runner | `tools/s3_visibility_workload.py` |
 | workload report | `artifacts/s3_visibility_workload/workload_report.json` |
 | visibility/frustum audit | `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS` |

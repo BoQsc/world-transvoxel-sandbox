@@ -17,6 +17,9 @@ headless local target-machine profile, not final S3 exit acceptance.
 | maximum LOD | 1 |
 | active chunk capacity | 1024 |
 | render apply budget | 1 |
+| forward prefetch policy | `docs/S3_FORWARD_PREFETCH_POLICY.md` |
+| prefetch distance | 64 world cells |
+| prefetch radius | 1 chunk |
 | fast travel policy | loading-screen required |
 
 ## Workload classes
@@ -24,7 +27,7 @@ headless local target-machine profile, not final S3 exit acceptance.
 The S3 baseline defines and measures these workload classes:
 
 - stable loaded-window inspection, with S1 retained as the fixed LOD0 reference;
-- normal movement;
+- normal movement with forward prefetch;
 - rapid turns with frustum estimate separated from terrain demand;
 - underground traversal;
 - repeated mining while moving.
@@ -60,7 +63,7 @@ baseline. A visual/GPU S3 pass is still required before S3 exit.
 
 ## Current claim boundary
 
-Passing this profile proves the first S3 visibility/frustum production workload
-baseline only. It does not prove S3 exit, forward-biased prefetch,
-`restore_to_base`, compute acceleration, fluids, planets, structural stability,
-the future game repository, or `world-transvoxel-terrain`.
+Passing this profile proves the S3 visibility/frustum production workload
+baseline with the accepted forward-biased prefetch policy. It does not prove S3
+exit, `restore_to_base`, compute acceleration, fluids, planets, structural
+stability, the future game repository, or `world-transvoxel-terrain`.

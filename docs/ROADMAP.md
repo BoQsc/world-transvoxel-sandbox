@@ -270,7 +270,8 @@ unless the S3 contract explicitly moves them in.
 
 - first headless L4 visibility/frustum workload baseline: complete by
   `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS`;
-- decide and implement or reject forward-biased prefetch while retaining an
+- forward-biased prefetch: accepted by `docs/S3_FORWARD_PREFETCH_POLICY.md`
+  with a secondary movement-direction viewer while retaining the primary
   all-direction safety ring;
 - test fast travel, rapid turns, underground movement, and repeated mining;
 - measure restoration capture latency and edit-journal growth; replace the

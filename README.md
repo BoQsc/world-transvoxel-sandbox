@@ -76,8 +76,9 @@ S3 has started. The first headless L4 visibility/frustum workload baseline is
 defined by
 [`docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md`](docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md)
 and runs through `tools/s3_visibility_workload.py`. This is not S3 exit;
-forward-biased prefetch, `restore_to_base`, visual/GPU acceptance, and the S3
-exit review remain pending.
+forward-biased prefetch is accepted by
+[`docs/S3_FORWARD_PREFETCH_POLICY.md`](docs/S3_FORWARD_PREFETCH_POLICY.md), while
+`restore_to_base`, visual/GPU acceptance, and the S3 exit review remain pending.
 
 ## Run
 

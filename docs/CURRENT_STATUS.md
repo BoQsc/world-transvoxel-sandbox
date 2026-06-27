@@ -91,16 +91,19 @@ Result:
 - Godot script: `tests/terrain_s3_visibility_workload.gd`;
 - report: `artifacts/s3_visibility_workload/workload_report.json`;
 - marker: `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS engines=2`;
-- Godot 4.6.3: `startup_ms=258`, `settle_ms=6203`, `min_render=206`,
-  `min_collision=206`, `max_active=294`, `max_edit_ms=883`,
-  `journal_growth_bytes=1192`, `max_frame_ms=114.758`;
-- Godot 4.7: `startup_ms=170`, `settle_ms=5950`, `min_render=206`,
-  `min_collision=206`, `max_active=294`, `max_edit_ms=866`,
-  `journal_growth_bytes=1192`, `max_frame_ms=33.367`;
-- rapid-turn frustum separation: `frustum_min=27`, `frustum_max=38`,
+- Godot 4.6.3: `startup_ms=290`, `settle_ms=6589`, `min_render=222`,
+  `min_collision=222`, `max_active=322`, `max_edit_ms=883`,
+  `journal_growth_bytes=1192`, `max_frame_ms=128.143`;
+- Godot 4.7: `startup_ms=169`, `settle_ms=6584`, `min_render=222`,
+  `min_collision=222`, `max_active=322`, `max_edit_ms=903`,
+  `journal_growth_bytes=1192`, `max_frame_ms=69.196`;
+- forward prefetch: accepted by `docs/S3_FORWARD_PREFETCH_POLICY.md` with
+  secondary viewer `603`, distance `64`, radius `1`, and
+  `prefetch_updates=10`;
+- rapid-turn frustum separation: `frustum_min=27`, `frustum_max=40`,
   `viewer_updates_delta=0`, `planned_demands_delta=0`;
 - fast-travel policy: `loading_screen_required`;
-- claim boundary: first S3 baseline only. Forward-biased prefetch,
+- claim boundary: S3 headless baseline with forward prefetch only.
   `restore_to_base`, visual/GPU acceptance, and S3 exit review remain pending.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
@@ -123,8 +126,8 @@ Result:
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
-- decision: continue S3 with the forward-biased prefetch decision only; do not
-  treat S4/S5 or optional systems as complete.
+- decision: continue S3 with `restore_to_base` implementation/audit or explicit
+  deferral only; do not treat S4/S5 or optional systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.
 

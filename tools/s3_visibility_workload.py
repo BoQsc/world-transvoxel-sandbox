@@ -31,6 +31,9 @@ TARGET_BUDGET = {
     "maximum_lod": 1,
     "active_chunk_capacity": 1024,
     "render_apply_budget": 1,
+    "forward_prefetch_policy": "secondary viewer ahead of movement direction",
+    "forward_prefetch_distance": 64.0,
+    "forward_prefetch_radius_chunks": 1,
     "startup_ms_max": 15000,
     "initial_settle_ms_max": 20000,
     "phase_settle_ms_max": 20000,
@@ -156,6 +159,10 @@ def run_engine(version: str, engine: Path) -> dict:
     fields = parse_marker(combined)
     if return_code != 0 or not fields or fail_if_godot_error(combined):
         raise RuntimeError(f"S3 visibility workload failed on {version}")
+    if int(fields.get("prefetch_updates", "0")) <= 0:
+        raise RuntimeError(f"S3 prefetch did not update on {version}: {fields}")
+    if fields.get("prefetch_distance") != "64.0" or fields.get("prefetch_radius") != "1":
+        raise RuntimeError(f"S3 prefetch policy drifted on {version}: {fields}")
     sampling = summarize_samples(samples)
     if int(sampling.get("max_rss_bytes", 0)) > TARGET_BUDGET["max_rss_bytes"]:
         raise RuntimeError(f"S3 RSS budget exceeded on {version}: {sampling}")
@@ -185,7 +192,7 @@ def main() -> None:
         "target_budget_profile": TARGET_BUDGET,
         "workload_classes": [
             "stable loaded-window inspection; S1 remains the fixed LOD0 reference",
-            "normal movement",
+            "normal movement with forward prefetch",
             "rapid turns with frustum estimate separated from terrain demand",
             "underground traversal",
             "repeated mining while moving",
@@ -195,6 +202,8 @@ def main() -> None:
         "proven": [
             "player input disabled before scene entry",
             "L4 streaming workload can settle under declared headless budgets",
+            "forward-biased prefetch uses a secondary movement-direction viewer",
+            "the primary viewer remains the all-direction safety ring",
             "camera rapid turns change frustum estimate without terrain demand",
             "underground movement has render/collision probes",
             "repeated mining while moving records edit latency and journal growth",
@@ -202,7 +211,6 @@ def main() -> None:
         "not_proven": [
             "S3 exit acceptance",
             "GPU frame-time or visual artifact acceptance",
-            "forward-biased prefetch",
             "restore_to_base",
             "seamless fast travel without loading-screen semantics",
         ],

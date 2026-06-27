@@ -11,6 +11,7 @@ REQUIRED = {
     "docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md": (
         "S3 starts only after S1/S2",
         "docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md",
+        "docs/S3_FORWARD_PREFETCH_POLICY.md",
         "tools/s3_visibility_workload.py",
         "visibility/frustum behavior",
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
@@ -23,21 +24,30 @@ REQUIRED = {
         "Workload classes are defined",
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS",
         "Fast travel / teleport policy",
-        "Forward-biased prefetch policy is implemented or rejected | Pending",
+        "Forward-biased prefetch policy is implemented or rejected | Complete",
         "Current decision: do not proceed to S4",
+    ),
+    "docs/S3_FORWARD_PREFETCH_POLICY.md": (
+        "secondary viewer id | `603`",
+        "prefetch distance | `64` world cells",
+        "prefetch radius | `1` chunk",
+        "Rapid camera turns must not directly change terrain demand",
     ),
     "docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md": (
         "S3-L4-headless-baseline",
         "stable loaded-window inspection",
+        "normal movement with forward prefetch",
+        "prefetch distance | 64 world cells",
         "rapid turns with frustum estimate separated from terrain demand",
         "fast travel policy | loading-screen required",
         "GPU frame time and visual artifact acceptance are not measured",
-        "Passing this profile proves the first S3 visibility/frustum production workload baseline only",
+        "Passing this profile proves the S3 visibility/frustum production workload baseline with the accepted forward-biased prefetch policy",
     ),
     "tools/s3_visibility_workload.py": (
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
         "world-transvoxel-sandbox.s3-visibility-workload.v1",
         "fast_travel_policy",
+        "forward_prefetch_distance",
         "loading_screen_required",
     ),
     "tests/terrain_s3_visibility_workload.gd": (
@@ -45,6 +55,7 @@ REQUIRED = {
         "set(\"input_enabled\", false)",
         "frustum_min",
         "planned_demands_delta",
+        "prefetch_distance=%.1f",
         "fast_travel_policy=loading_screen_required",
     ),
     "docs/S4_M6_DECISION_CONTRACT.md": (

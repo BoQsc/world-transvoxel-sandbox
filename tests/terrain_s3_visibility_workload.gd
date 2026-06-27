@@ -6,11 +6,7 @@ const JOURNAL_PATH := WORLD_ROOT + "/world.wtedit"
 const TIMEOUT_FRAMES := 3600
 const ACTIVE_CHUNK_CAPACITY := 1024
 const RENDER_APPLY_BUDGET := 1
-const MAX_INITIAL_SETTLE_MS := 20000
-const MAX_PHASE_SETTLE_MS := 20000
-const MAX_FRAME_MS := 250.0
-const MAX_JOURNAL_GROWTH_BYTES := 2097152
-const MAX_EDIT_MS := 15000
+const PREFETCH_DISTANCE := 64.0
 const SETTLED_MS := 300
 var _scene_root: Node
 var _terrain: Node
@@ -18,6 +14,8 @@ var _viewer: Node3D
 var _camera: Camera3D
 var _max_frame_ms := 0.0
 var _last_us := 0
+var _prefetch_revision := 0
+var _prefetch_updates := 0
 func _initialize() -> void:
 	call_deferred("_run")
 func _run() -> void:
@@ -51,7 +49,7 @@ func _run() -> void:
 	var startup_ms := Time.get_ticks_msec() - started
 	_move_viewer(Vector3(1024.0, 56.0, 1024.0), Vector3(1024.0, 20.0, 1100.0))
 	var settle_started := Time.get_ticks_msec()
-	if not await _wait_for_settled_resources(MAX_INITIAL_SETTLE_MS):
+	if not await _wait_for_settled_resources(20000):
 		return _fail("initial S3 streaming window did not settle")
 	var settle_ms := Time.get_ticks_msec() - settle_started
 	var stable := await _phase_stable()
@@ -85,8 +83,9 @@ func _run() -> void:
 				% [int(normal["min_render"]), int(normal["min_collision"]), int(normal["max_active"])] +
 				"edit_cycles=%d max_edit_ms=%d journal_growth_bytes=%d "
 				% [int(mining["edit_cycles"]), int(mining["max_edit_ms"]), int(mining["journal_growth_bytes"])] +
-				"max_frame_ms=%.3f fast_travel_policy=loading_screen_required"
-				% _max_frame_ms
+				"max_frame_ms=%.3f prefetch_updates=%d prefetch_distance=%.1f "
+				% [_max_frame_ms, _prefetch_updates, PREFETCH_DISTANCE] +
+				"prefetch_radius=1 fast_travel_policy=loading_screen_required"
 			)
 			_scene_root.queue_free()
 			_remove_journal()
@@ -104,7 +103,7 @@ func _phase_stable() -> Dictionary:
 			"published_events", "edit_commits"]:
 		if int(after.get(key, -1)) != int(before.get(key, -2)):
 			return {"ok": false, "error": "stable phase changed " + key}
-	if _max_frame_ms > MAX_FRAME_MS:
+	if _max_frame_ms > 250.0:
 		return {"ok": false, "error": "stable frame exceeded budget"}
 	return {"ok": true, "frustum_visible": _estimate_visible_render_chunks()}
 func _phase_movement(positions: Array[Vector3]) -> Dictionary:
@@ -113,7 +112,7 @@ func _phase_movement(positions: Array[Vector3]) -> Dictionary:
 	var max_active := 0
 	for position in positions:
 		_move_viewer(position, position + Vector3(0.0, -24.0, 96.0))
-		if not await _wait_for_settled_resources(MAX_PHASE_SETTLE_MS):
+		if not await _wait_for_settled_resources(20000):
 			return {"ok": false, "error": "movement did not settle at " + str(position)}
 		var metrics: Dictionary = _terrain.get_runtime_metrics()
 		min_render = mini(min_render, _terrain.get_rendered_chunk_count())
@@ -154,7 +153,7 @@ func _phase_mining_while_moving() -> Dictionary:
 	var points: Array[Vector3i] = [Vector3i(1200, 16, 1200), Vector3i(1320, 16, 1320)]
 	for point in points:
 		_move_viewer(Vector3(point.x, 56.0, point.z), Vector3(point.x, 20.0, point.z + 96))
-		if not await _wait_for_settled_resources(MAX_PHASE_SETTLE_MS):
+		if not await _wait_for_settled_resources(20000):
 			return {"ok": false, "error": "pre-edit movement did not settle"}
 		var revision_before: int = _terrain.get_world_revision()
 		var edit_started := Time.get_ticks_msec()
@@ -166,9 +165,9 @@ func _phase_mining_while_moving() -> Dictionary:
 			return {"ok": false, "error": "mining edit did not settle"}
 		max_edit_ms = maxi(max_edit_ms, Time.get_ticks_msec() - edit_started)
 	var journal_growth := _file_size(JOURNAL_PATH) - journal_before
-	if max_edit_ms > MAX_EDIT_MS:
+	if max_edit_ms > 15000:
 		return {"ok": false, "error": "mining edit exceeded latency budget"}
-	if journal_growth > MAX_JOURNAL_GROWTH_BYTES:
+	if journal_growth > 2097152:
 		return {"ok": false, "error": "journal growth exceeded budget"}
 	return {"ok": true, "edit_cycles": points.size(), "max_edit_ms": max_edit_ms,
 		"journal_growth_bytes": journal_growth}
@@ -176,6 +175,12 @@ func _move_viewer(position: Vector3, target: Vector3) -> void:
 	_viewer.global_position = position
 	_viewer.look_at(target, Vector3.UP)
 	_viewer.emit_signal("position_changed", _viewer.global_position)
+	var ahead := position + (target - position).normalized() * PREFETCH_DISTANCE
+	ahead = Vector3(clampf(ahead.x, 0.001, 2047.999), clampf(ahead.y, 0.001, 63.999), clampf(ahead.z, 0.001, 2047.999))
+	_prefetch_revision += 1
+	if not _terrain.update_viewer(603, _prefetch_revision, ahead, 1, 1):
+		_fail("forward prefetch viewer rejected")
+	_prefetch_updates += 1
 func _wait_for_world() -> bool:
 	for _frame in range(TIMEOUT_FRAMES):
 		if _terrain.is_world_running():
@@ -186,7 +191,7 @@ func _wait_for_world() -> bool:
 func _wait_for_revision_and_settle(revision: int) -> bool:
 	for _frame in range(TIMEOUT_FRAMES):
 		if _terrain.get_world_revision() > revision:
-			return await _wait_for_settled_resources(MAX_PHASE_SETTLE_MS)
+			return await _wait_for_settled_resources(20000)
 		await process_frame
 		_track_frame()
 	return false
@@ -224,17 +229,13 @@ func _estimate_visible_render_chunks() -> int:
 	return count
 func _track_frame() -> void:
 	var now_us := Time.get_ticks_usec()
-	if _last_us > 0:
-		_max_frame_ms = maxf(_max_frame_ms, float(now_us - _last_us) / 1000.0)
+	if _last_us > 0: _max_frame_ms = maxf(_max_frame_ms, float(now_us - _last_us) / 1000.0)
 	_last_us = now_us
 func _file_size(path: String) -> int:
-	if not FileAccess.file_exists(path):
-		return 0
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return 0
-	var length := file.get_length()
-	file.close()
+	var length := file.get_length(); file.close()
 	return length
 func _remove_journal() -> void:
 	if FileAccess.file_exists(JOURNAL_PATH):
