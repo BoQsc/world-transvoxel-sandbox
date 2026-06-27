@@ -193,16 +193,39 @@ REQUIRED = {
         "docs/REPOSITORY_BOUNDARY_CONTRACT.md",
         "future game repository validates world-transvoxel-terrain",
         "official MIT-backed World Transvoxel backend first",
+        "docs/S5_VERTICAL_SLICE_REQUIREMENTS.md",
+        "tools/s5_small_game_decision.py",
         "WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS",
         "0BSD backend replacement",
     ),
     "docs/S5_COMPLETION_CHECKLIST.md": (
-        "S5 status: not started",
+        "S5 status: complete",
         "S3 production workload evidence exists | Complete",
         "S4 compute decision exists | Complete",
+        "Smallest game vertical slice is defined | Complete",
+        "Official MIT-backed backend is used first | Complete",
+        "Repository decision is recorded | Complete",
+        "Final proceed/revise/stop decision is recorded | Complete",
         "future game repository validates `world-transvoxel-terrain`",
-        "Official MIT-backed backend is used first",
-        "Current decision: S5 decision work may start",
+        "Current decision: S5 is complete",
+    ),
+    "docs/S5_VERTICAL_SLICE_REQUIREMENTS.md": (
+        "S5 vertical-slice gate: complete",
+        "load a 2048 x 2048 x 64 terrain profile",
+        "Use the official MIT-backed World Transvoxel backend first",
+        "Do not create the future game repository until `world-transvoxel-terrain`",
+    ),
+    "docs/S5_SMALL_GAME_DECISION.md": (
+        "S5 status: complete",
+        "Decision: revise terrain architecture first",
+        "WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS",
+        "Do not create the game repository yet",
+    ),
+    "tools/s5_small_game_decision.py": (
+        "WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS",
+        "world-transvoxel-sandbox.s5-small-game-decision.v1",
+        "revise_terrain_architecture_first",
+        "defer_game_repository_until_world_transvoxel_terrain_exists",
     ),
     "docs/REPOSITORY_BOUNDARY_CONTRACT.md": (
         "world-transvoxel-sandbox validates world-transvoxel",
@@ -229,15 +252,14 @@ def main() -> None:
         for phrase in phrases:
             if not has_phrase(text, phrase):
                 errors.append(f"{relative} missing phrase: {phrase}")
-        if relative.startswith("docs/S5") and "status: complete" in text.lower():
-            errors.append(f"{relative} is prematurely marked complete")
     for error in errors:
         print(f"ERROR: {error}")
     if errors:
         raise SystemExit(1)
     print(
         "WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS "
-        "s3=exit_review_pass s4=complete_cpu_native_retained s5=decision_not_started"
+        "s3=exit_review_pass s4=complete_cpu_native_retained "
+        "s5=complete_revise_terrain_architecture_first"
     )
 
 

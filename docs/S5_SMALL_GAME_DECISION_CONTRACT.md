@@ -37,11 +37,11 @@ architecture revision, or should stop with a documented reason.
 | --- | --- |
 | repository boundary contract | `docs/REPOSITORY_BOUNDARY_CONTRACT.md` |
 | S5 completion checklist | `docs/S5_COMPLETION_CHECKLIST.md` |
-| vertical-slice requirements | documented game loop |
-| official-backend integration decision | use/revise/stop |
+| vertical-slice requirements | `docs/S5_VERTICAL_SLICE_REQUIREMENTS.md` |
+| official-backend integration decision | official MIT backend first |
 | optional-system contracts | required before implementation |
-| repository decision | same repo, new repo, or defer |
-| final decision marker | `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS` |
+| repository decision | defer game repository until `world-transvoxel-terrain` exists |
+| final decision marker | `tools/s5_small_game_decision.py`; `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS` |
 
 ## Exit condition
 

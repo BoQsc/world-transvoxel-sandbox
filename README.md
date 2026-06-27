@@ -82,8 +82,10 @@ explicit `restore_to_base` is audited by `tools/s3_restore_to_base_audit.py`.
 Visual/GPU acceptance is audited by `tools/s3_visual_gpu_audit.py`. The S3
 exit review is audited by `tools/s3_exit_review.py`. S4 selected interactive
 edit-settle latency for CPU/native phase attribution, then closed with
-CPU/native retained by `tools/s4_m6_decision.py`. S5 decision work is the
-current milestone; broad GPU implementation is not authorized.
+CPU/native retained by `tools/s4_m6_decision.py`. S5 closed with
+`tools/s5_small_game_decision.py`: revise terrain architecture first by
+creating/designing `world-transvoxel-terrain`; do not create the game repository
+yet. Broad GPU implementation is not authorized.
 
 ## Run
 
@@ -104,6 +106,7 @@ python tools/s3_exit_review.py
 python tools/s4_bottleneck_selection.py
 python tools/s4_cpu_edit_phase_baseline.py
 python tools/s4_m6_decision.py
+python tools/s5_small_game_decision.py
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest

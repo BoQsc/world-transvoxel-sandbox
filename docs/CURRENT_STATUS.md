@@ -27,13 +27,13 @@ storage, recovery, fluids, or stability algorithms should live.
 ## Current milestone
 
 S2 automated scale-ladder exit evidence is complete, and S3 automated exit
-evidence is complete, and S4 M6 compute decision evidence is complete. The
-current in-order milestone is S5 decision work, not a game repository. S4
-closed with CPU/native retained and compute rejected for now. S3, S4, and S5 have
-contract/checklist skeletons so their scope is known before implementation. S3
-has exited through its review. Do not start broad GPU compute, water/lava,
-planets, structural collapse, a game repository, or 0BSD backend replacement
-unless the relevant later contract explicitly moves those items into scope.
+evidence is complete, S4 M6 compute decision evidence is complete, and S5
+small-game decision evidence is complete. The roadmap decision is to revise
+terrain architecture first: create/design `world-transvoxel-terrain` before
+creating a separate game repository. S4 closed with CPU/native retained and
+compute rejected for now. Do not start broad GPU compute, water/lava, planets,
+structural collapse, a game repository, or 0BSD backend replacement unless a
+new explicit contract moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -70,8 +70,9 @@ move those items into scope.
 - S3 graphical visual/GPU artifact acceptance is now covered by its own audit;
   portable vendor GPU timing and target-hardware game readiness remain later
   concerns;
-- full terrain/game readiness still requires later workload and feature gates;
-  S1.11 closes S1 technical exit evidence, not full game readiness;
+- full terrain/game readiness still requires `world-transvoxel-terrain` and a
+  future game repository; S1.11 closes S1 technical exit evidence, not full
+  game readiness;
 - compute shaders remain rejected for now by S4; optional systems remain
   deferred until later measured workload evidence justifies them.
 
@@ -240,8 +241,28 @@ Result:
   report=artifacts/s4_m6_decision/s4_m6_decision_report.json`;
 - decision doc: `docs/S4_M6_DECISION.md`;
 - outcome: CPU/native path retained; no S4 compute prototype is authorized;
-- next valid milestone: S5 decision work. Do not start a game repository until
-  S5 defines and accepts the smallest vertical slice.
+- S4 handoff: S5 decision work is now complete. Do not start a game repository
+  until `world-transvoxel-terrain` exists.
+
+S5 small-game decision - revise terrain architecture first.
+
+Command:
+
+```console
+python tools/s5_small_game_decision.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS
+  decision=revise_terrain_architecture_first
+  repository=defer_game_repository_until_world_transvoxel_terrain_exists
+  report=artifacts/s5_small_game_decision/s5_small_game_decision_report.json`;
+- vertical slice: `docs/S5_VERTICAL_SLICE_REQUIREMENTS.md`;
+- decision doc: `docs/S5_SMALL_GAME_DECISION.md`;
+- outcome: do not create the game repository yet. The next architecture
+  workstream is `world-transvoxel-terrain`, using the official MIT-backed
+  backend first.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -263,9 +284,9 @@ Result:
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=exit_review_pass s4=complete_cpu_native_retained
-  s5=decision_not_started`;
-- decision: continue with S5 decision work only; do not treat S5 or optional
-  systems as complete.
+  s5=complete_revise_terrain_architecture_first`;
+- decision: roadmap decision is complete; next work belongs to the
+  `world-transvoxel-terrain` addon architecture, not a game repository.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.
 

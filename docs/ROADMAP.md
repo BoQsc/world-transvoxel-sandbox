@@ -306,16 +306,17 @@ Exit: targeted compute acceleration ships, or M6 closes with CPU retained.
 
 ## S5 - Small-game decision
 
-Status: next and contract-defined by
+Status: complete by `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS`. Scope was governed by
 `docs/S5_SMALL_GAME_DECISION_CONTRACT.md` plus
 `docs/S5_COMPLETION_CHECKLIST.md`. The repository/package boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
 `world-transvoxel`, and a future game repository validates
 `world-transvoxel-terrain`.
 
-Water/lava, mining effects, inventory, structural stability, and planetary
-terrain remain separate systems. The independent 0BSD backend qualification
-starts only after the official backend survives this vertical slice.
+S5 defines the smallest game vertical slice, keeps the official MIT-backed
+backend first, defers optional systems, and exits with
+`revise_terrain_architecture_first`: create/design `world-transvoxel-terrain`
+before creating the separate game repository.
 
-Exit: proceed with a game, revise the terrain architecture, or stop with a
-documented reason.
+Exit: complete. Decision is revise terrain architecture first; game repository
+is deferred until `world-transvoxel-terrain` exists.

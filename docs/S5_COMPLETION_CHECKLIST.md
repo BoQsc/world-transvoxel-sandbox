@@ -1,8 +1,10 @@
 # S5 Completion Checklist
 
-S5 status: not started.
+S5 status: complete.
 
-S5 is a decision milestone, not permission to start a game immediately.
+S5 is a decision milestone, not permission to start a game immediately. It exits
+with `revise_terrain_architecture_first`: create/design `world-transvoxel-terrain`
+before creating a game repository.
 
 ## Required for S5
 
@@ -12,12 +14,12 @@ S5 is a decision milestone, not permission to start a game immediately.
 | Repository boundary contract exists | Complete | `docs/REPOSITORY_BOUNDARY_CONTRACT.md` |
 | S3 production workload evidence exists | Complete | `docs/S3_EXIT_REVIEW.md`; `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 | S4 compute decision exists | Complete | `docs/S4_M6_DECISION.md`; `WT_SANDBOX_S4_M6_DECISION_PASS`; CPU/native retained, compute rejected for now |
-| Smallest game vertical slice is defined | Pending | game-loop requirements |
-| Official MIT-backed backend is used first | Pending | integration decision |
-| Optional systems have separate contracts | Pending | fluids/stability/planet/etc. contracts if needed |
-| Repository decision is recorded | Pending | same repo, new repo, or defer |
-| Game-repo validation boundary is preserved | Pending | future game repository validates `world-transvoxel-terrain` |
-| Final proceed/revise/stop decision is recorded | Pending | `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS` |
+| Smallest game vertical slice is defined | Complete | `docs/S5_VERTICAL_SLICE_REQUIREMENTS.md` |
+| Official MIT-backed backend is used first | Complete | `docs/S5_SMALL_GAME_DECISION.md`; official MIT backend first |
+| Optional systems have separate contracts | Complete | not required for the smallest slice; future optional systems require separate contracts |
+| Repository decision is recorded | Complete | defer game repository until `world-transvoxel-terrain` exists |
+| Game-repo validation boundary is preserved | Complete | future game repository validates `world-transvoxel-terrain`; sandbox is not copied |
+| Final proceed/revise/stop decision is recorded | Complete | `tools/s5_small_game_decision.py`; `docs/S5_SMALL_GAME_DECISION.md`; `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS`; decision `revise_terrain_architecture_first` |
 
 ## Explicitly out of scope until contracted
 
@@ -32,8 +34,9 @@ S5 is a decision milestone, not permission to start a game immediately.
 
 ## Go/no-go
 
-Current decision: S5 decision work may start. Do not start a game repository
-until the smallest vertical slice is defined and accepted.
+Current decision: S5 is complete. Revise terrain architecture first by
+creating/designing `world-transvoxel-terrain`; do not start the game repository
+yet.
 
-Next valid action after S4: define the vertical slice and decide whether the
-official backend reference is ready for game integration.
+Next valid action: start the `world-transvoxel-terrain` addon architecture
+workstream, using the official MIT-backed backend first.
