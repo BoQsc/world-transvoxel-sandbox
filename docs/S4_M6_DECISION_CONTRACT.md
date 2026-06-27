@@ -9,8 +9,11 @@ compute acceleration ships with proof, or the CPU/native path is retained.
 ## In scope
 
 - Select one measured bottleneck from S3 evidence.
-- Build the smallest compute path needed to test that bottleneck.
-- Compare complete CPU/native and compute paths end to end.
+- Measure the CPU/native phase baseline for that bottleneck.
+- Build the smallest compute path only if the CPU/native baseline identifies a
+  compute-relevant phase above the investigation floor.
+- Compare complete CPU/native and compute paths end to end only when a compute
+  prototype is authorized.
 - Include dispatch, synchronization, transfer, readback, memory, and fallback
   costs.
 - Prove deterministic CPU/headless fallback remains available.
@@ -30,8 +33,8 @@ compute acceleration ships with proof, or the CPU/native path is retained.
 | --- | --- |
 | S4 completion checklist | `docs/S4_COMPLETION_CHECKLIST.md` |
 | selected bottleneck report | `tools/s4_bottleneck_selection.py`; `WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS` |
-| CPU baseline | measured before compute comparison |
-| compute comparison | complete end-to-end report |
+| CPU baseline | `tools/s4_cpu_edit_phase_baseline.py`; `WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS` |
+| compute comparison | complete end-to-end report, or rejected by `WT_SANDBOX_S4_M6_DECISION_PASS` before implementation |
 | fallback proof | deterministic CPU/headless fallback |
 | decision marker | `WT_SANDBOX_S4_M6_DECISION_PASS` |
 

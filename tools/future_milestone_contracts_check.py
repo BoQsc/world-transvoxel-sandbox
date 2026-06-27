@@ -130,14 +130,20 @@ REQUIRED = {
         "measured bottleneck",
         "tools/s4_bottleneck_selection.py",
         "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
+        "tools/s4_cpu_edit_phase_baseline.py",
+        "WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS",
         "WT_SANDBOX_S4_M6_DECISION_PASS",
         "CPU/headless fallback",
     ),
     "docs/S4_COMPLETION_CHECKLIST.md": (
-        "S4 status: active decision work, not implementation",
+        "S4 status: complete",
         "S3 bottleneck selected | Complete",
         "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
-        "Current decision: S4 selected interactive edit-settle latency",
+        "CPU/native baseline measured | Complete",
+        "WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS",
+        "Compute ship/reject decision recorded | Complete",
+        "WT_SANDBOX_S4_M6_DECISION_PASS",
+        "Current decision: S4 is complete",
     ),
     "tools/s4_bottleneck_selection.py": (
         "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
@@ -146,10 +152,41 @@ REQUIRED = {
         "CPU/native phase baseline",
     ),
     "docs/S4_BOTTLENECK_SELECTION.md": (
-        "S4 status: active decision work, not implementation",
+        "S4 bottleneck-selection gate: complete as part of S4",
         "Selected bottleneck: interactive edit-settle latency",
         "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
-        "Compute remains blocked",
+        "compute rejected for now",
+    ),
+    "tools/s4_cpu_edit_phase_baseline.py": (
+        "WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS",
+        "world-transvoxel-sandbox.s4-cpu-edit-phase-baseline.v1",
+        "terrain_s4_cpu_edit_phase_baseline.gd",
+        "phase_boundary",
+    ),
+    "tests/terrain_s4_cpu_edit_phase_baseline.gd": (
+        "WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_PASS",
+        "set(\"input_enabled\", false)",
+        "request_authoritative_samples",
+        "max_capture_ms",
+        "max_mesh_ms",
+    ),
+    "docs/S4_CPU_EDIT_PHASE_BASELINE.md": (
+        "S4 status: CPU/native baseline complete",
+        "WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS",
+        "max_total_ms=1205",
+        "No compute-relevant phase reaches the 250 ms S4 investigation floor",
+    ),
+    "tools/s4_m6_decision.py": (
+        "WT_SANDBOX_S4_M6_DECISION_PASS",
+        "world-transvoxel-sandbox.s4-m6-decision.v1",
+        "cpu_native_retained_compute_rejected_for_now",
+        "COMPUTE_PHASE_FLOOR_MS = 250",
+    ),
+    "docs/S4_M6_DECISION.md": (
+        "S4 status: complete",
+        "Decision: CPU/native retained; compute rejected for now",
+        "WT_SANDBOX_S4_M6_DECISION_PASS",
+        "No S4 compute prototype is authorized",
     ),
     "docs/S5_SMALL_GAME_DECISION_CONTRACT.md": (
         "S5 starts only after S3 production workload evidence",
@@ -162,9 +199,10 @@ REQUIRED = {
     "docs/S5_COMPLETION_CHECKLIST.md": (
         "S5 status: not started",
         "S3 production workload evidence exists | Complete",
+        "S4 compute decision exists | Complete",
         "future game repository validates `world-transvoxel-terrain`",
         "Official MIT-backed backend is used first",
-        "Current decision: do not start S5",
+        "Current decision: S5 decision work may start",
     ),
     "docs/REPOSITORY_BOUNDARY_CONTRACT.md": (
         "world-transvoxel-sandbox validates world-transvoxel",
@@ -191,10 +229,7 @@ def main() -> None:
         for phrase in phrases:
             if not has_phrase(text, phrase):
                 errors.append(f"{relative} missing phrase: {phrase}")
-        if (
-            relative.startswith("docs/S4")
-            or relative.startswith("docs/S5")
-        ) and "status: complete" in text.lower():
+        if relative.startswith("docs/S5") and "status: complete" in text.lower():
             errors.append(f"{relative} is prematurely marked complete")
     for error in errors:
         print(f"ERROR: {error}")
@@ -202,7 +237,7 @@ def main() -> None:
         raise SystemExit(1)
     print(
         "WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS "
-        "s3=exit_review_pass s4=bottleneck_selected_not_implemented s5=defined_not_started"
+        "s3=exit_review_pass s4=complete_cpu_native_retained s5=decision_not_started"
     )
 
 

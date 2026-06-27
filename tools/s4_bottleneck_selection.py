@@ -117,11 +117,12 @@ def validate_docs() -> None:
             "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
         ),
         S4_CHECKLIST: (
-            "S4 status: active decision work, not implementation",
+            "S4 status: complete",
             "S3 bottleneck selected | Complete",
             "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
         ),
         S4_SELECTION_DOC: (
+            "S4 bottleneck-selection gate: complete as part of S4",
             "Selected bottleneck: interactive edit-settle latency",
             "WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS",
             "Next valid S4 action",

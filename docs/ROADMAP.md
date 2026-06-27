@@ -288,12 +288,13 @@ visible holes or uncontrolled resource growth.
 
 ## S4 - M6 decision
 
-Status: active decision work, evidence-gated, and contract-defined by
+Status: complete by `WT_SANDBOX_S4_M6_DECISION_PASS`. Scope was governed by
 `docs/S4_M6_DECISION_CONTRACT.md` plus `docs/S4_COMPLETION_CHECKLIST.md`.
 
-S4 starts as a decision milestone after S3 exit. It selected interactive
-edit-settle latency by `WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS`. The next gate
-is a CPU/native edit phase baseline before any compute/shader implementation.
+S4 selected interactive edit-settle latency by
+`WT_SANDBOX_S4_BOTTLENECK_SELECTION_PASS`, attributed it with
+`WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS`, then closed with
+CPU/native retained and compute rejected for now.
 
 - select only a measured bottleneck;
 - attribute the selected edit-settle latency across CPU/native phases;
@@ -305,7 +306,7 @@ Exit: targeted compute acceleration ships, or M6 closes with CPU retained.
 
 ## S5 - Small-game decision
 
-Status: pending and contract-defined by
+Status: next and contract-defined by
 `docs/S5_SMALL_GAME_DECISION_CONTRACT.md` plus
 `docs/S5_COMPLETION_CHECKLIST.md`. The repository/package boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates

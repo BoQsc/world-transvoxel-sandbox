@@ -27,9 +27,9 @@ storage, recovery, fluids, or stability algorithms should live.
 ## Current milestone
 
 S2 automated scale-ladder exit evidence is complete, and S3 automated exit
-evidence is complete. The current in-order milestone is S4 decision work, not
-GPU implementation. S4 has selected interactive edit-settle latency for
-CPU/native phase attribution. S3, S4, and S5 have
+evidence is complete, and S4 M6 compute decision evidence is complete. The
+current in-order milestone is S5 decision work, not a game repository. S4
+closed with CPU/native retained and compute rejected for now. S3, S4, and S5 have
 contract/checklist skeletons so their scope is known before implementation. S3
 has exited through its review. Do not start broad GPU compute, water/lava,
 planets, structural collapse, a game repository, or 0BSD backend replacement
@@ -72,8 +72,8 @@ move those items into scope.
   concerns;
 - full terrain/game readiness still requires later workload and feature gates;
   S1.11 closes S1 technical exit evidence, not full game readiness;
-- compute shaders and optional systems remain deferred until measured workload
-  evidence justifies them.
+- compute shaders remain rejected for now by S4; optional systems remain
+  deferred until later measured workload evidence justifies them.
 
 ## Latest evidence
 
@@ -204,6 +204,45 @@ Result:
 - boundary: this does not authorize compute implementation. The next valid S4
   action is a CPU/native edit phase baseline.
 
+S4 CPU/native edit phase baseline - selected bottleneck attributed.
+
+Command:
+
+```console
+python tools/s4_cpu_edit_phase_baseline.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S4_CPU_EDIT_PHASE_BASELINE_AUDIT_PASS
+  engines=2 max_total_ms=1205
+  report=artifacts/s4_cpu_edit_phase_baseline/cpu_edit_phase_baseline_report.json`;
+- decision doc: `docs/S4_CPU_EDIT_PHASE_BASELINE.md`;
+- maximums: capture `149 ms`, submit `1 ms`, commit/journal/replacement
+  publication `27 ms`, mesh `38 ms`, render readiness `134 ms`, collision
+  readiness `0 ms`, final stable-settle hold `857 ms`;
+- interpretation: no compute-relevant phase reached the 250 ms S4
+  investigation floor.
+
+S4 M6 decision - compute rejected for now.
+
+Command:
+
+```console
+python tools/s4_m6_decision.py
+```
+
+Result:
+
+- marker: `WT_SANDBOX_S4_M6_DECISION_PASS
+  decision=cpu_native_retained_compute_rejected_for_now
+  compute_relevant_max_ms=149
+  report=artifacts/s4_m6_decision/s4_m6_decision_report.json`;
+- decision doc: `docs/S4_M6_DECISION.md`;
+- outcome: CPU/native path retained; no S4 compute prototype is authorized;
+- next valid milestone: S5 decision work. Do not start a game repository until
+  S5 defines and accepts the smallest vertical slice.
+
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
 
@@ -223,9 +262,9 @@ Result:
 - S5 checklist: `docs/S5_COMPLETION_CHECKLIST.md`;
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
-  s3=exit_review_pass s4=bottleneck_selected_not_implemented
-  s5=defined_not_started`;
-- decision: continue with S4 decision work only; do not treat S4/S5 or optional
+  s3=exit_review_pass s4=complete_cpu_native_retained
+  s5=decision_not_started`;
+- decision: continue with S5 decision work only; do not treat S5 or optional
   systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.

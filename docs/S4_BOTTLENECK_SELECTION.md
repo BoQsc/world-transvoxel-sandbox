@@ -1,6 +1,6 @@
 # S4 Bottleneck Selection
 
-S4 status: active decision work, not implementation.
+S4 bottleneck-selection gate: complete as part of S4.
 
 This document records the first S4 gate after S3 exit. It selects the measured
 terrain bottleneck that S4 may investigate. It does not authorize compute
@@ -45,10 +45,11 @@ will help.
 - Initial settle reached `6838 ms`, but S4 M6 is prioritizing repeated
   user-facing edit behavior before one-time loading.
 
-## Next valid S4 action
+## Next valid S4 action at selection time
 
-Create a CPU/native edit phase baseline. It must split edit-settle latency
-across at least:
+The next action from this gate was to create a CPU/native edit phase baseline.
+That action is now complete in `docs/S4_CPU_EDIT_PHASE_BASELINE.md`. The
+baseline split edit-settle latency across:
 
 - pre-edit sample capture;
 - density/material edit application;
@@ -57,9 +58,9 @@ across at least:
 - render resource application;
 - collision readiness.
 
-Compute remains blocked until that baseline shows a terrain source, meshing, or
-upload phase that a targeted compute path can improve end to end while keeping
-the deterministic CPU/headless fallback.
+The baseline did not show a compute-relevant phase above the S4 investigation
+floor, so `docs/S4_M6_DECISION.md` closes S4 with CPU/native retained and
+compute rejected for now.
 
 ## Still not authorized
 

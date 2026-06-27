@@ -11,7 +11,7 @@ S5 is a decision milestone, not permission to start a game immediately.
 | S5 contract exists | Complete | `docs/S5_SMALL_GAME_DECISION_CONTRACT.md` |
 | Repository boundary contract exists | Complete | `docs/REPOSITORY_BOUNDARY_CONTRACT.md` |
 | S3 production workload evidence exists | Complete | `docs/S3_EXIT_REVIEW.md`; `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
-| S4 compute decision exists | Pending | S4 bottleneck selection exists, but final S4 decision report is still pending |
+| S4 compute decision exists | Complete | `docs/S4_M6_DECISION.md`; `WT_SANDBOX_S4_M6_DECISION_PASS`; CPU/native retained, compute rejected for now |
 | Smallest game vertical slice is defined | Pending | game-loop requirements |
 | Official MIT-backed backend is used first | Pending | integration decision |
 | Optional systems have separate contracts | Pending | fluids/stability/planet/etc. contracts if needed |
@@ -32,7 +32,8 @@ S5 is a decision milestone, not permission to start a game immediately.
 
 ## Go/no-go
 
-Current decision: do not start S5.
+Current decision: S5 decision work may start. Do not start a game repository
+until the smallest vertical slice is defined and accepted.
 
 Next valid action after S4: define the vertical slice and decide whether the
 official backend reference is ready for game integration.
