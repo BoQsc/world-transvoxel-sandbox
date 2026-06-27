@@ -61,6 +61,13 @@ It is validated by `tools/s1_s2_completion_checklist.py` and currently reports
 `WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS`, meaning the project may proceed to
 an S3 contract without treating later systems as complete.
 
+Future milestones are also contract-gated before implementation:
+[`docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md`](docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md),
+[`docs/S4_M6_DECISION_CONTRACT.md`](docs/S4_M6_DECISION_CONTRACT.md), and
+[`docs/S5_SMALL_GAME_DECISION_CONTRACT.md`](docs/S5_SMALL_GAME_DECISION_CONTRACT.md).
+`tools/future_milestone_contracts_check.py` must pass before those scopes are
+treated as governed.
+
 ## Run
 
 Python 3.11 or newer is required for generation. Godot 4.6.3 or 4.7 is the
@@ -73,6 +80,7 @@ python tools/test_sandbox.py
 python tools/s1_lod0_workload_audit.py
 python tools/capture_visuals.py
 python tools/s1_s2_completion_checklist.py --refresh-fast
+python tools/future_milestone_contracts_check.py
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest

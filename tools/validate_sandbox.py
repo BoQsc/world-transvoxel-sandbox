@@ -492,18 +492,13 @@ def main() -> int:
             if not has_phrase(text, phrase):
                 errors.append(f"sandbox test runner is missing phrase: {phrase}")
 
-    budget_check = subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "runtime_budget_profiles.py"), "--check"],
-        cwd=ROOT,
-        check=False,
-        text=True,
-        capture_output=True,
-    )
-    if budget_check.returncode != 0:
-        errors.append(
-            "runtime budget profile validation failed: "
-            + (budget_check.stdout + budget_check.stderr).strip()
-        )
+    for name, command in (
+        ("runtime budget profile", [sys.executable, str(ROOT / "tools" / "runtime_budget_profiles.py"), "--check"]),
+        ("future milestone contract", [sys.executable, str(ROOT / "tools" / "future_milestone_contracts_check.py")]),
+    ):
+        result = subprocess.run(command, cwd=ROOT, check=False, text=True, capture_output=True)
+        if result.returncode != 0:
+            errors.append(f"{name} validation failed: " + (result.stdout + result.stderr).strip())
 
     generator = (ROOT / "tools" / "generate_world.py").read_text(encoding="utf-8")
     scale_ladder = (ROOT / "tools" / "scale_ladder.py").read_text(encoding="utf-8")

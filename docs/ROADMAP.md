@@ -257,16 +257,16 @@ and gameplay workload acceptance remain outside S2.
 
 S1/S2 go/no-go: `docs/S1_S2_COMPLETION_CHECKLIST.md` and
 `tools/s1_s2_completion_checklist.py` report
-`WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS`. This permits starting an S3
-contract; it does not complete S3 systems.
+`WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS`. S3 may start after S2 exit;
+this does not complete S3 systems.
 
 ## S3 - Visibility and production workload
 
-Status: next in order. S3 may start after S2 exit, but its first task must be a
-scoped S3 contract for visibility/frustum behavior and production workload.
-GPU compute, water/lava, planets, structural collapse, a game repository, and
-0BSD backend replacement remain out of scope unless the S3 contract explicitly
-moves them in.
+Status: next in order and contract-defined, not complete. Scope is governed by
+`docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md` and
+`docs/S3_COMPLETION_CHECKLIST.md`. GPU compute, water/lava, planets, structural
+collapse, a game repository, and 0BSD backend replacement remain out of scope
+unless the S3 contract explicitly moves them in.
 
 - profile Godot frustum culling separately from terrain demand generation;
 - add forward-biased prefetch while retaining an all-direction safety ring;
@@ -283,7 +283,8 @@ visible holes or uncontrolled resource growth.
 
 ## S4 - M6 decision
 
-Status: pending and evidence-gated.
+Status: pending, evidence-gated, and contract-defined by
+`docs/S4_M6_DECISION_CONTRACT.md` plus `docs/S4_COMPLETION_CHECKLIST.md`.
 
 - select only a measured bottleneck;
 - compare complete CPU and compute paths, including transfer/readback;
@@ -294,7 +295,9 @@ Exit: targeted compute acceleration ships, or M6 closes with CPU retained.
 
 ## S5 - Small-game decision
 
-Status: pending.
+Status: pending and contract-defined by
+`docs/S5_SMALL_GAME_DECISION_CONTRACT.md` plus
+`docs/S5_COMPLETION_CHECKLIST.md`.
 
 Water/lava, mining effects, inventory, structural stability, and planetary
 terrain remain separate systems. The independent 0BSD backend qualification

@@ -27,11 +27,12 @@ storage, recovery, fluids, or stability algorithms should live.
 ## Current milestone
 
 S2 automated scale-ladder exit evidence is complete. The next in-order
-milestone is S3 visibility and production workload. Do not start GPU compute,
-water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement inside S3 unless the S3 contract explicitly moves those items into
-scope. The S1/S2 completion checklist passes and is the gate that allows
-moving to an S3 contract.
+milestone is S3 visibility and production workload. S3, S4, and S5 now have
+contract/checklist skeletons so their scope is known before implementation. Do
+not start GPU compute, water/lava, planets, structural collapse, a game
+repository, or 0BSD backend replacement inside S3 unless the S3 contract
+explicitly moves those items into scope. The S1/S2 completion checklist passes
+and is the gate that allows moving to S3 work.
 
 S0 is complete for the 128 baseline. S1 now has a technical default-policy
 decision: the accepted playtest path is fixed-center LOD0 reference mode, and
@@ -66,6 +67,28 @@ move those items into scope.
   evidence justifies them.
 
 ## Latest evidence
+
+Future milestone contract guard - S3/S4/S5 scopes are defined before
+implementation.
+
+Command:
+
+```console
+python tools/future_milestone_contracts_check.py
+```
+
+Result:
+
+- S3 contract: `docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md`;
+- S3 checklist: `docs/S3_COMPLETION_CHECKLIST.md`;
+- S4 contract: `docs/S4_M6_DECISION_CONTRACT.md`;
+- S4 checklist: `docs/S4_COMPLETION_CHECKLIST.md`;
+- S5 contract: `docs/S5_SMALL_GAME_DECISION_CONTRACT.md`;
+- S5 checklist: `docs/S5_COMPLETION_CHECKLIST.md`;
+- marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
+  s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
+- decision: start S3 workload harness/budget work only; do not treat S4/S5 or
+  optional systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.
 
