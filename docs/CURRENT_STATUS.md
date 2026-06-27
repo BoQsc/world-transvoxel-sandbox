@@ -34,6 +34,13 @@ repository, or 0BSD backend replacement inside S3 unless the S3 contract
 explicitly moves those items into scope. The S1/S2 completion checklist passes
 and is the gate that allows moving to S3 work.
 
+The repository boundary is locked by
+`docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
+`world-transvoxel`; a future game repository validates
+`world-transvoxel-terrain`. Do not use this sandbox to test the future terrain
+addon, and do not ask games to fork or copy this sandbox as terrain
+architecture.
+
 S0 is complete for the 128 baseline. S1 now has a technical default-policy
 decision: the accepted playtest path is fixed-center LOD0 reference mode, and
 dynamic mixed LOD is rejected/demoted as default gameplay by S1.10. Human review
@@ -85,6 +92,7 @@ Result:
 - S4 checklist: `docs/S4_COMPLETION_CHECKLIST.md`;
 - S5 contract: `docs/S5_SMALL_GAME_DECISION_CONTRACT.md`;
 - S5 checklist: `docs/S5_COMPLETION_CHECKLIST.md`;
+- repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
 - decision: start S3 workload harness/budget work only; do not treat S4/S5 or

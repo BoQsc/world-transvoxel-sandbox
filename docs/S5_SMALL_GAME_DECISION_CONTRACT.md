@@ -8,13 +8,16 @@ architecture revision, or should stop with a documented reason.
 
 ## In scope
 
+- Apply `docs/REPOSITORY_BOUNDARY_CONTRACT.md`.
 - Define the smallest representative game vertical slice.
 - Use the official MIT-backed World Transvoxel backend first.
 - Validate gameplay loop requirements against the S3/S4 evidence.
 - Decide which optional systems are required for the vertical slice.
 - Require separate contracts before adding fluids, structural stability,
   planetary terrain, inventory, or complex mining effects.
-- Decide whether to create or defer a separate game repository.
+- Decide whether to create or defer a separate game repository. If created, the
+  future game repository validates world-transvoxel-terrain and imports
+  `world-transvoxel` plus `world-transvoxel-terrain`.
 - Decide whether the 0BSD backend replacement effort should reopen after the
   official backend survives the vertical slice.
 
@@ -22,6 +25,8 @@ architecture revision, or should stop with a documented reason.
 
 - Starting a game before the terrain reference has a passing production
   workload.
+- Using `world-transvoxel-sandbox` to test `world-transvoxel-terrain`.
+- Asking a game project to fork or copy the sandbox as terrain architecture.
 - Mixing optional systems into terrain core without contracts.
 - Reopening 0BSD backend replacement before the official backend is
   battle-tested in the vertical slice.
@@ -30,6 +35,7 @@ architecture revision, or should stop with a documented reason.
 
 | Gate | Required marker or artifact |
 | --- | --- |
+| repository boundary contract | `docs/REPOSITORY_BOUNDARY_CONTRACT.md` |
 | S5 completion checklist | `docs/S5_COMPLETION_CHECKLIST.md` |
 | vertical-slice requirements | documented game loop |
 | official-backend integration decision | use/revise/stop |

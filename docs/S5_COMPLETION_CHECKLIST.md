@@ -9,12 +9,14 @@ S5 is a decision milestone, not permission to start a game immediately.
 | Requirement | Status | Evidence |
 | --- | --- | --- |
 | S5 contract exists | Complete | `docs/S5_SMALL_GAME_DECISION_CONTRACT.md` |
+| Repository boundary contract exists | Complete | `docs/REPOSITORY_BOUNDARY_CONTRACT.md` |
 | S3 production workload evidence exists | Pending | S3 exit report |
 | S4 compute decision exists | Pending | S4 decision report |
 | Smallest game vertical slice is defined | Pending | game-loop requirements |
 | Official MIT-backed backend is used first | Pending | integration decision |
 | Optional systems have separate contracts | Pending | fluids/stability/planet/etc. contracts if needed |
 | Repository decision is recorded | Pending | same repo, new repo, or defer |
+| Game-repo validation boundary is preserved | Pending | future game repository validates `world-transvoxel-terrain` |
 | Final proceed/revise/stop decision is recorded | Pending | `WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS` |
 
 ## Explicitly out of scope until contracted
@@ -26,6 +28,7 @@ S5 is a decision milestone, not permission to start a game immediately.
 | Planets / alternate gravity worlds | Out of scope until separate contract |
 | Inventory/mining effects/game systems | Out of scope until vertical slice says needed |
 | 0BSD backend replacement | Deferred until official backend survives vertical slice |
+| Testing `world-transvoxel-terrain` in this sandbox | Out of scope by repository boundary contract |
 
 ## Go/no-go
 

@@ -35,14 +35,25 @@ REQUIRED = {
     ),
     "docs/S5_SMALL_GAME_DECISION_CONTRACT.md": (
         "S5 starts only after S3 production workload evidence",
+        "docs/REPOSITORY_BOUNDARY_CONTRACT.md",
+        "future game repository validates world-transvoxel-terrain",
         "official MIT-backed World Transvoxel backend first",
         "WT_SANDBOX_S5_SMALL_GAME_DECISION_PASS",
         "0BSD backend replacement",
     ),
     "docs/S5_COMPLETION_CHECKLIST.md": (
         "S5 status: not started",
+        "Repository boundary contract exists",
+        "future game repository validates `world-transvoxel-terrain`",
         "Official MIT-backed backend is used first",
         "Current decision: do not start S5",
+    ),
+    "docs/REPOSITORY_BOUNDARY_CONTRACT.md": (
+        "world-transvoxel-sandbox validates world-transvoxel",
+        "future game repository validates world-transvoxel-terrain",
+        "Do not use world-transvoxel-sandbox to test world-transvoxel-terrain",
+        "game projects must not fork or copy the sandbox",
+        "Do not replace these roles with vague names",
     ),
 }
 

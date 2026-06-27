@@ -297,7 +297,10 @@ Exit: targeted compute acceleration ships, or M6 closes with CPU retained.
 
 Status: pending and contract-defined by
 `docs/S5_SMALL_GAME_DECISION_CONTRACT.md` plus
-`docs/S5_COMPLETION_CHECKLIST.md`.
+`docs/S5_COMPLETION_CHECKLIST.md`. The repository/package boundary is locked by
+`docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
+`world-transvoxel`, and a future game repository validates
+`world-transvoxel-terrain`.
 
 Water/lava, mining effects, inventory, structural stability, and planetary
 terrain remain separate systems. The independent 0BSD backend qualification

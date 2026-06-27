@@ -46,6 +46,10 @@ popping comes before GPU acceleration, water/lava, planets, structural
 collapse, or a small-game repository. The current acceptance standard is
 recorded in
 [`docs/TERRAIN_ACCEPTANCE_STANDARD.md`](docs/TERRAIN_ACCEPTANCE_STANDARD.md).
+The repository/package boundary is locked in
+[`docs/REPOSITORY_BOUNDARY_CONTRACT.md`](docs/REPOSITORY_BOUNDARY_CONTRACT.md):
+`world-transvoxel-sandbox` validates `world-transvoxel`, while a future game
+repository validates `world-transvoxel-terrain`.
 The current active milestone and next finite task are tracked in
 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md).
 
@@ -65,8 +69,8 @@ Future milestones are also contract-gated before implementation:
 [`docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md`](docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md),
 [`docs/S4_M6_DECISION_CONTRACT.md`](docs/S4_M6_DECISION_CONTRACT.md), and
 [`docs/S5_SMALL_GAME_DECISION_CONTRACT.md`](docs/S5_SMALL_GAME_DECISION_CONTRACT.md).
-`tools/future_milestone_contracts_check.py` must pass before those scopes are
-treated as governed.
+`tools/future_milestone_contracts_check.py` also checks the repository boundary
+contract before those scopes are treated as governed.
 
 ## Run
 
