@@ -345,6 +345,7 @@ created.
   independent 0BSD backend replacement, and the game repository deferred.
 
 Exit: complete for the sandbox-side post-S5 handoff. The
-`world-transvoxel-terrain` repository exists with A0 skeleton commit `244db4c`.
-The next valid action is A1 public API/source-layout contract work in
-`world-transvoxel-terrain`, not a game repository.
+`world-transvoxel-terrain` repository exists with A0 skeleton commit `244db4c`
+and A1 public API/source-layout contract commit `f076597`. The next valid action
+is A2 addon-local smoke harness work in `world-transvoxel-terrain`, not a game
+repository.

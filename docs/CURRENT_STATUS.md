@@ -34,11 +34,11 @@ separate game repository. The active post-S5 workstream is governed by
 `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md` and checked by
 `tools/world_transvoxel_terrain_contract_check.py`. The separate
 `world-transvoxel-terrain` repository now exists with A0 skeleton commit
-`244db4c`; next implementation-planning work belongs there as A1 public
-API/source-layout contract work. S4 closed with CPU/native retained and compute
-rejected for now. Do not start broad GPU compute, water/lava, planets,
-structural collapse, a game repository, or 0BSD backend replacement unless a new
-explicit contract moves those items into scope.
+`244db4c` and A1 public API/source-layout contract commit `f076597`; next work
+belongs there as A2 addon-local smoke harness work. S4 closed with CPU/native
+retained and compute rejected for now. Do not start broad GPU compute,
+water/lava, planets, structural collapse, a game repository, or 0BSD backend
+replacement unless a new explicit contract moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -309,7 +309,27 @@ Result:
 - contents: canonical charter, 0BSD license scope, Godot addon manifest,
   minimal editor-plugin glue, roadmap, references/tests placeholders, and
   skeleton validator;
-- decision: A0 is complete. Next work is A1 public API/source-layout contract in
+- decision: A0 is complete.
+
+World Transvoxel Terrain A1 public API/source-layout contract - completed
+outside this sandbox.
+
+Command:
+
+```console
+python tools/validate_a1_contract.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `f076597 Complete terrain addon A1 contracts`;
+- marker: `WT_TERRAIN_A1_CONTRACT_PASS
+  next=a2_addon_local_smoke_harness implementation=contract_only`;
+- contents: public API/resource contract, source-layout ownership directories,
+  old marching-cubes maintainability audit, reference manifest, and A1
+  validator;
+- decision: A1 is complete. Next work is A2 addon-local smoke harness in
   `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
@@ -1012,8 +1032,8 @@ Result:
 
 ## Current active task
 
-Post-S5 active task - hand off from sandbox planning to
-`world-transvoxel-terrain` A1 public API/source-layout contract work.
+Post-S5 active task - keep sandbox tracking aligned while implementation work
+moves to `world-transvoxel-terrain` A2 addon-local smoke harness work.
 
 Scope:
 
@@ -1034,14 +1054,13 @@ Scope:
 Exit:
 
 - this handoff is satisfied when the sandbox status records the
-  `world-transvoxel-terrain` A0 skeleton and points further work to that repo.
+  `world-transvoxel-terrain` A0/A1 commits and points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A1 public API/source-layout contract work.
-2. Before substantial implementation, inspect the old marching-cubes project for
-   maintainability failures and pin/download required references under ignored
-   reference storage.
+1. In `world-transvoxel-terrain`, do A2 addon-local smoke harness work.
+2. A2 must prove plugin loading and dependency detection without vendoring
+   `world-transvoxel` or implementing terrain hot paths in GDScript.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
    has its own package boundary and local smoke tests.
 
