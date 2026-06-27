@@ -72,6 +72,13 @@ Future milestones are also contract-gated before implementation:
 `tools/future_milestone_contracts_check.py` also checks the repository boundary
 contract before those scopes are treated as governed.
 
+S3 has started. The first headless L4 visibility/frustum workload baseline is
+defined by
+[`docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md`](docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md)
+and runs through `tools/s3_visibility_workload.py`. This is not S3 exit;
+forward-biased prefetch, `restore_to_base`, visual/GPU acceptance, and the S3
+exit review remain pending.
+
 ## Run
 
 Python 3.11 or newer is required for generation. Godot 4.6.3 or 4.7 is the
@@ -85,6 +92,7 @@ python tools/s1_lod0_workload_audit.py
 python tools/capture_visuals.py
 python tools/s1_s2_completion_checklist.py --refresh-fast
 python tools/future_milestone_contracts_check.py
+python tools/s3_visibility_workload.py
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest

@@ -13,7 +13,8 @@ uncontrolled rendering, streaming, editing, or memory behavior.
 - Measure graphical frame-time, CPU, memory, rendered chunk count, collision
   coverage, queued work, and retiring/fading resources.
 - Define and test camera workload classes:
-  - stable LOD0 inspection;
+  - stable loaded-window inspection, with S1 retained as the fixed LOD0
+    reference;
   - normal flight/walking;
   - rapid turns;
   - underground traversal;
@@ -28,6 +29,10 @@ uncontrolled rendering, streaming, editing, or memory behavior.
   structural collapse, or fluid equilibrium.
 - Establish target-machine budgets for idle CPU, active CPU, GPU frame time,
   render count, physics/collision cost, I/O, and memory.
+
+The first target-machine budget profile is
+`docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md`. Its headless baseline runner is
+`tools/s3_visibility_workload.py`; it is baseline evidence, not S3 exit.
 
 ## Out of scope
 
@@ -50,6 +55,7 @@ S3 cannot exit until these exist and pass:
 | Gate | Required marker or artifact |
 | --- | --- |
 | S3 completion checklist | `docs/S3_COMPLETION_CHECKLIST.md` |
+| target-machine budget profile | `docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md` |
 | workload runner | `tools/s3_visibility_workload.py` |
 | workload report | `artifacts/s3_visibility_workload/workload_report.json` |
 | visibility/frustum audit | `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS` |

@@ -26,13 +26,13 @@ storage, recovery, fluids, or stability algorithms should live.
 
 ## Current milestone
 
-S2 automated scale-ladder exit evidence is complete. The next in-order
+S2 automated scale-ladder exit evidence is complete. The current in-order
 milestone is S3 visibility and production workload. S3, S4, and S5 now have
-contract/checklist skeletons so their scope is known before implementation. Do
-not start GPU compute, water/lava, planets, structural collapse, a game
-repository, or 0BSD backend replacement inside S3 unless the S3 contract
-explicitly moves those items into scope. The S1/S2 completion checklist passes
-and is the gate that allows moving to S3 work.
+contract/checklist skeletons so their scope is known before implementation. S3
+has its first headless L4 visibility/frustum workload baseline, but S3 is not
+complete. Do not start GPU compute, water/lava, planets, structural collapse, a
+game repository, or 0BSD backend replacement inside S3 unless the S3 contract
+explicitly moves those items into scope.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -75,6 +75,34 @@ move those items into scope.
 
 ## Latest evidence
 
+S3 visibility/frustum workload baseline - first production-workload baseline,
+not S3 exit.
+
+Command:
+
+```console
+python tools/s3_visibility_workload.py
+```
+
+Result:
+
+- budget profile: `docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md`;
+- runner: `tools/s3_visibility_workload.py`;
+- Godot script: `tests/terrain_s3_visibility_workload.gd`;
+- report: `artifacts/s3_visibility_workload/workload_report.json`;
+- marker: `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS engines=2`;
+- Godot 4.6.3: `startup_ms=258`, `settle_ms=6203`, `min_render=206`,
+  `min_collision=206`, `max_active=294`, `max_edit_ms=883`,
+  `journal_growth_bytes=1192`, `max_frame_ms=114.758`;
+- Godot 4.7: `startup_ms=170`, `settle_ms=5950`, `min_render=206`,
+  `min_collision=206`, `max_active=294`, `max_edit_ms=866`,
+  `journal_growth_bytes=1192`, `max_frame_ms=33.367`;
+- rapid-turn frustum separation: `frustum_min=27`, `frustum_max=38`,
+  `viewer_updates_delta=0`, `planned_demands_delta=0`;
+- fast-travel policy: `loading_screen_required`;
+- claim boundary: first S3 baseline only. Forward-biased prefetch,
+  `restore_to_base`, visual/GPU acceptance, and S3 exit review remain pending.
+
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
 
@@ -95,8 +123,8 @@ Result:
 - repository boundary contract: `docs/REPOSITORY_BOUNDARY_CONTRACT.md`;
 - marker: `WT_SANDBOX_FUTURE_MILESTONE_CONTRACTS_PASS
   s3=defined_not_complete s4=defined_not_started s5=defined_not_started`;
-- decision: start S3 workload harness/budget work only; do not treat S4/S5 or
-  optional systems as complete.
+- decision: continue S3 with the forward-biased prefetch decision only; do not
+  treat S4/S5 or optional systems as complete.
 
 S1/S2 completion checklist - no required S1/S2 gate is missing.
 

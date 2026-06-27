@@ -10,14 +10,14 @@ complete, S4 must not start except for documentation-only planning.
 | Requirement | Status | Evidence |
 | --- | --- | --- |
 | S3 contract exists | Complete | `docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md` |
-| Workload classes are defined | Pending | stable LOD0, normal movement, rapid turns, underground, mining while moving, fast travel/teleport |
-| Target-machine budget profile exists | Pending | CPU/GPU/frame-time/render/physics/I/O/memory budgets |
-| Visibility/frustum audit exists | Pending | `tools/s3_visibility_workload.py` |
-| Godot frustum behavior is measured separately from terrain demand | Pending | S3 workload report |
+| Workload classes are defined | Complete | stable loaded-window inspection, normal movement, rapid turns, underground, mining while moving, fast travel/teleport policy; S1 remains the fixed LOD0 reference |
+| Target-machine budget profile exists | Complete | `docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md` |
+| Visibility/frustum audit exists | Complete | `tools/s3_visibility_workload.py`; `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS` |
+| Godot frustum behavior is measured separately from terrain demand | Complete | S3 baseline: `frustum_min=27`, `frustum_max=38`, `viewer_updates_delta=0`, `planned_demands_delta=0` |
 | Forward-biased prefetch policy is implemented or rejected | Pending | policy section and workload evidence |
-| Fast travel / teleport policy is decided | Pending | supported, rejected, or loading-screen semantics |
-| Repeated mining while moving is measured | Pending | S3 workload report |
-| Edit latency and edit-journal growth are measured in workload loop | Pending | S3 workload report |
+| Fast travel / teleport policy is decided | Complete | loading-screen required; seamless disjoint teleport is not accepted by this profile |
+| Repeated mining while moving is measured | Complete | S3 baseline: two moving edits per engine |
+| Edit latency and edit-journal growth are measured in workload loop | Complete | S3 baseline: max edit 885 ms, journal growth 1,192 bytes |
 | `restore_to_base` is implemented/audited or explicitly deferred | Pending | pass marker or deferral decision |
 | S3 exit review exists | Pending | `WT_SANDBOX_S3_EXIT_REVIEW_PASS` |
 
@@ -37,5 +37,9 @@ complete, S4 must not start except for documentation-only planning.
 
 Current decision: do not proceed to S4.
 
-Next valid action: implement the S3 workload harness and target-machine budget
-profile, then run the first baseline measurement.
+First baseline complete: `python tools/s3_visibility_workload.py` reports
+`WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS` with
+`artifacts/s3_visibility_workload/workload_report.json`.
+
+Next valid action: decide and implement or reject the forward-biased prefetch
+policy, then rerun the S3 workload baseline against that decision.

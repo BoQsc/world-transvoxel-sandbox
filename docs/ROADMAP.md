@@ -262,14 +262,16 @@ this does not complete S3 systems.
 
 ## S3 - Visibility and production workload
 
-Status: next in order and contract-defined, not complete. Scope is governed by
+Status: active, contract-defined, and not complete. Scope is governed by
 `docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md` and
 `docs/S3_COMPLETION_CHECKLIST.md`. GPU compute, water/lava, planets, structural
 collapse, a game repository, and 0BSD backend replacement remain out of scope
 unless the S3 contract explicitly moves them in.
 
-- profile Godot frustum culling separately from terrain demand generation;
-- add forward-biased prefetch while retaining an all-direction safety ring;
+- first headless L4 visibility/frustum workload baseline: complete by
+  `WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS`;
+- decide and implement or reject forward-biased prefetch while retaining an
+  all-direction safety ring;
 - test fast travel, rapid turns, underground movement, and repeated mining;
 - measure restoration capture latency and edit-journal growth; replace the
   correctness-first point-command snapshot with a compressed native delta path

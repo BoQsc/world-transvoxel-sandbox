@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = {
     "docs/S3_VISIBILITY_PRODUCTION_WORKLOAD_CONTRACT.md": (
         "S3 starts only after S1/S2",
+        "docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md",
+        "tools/s3_visibility_workload.py",
         "visibility/frustum behavior",
         "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
         "WT_SANDBOX_S3_EXIT_REVIEW_PASS",
@@ -19,8 +21,31 @@ REQUIRED = {
     "docs/S3_COMPLETION_CHECKLIST.md": (
         "S3 status: not complete",
         "Workload classes are defined",
+        "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_AUDIT_PASS",
         "Fast travel / teleport policy",
+        "Forward-biased prefetch policy is implemented or rejected | Pending",
         "Current decision: do not proceed to S4",
+    ),
+    "docs/S3_TARGET_MACHINE_BUDGET_PROFILE.md": (
+        "S3-L4-headless-baseline",
+        "stable loaded-window inspection",
+        "rapid turns with frustum estimate separated from terrain demand",
+        "fast travel policy | loading-screen required",
+        "GPU frame time and visual artifact acceptance are not measured",
+        "Passing this profile proves the first S3 visibility/frustum production workload baseline only",
+    ),
+    "tools/s3_visibility_workload.py": (
+        "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
+        "world-transvoxel-sandbox.s3-visibility-workload.v1",
+        "fast_travel_policy",
+        "loading_screen_required",
+    ),
+    "tests/terrain_s3_visibility_workload.gd": (
+        "WT_SANDBOX_S3_VISIBILITY_WORKLOAD_PASS",
+        "set(\"input_enabled\", false)",
+        "frustum_min",
+        "planned_demands_delta",
+        "fast_travel_policy=loading_screen_required",
     ),
     "docs/S4_M6_DECISION_CONTRACT.md": (
         "S4 starts only after S3 exits",
