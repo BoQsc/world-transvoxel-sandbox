@@ -11,6 +11,8 @@ The conservative LOD0 workload gate is governed by
 `docs/S1_LOD0_WORKLOAD_BASELINE.md`.
 The accepted LOD0 gallery and restart-persistence gate is governed by
 `docs/S1_LOD0_GALLERY_AUDIT.md`.
+The S1/S2 go/no-go checkpoint is governed by
+`docs/S1_S2_COMPLETION_CHECKLIST.md`.
 
 Milestones are sequential. Do not start later-milestone work while the current
 milestone is incomplete. If a task is required for correct S1 completion, move
@@ -28,7 +30,8 @@ S2 automated scale-ladder exit evidence is complete. The next in-order
 milestone is S3 visibility and production workload. Do not start GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement inside S3 unless the S3 contract explicitly moves those items into
-scope.
+scope. The S1/S2 completion checklist passes and is the gate that allows
+moving to an S3 contract.
 
 S0 is complete for the 128 baseline. S1 now has a technical default-policy
 decision: the accepted playtest path is fixed-center LOD0 reference mode, and
@@ -63,6 +66,26 @@ move those items into scope.
   evidence justifies them.
 
 ## Latest evidence
+
+S1/S2 completion checklist - no required S1/S2 gate is missing.
+
+Command:
+
+```console
+python tools/s1_s2_completion_checklist.py --refresh-fast
+```
+
+Result:
+
+- checklist: `docs/S1_S2_COMPLETION_CHECKLIST.md`;
+- validator: `tools/s1_s2_completion_checklist.py`;
+- marker: `WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS s1=complete s2=complete
+  decision=ready_for_s3_contract`;
+- refreshed gates: `WT_SANDBOX_VALIDATION_PASS`,
+  `WT_SANDBOX_RUNTIME_BUDGETS_PASS`, and `WT_SANDBOX_S2_EXIT_REVIEW_PASS`;
+- decision: S1 and S2 are complete for their defined technical scope; proceed
+  only to an S3 contract, not directly to GPU compute, fluids, planets, 0BSD
+  backend replacement, or game repository work.
 
 S2 exit review - L1 through L4 scale-ladder evidence is complete.
 

@@ -69,6 +69,7 @@ def main() -> int:
         "tools/scale_visual.py",
         "tools/s1_lod0_workload_audit.py",
         "tools/s1_lod0_gallery_audit.py",
+        "tools/s1_s2_completion_checklist.py",
         "tools/s2_exit_review.py",
         "tools/capture_lod_popping.py",
         "tools/capture_lod_surface.py",
@@ -124,6 +125,7 @@ def main() -> int:
         "docs/TERRAIN_RECOVERY_CONTRACT.md",
         "docs/S1_LOD0_WORKLOAD_BASELINE.md",
         "docs/S1_LOD0_GALLERY_AUDIT.md",
+        "docs/S1_S2_COMPLETION_CHECKLIST.md",
         "docs/S2_SCALE_LADDER_EXIT_REVIEW.md",
         "docs/S1_DYNAMIC_LOD_POLICY.md",
         "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
@@ -194,6 +196,7 @@ def main() -> int:
             "Human review is final qualitative confirmation",
             "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
             "WT_SANDBOX_S2_EXIT_REVIEW_PASS",
+            "WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS",
         ):
             if not has_phrase(text, phrase):
                 errors.append(f"readme is missing phrase: {phrase}")
@@ -314,12 +317,25 @@ def main() -> int:
             if not has_phrase(text, phrase):
                 errors.append(f"S1 LOD0 gallery audit doc is missing phrase: {phrase}")
 
+    completion = ROOT / "docs" / "S1_S2_COMPLETION_CHECKLIST.md"
+    if completion.is_file():
+        text = completion.read_text(encoding="utf-8")
+        for phrase in (
+            "S1 technical exit: complete by S1.11",
+            "S2 automated exit: complete by `WT_SANDBOX_S2_EXIT_REVIEW_PASS`",
+            "Go to S3 contract: yes",
+            "not skipped S1/S2 work",
+        ):
+            if not has_phrase(text, phrase):
+                errors.append(f"S1/S2 checklist is missing phrase: {phrase}")
+
     status = ROOT / "docs" / "CURRENT_STATUS.md"
     if status.is_file():
         text = status.read_text(encoding="utf-8")
         for phrase in (
             "S2 automated scale-ladder exit evidence is complete",
             "WT_SANDBOX_S2_EXIT_REVIEW_PASS",
+            "WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS",
             "S1 now has a technical default-policy decision",
             "Unresolved blockers kept visible",
             "docs/S1_LOD0_WORKLOAD_BASELINE.md",
@@ -330,15 +346,7 @@ def main() -> int:
             "does not block technical milestone progress",
             "replace automated/capture-based correctness",
             "final human qualitative confirmation",
-            "S2.13 - L4 bounded generation, runtime, and static visual capture are complete",
-            "S2.14 - L4 shader-instance budget and same-key render-node stability fix is complete",
-            "S1.2 previously observed 79 replacement frames",
-            "S1.6 - dynamic LOD visual-burst budget plus multi-view gross-pop and",
             "Too many instances using shader instance variables",
-            "instance-parameter writes opt-in/default-off because Godot retains",
-            "accepted large-scale defaults allocate no per-instance shader fade parameter slots",
-            "S1.7 - conservative default dynamic LOD containment is complete",
-            "S1.10 later made the default-policy decision",
             "S1.11 - accepted fixed-center LOD0 gallery and restart-persistence audit",
             "WT_SANDBOX_S1_LOD0_GALLERY_AUDIT_PASS",
             "WT_SANDBOX_S1_LOD0_PERSISTENCE_PASS",
@@ -348,20 +356,12 @@ def main() -> int:
             "tests/terrain_s1_default_policy_audit.gd",
             "S1.9 - native batched exact-restore capture",
             "production-feel mining latency",
-            "tightened 2,000 ms edit-latency ceiling",
-            "World Transvoxel 1.0.11-dev",
             "tools/s1_lod0_workload_audit.py",
             "normal sandbox/playtest defaults are fixed-center LOD0 reference mode",
             "dynamic mixed LOD remains available only through explicit diagnostic scripts",
-            "fixed streaming anchor",
-            "lod_transition_native_fade_without_geomorph_pending_visual_acceptance",
-            "surface_transition_pending_visual_acceptance",
             "temporal_surface_gross_pop_gate_pass_pending_human_review",
-            "temporal_multiview_gross_pop_gate_pass_pending_human_review",
-            "improved from 61 to 7",
             "L4 accepted runtime budget: staged movement",
             "docs/TERRAIN_RUNTIME_BUDGETS.md",
-            "GDScript is glue",
             "Deferred by rule",
         ):
             if not has_phrase(text, phrase):

@@ -255,6 +255,11 @@ bounded generation, staged runtime, edit/remesh, and static visual capture
 through L4. Final human qualitative confirmation, dynamic seamless LOD movement,
 and gameplay workload acceptance remain outside S2.
 
+S1/S2 go/no-go: `docs/S1_S2_COMPLETION_CHECKLIST.md` and
+`tools/s1_s2_completion_checklist.py` report
+`WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS`. This permits starting an S3
+contract; it does not complete S3 systems.
+
 ## S3 - Visibility and production workload
 
 Status: next in order. S3 may start after S2 exit, but its first task must be a

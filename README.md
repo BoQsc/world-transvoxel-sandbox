@@ -55,6 +55,12 @@ edit/remesh, and static visual capture. Dynamic seamless LOD movement, fast
 travel, game-scale feature systems, and final human qualitative confirmation
 are still separate unfinished gates.
 
+The S1/S2 go/no-go checklist is
+[`docs/S1_S2_COMPLETION_CHECKLIST.md`](docs/S1_S2_COMPLETION_CHECKLIST.md).
+It is validated by `tools/s1_s2_completion_checklist.py` and currently reports
+`WT_SANDBOX_S1_S2_COMPLETION_CHECKLIST_PASS`, meaning the project may proceed to
+an S3 contract without treating later systems as complete.
+
 ## Run
 
 Python 3.11 or newer is required for generation. Godot 4.6.3 or 4.7 is the
@@ -66,6 +72,7 @@ python tools/generate_world.py --force
 python tools/test_sandbox.py
 python tools/s1_lod0_workload_audit.py
 python tools/capture_visuals.py
+python tools/s1_s2_completion_checklist.py --refresh-fast
 ```
 
 Scale-ladder artifacts are generated separately from the accepted L0 playtest
