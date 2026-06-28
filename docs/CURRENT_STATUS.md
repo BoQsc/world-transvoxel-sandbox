@@ -48,7 +48,7 @@ plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
 exists with G0 install/run validation complete and G1 root-safe visual capture
-evidence through commit `5a47a8d`.
+evidence through commit `3c521b0`, including nonzero terrain triangle checks.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -782,7 +782,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `5a47a8d Add root-safe validation visual capture`;
+- commit: `3c521b0 Harden G1 terrain visual evidence`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -793,6 +793,7 @@ Result:
   report=artifacts/root_project_safe_import/root_project_safe_import_report.json`;
 - visual capture marker: `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS engines=2
   report=artifacts/g1_visual_capture/g1_visual_capture_report.json`;
+- terrain geometry: `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7;
 - engines: Godot 4.6.3 and Godot 4.7;
 - decision: the gray-rectangle-only playtest was not acceptable. The validation
   scene now targets the terrain chunk, shows status text and orientation markers,

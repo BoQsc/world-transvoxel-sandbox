@@ -105,7 +105,8 @@ exit review at commit `cc3f5d2`, plus A6 game repository readiness decision at
 commit `2219a0f`. A6 is complete. A separate validation game repository is
 approved only when explicitly requested; `world-transvoxel-validation-game` now
 exists with G0 install/run validation complete and G1 root-safe visual capture
-evidence through commit `5a47a8d`. Broad GPU implementation is not authorized.
+evidence through commit `3c521b0`, including nonzero terrain triangle checks.
+Broad GPU implementation is not authorized.
 
 ## Run
 

@@ -360,4 +360,5 @@ A5 exit review is complete at commit `cc3f5d2`. A6 game repository readiness
 decision is complete at commit `2219a0f`. A separate validation game repository
 is approved only when explicitly requested. `world-transvoxel-validation-game`
 exists with G0 install/run validation complete and G1 root-safe visual capture
-evidence through commit `5a47a8d`; human rerun confirmation is pending.
+evidence through commit `3c521b0`, including nonzero terrain triangle checks;
+human rerun confirmation is pending.
