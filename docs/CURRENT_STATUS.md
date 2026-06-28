@@ -44,12 +44,15 @@ is complete there. A5 phase 1 debug snapshot contract commit `809ecf6` is also
 complete there, plus A5 phase 2 local reference scene scaffold commit
 `efd8404`, plus A5 phase 3 backend reference-scene runtime smoke commit
 `f0ad840`, plus A5 phase 4 debug overlay category rendering commit `1ff8f37`,
-plus A5 exit review commit `cc3f5d2`; A5 is complete there. Next work belongs in
-`world-transvoxel-terrain` as A6 game repository readiness decision.
+plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
+commit `2219a0f`; A6 is complete there. A separate validation game repository is
+approved only when explicitly requested.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
-water/lava, planets, structural collapse, a game repository, or 0BSD backend
-replacement unless a new explicit contract moves those items into scope.
+water/lava, planets, structural collapse, production game systems, or 0BSD
+backend replacement unless a new explicit contract moves those items into scope.
+Do not create the separate validation game repository unless the user explicitly
+asks for it.
 
 The repository boundary is locked by
 `docs/REPOSITORY_BOUNDARY_CONTRACT.md`: `world-transvoxel-sandbox` validates
@@ -709,6 +712,33 @@ Result:
 - engines: Godot 4.6.3 and Godot 4.7 for each A5 smoke;
 - decision: A5 is complete. Next work is A6 game repository readiness decision
   in `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A6 game repository readiness decision - completed
+outside this sandbox.
+
+Commands:
+
+```console
+python tools/a6_readiness_decision.py
+python tools/validate_a6_readiness_decision.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `2219a0f Record A6 game repository readiness decision`;
+- marker: `WT_TERRAIN_A6_CONTRACT_PASS
+  decision=approve_validation_game_repository
+  implementation=readiness_decision
+  next=separate_validation_game_repository_when_user_approves`;
+- decision marker: `WT_TERRAIN_A6_READINESS_DECISION_PASS
+  decision=approve_validation_game_repository validators=2
+  report=artifacts/a6_readiness_decision/a6_readiness_decision_report.json
+  next=separate_validation_game_repository_when_user_approves`;
+- reviewed evidence: package boundary, local smoke evidence, stable minimal API,
+  and the full A5 exit review;
+- decision: the separate validation game repository may be created when the user
+  explicitly asks. This is not a production-ready terrain claim.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1410,8 +1440,8 @@ Result:
 
 ## Current active task
 
-Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A6 game repository readiness decision.
+Post-S5 active task - keep sandbox tracking aligned after
+`world-transvoxel-terrain` A6 game repository readiness decision.
 
 Scope:
 
@@ -1419,14 +1449,15 @@ Scope:
   `world-transvoxel`;
 - keep `world-transvoxel-terrain` as the reusable terrain addon above
   `world-transvoxel`;
-- keep the separate game repository deferred;
+- keep the separate validation game repository uncreated unless the user
+  explicitly asks for it;
 - use the official MIT-backed backend first;
 - keep GDScript limited to scaffolding, input, debug UI, and test harness glue;
 - keep hot terrain work in native code, low-level addon paths, binary formats,
   shaders when justified, or Python offline tooling;
 - avoid giant source files by requiring separate public API, runtime
   implementation, storage, editor/debug, and test ownership;
-- keep compute, fluids, planets, stability, game repository creation, and 0BSD
+- keep compute, fluids, planets, stability, production game systems, and 0BSD
   backend replacement deferred until separately contracted.
 
 Exit:
@@ -1434,13 +1465,16 @@ Exit:
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
   phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4/A5 phase 5
-  commits and points further work to that repo.
+  and A6 commits and points further work to the approved next boundary.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A6 game repository readiness decision.
-2. Keep A6 as a readiness decision; do not create the game repository yet.
-3. Do not create the separate game repository unless A6 explicitly approves it.
+1. Do not create a separate validation game repository unless the user explicitly
+   asks for it.
+2. If requested, create a small validation game repository that imports
+   `world-transvoxel` and `world-transvoxel-terrain`; do not fork the sandbox.
+3. Keep production game systems, GPU compute, fluids, planets, and 0BSD backend
+   replacement out of scope until separately contracted.
 
 ## Deferred by rule
 

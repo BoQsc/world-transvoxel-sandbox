@@ -11,8 +11,8 @@ WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS
 This contract defines what `world-transvoxel-terrain` must become before a
 separate game repository is created. It is not a game design document, not a GPU
 rewrite plan, and not a 0BSD backend replacement milestone. The sandbox-side
-architecture gate is satisfied by `world-transvoxel-terrain` A5 completion at
-commit `cc3f5d2`.
+architecture gate is satisfied by `world-transvoxel-terrain` A6 completion at
+commit `2219a0f`.
 
 ## Repository role
 
@@ -184,10 +184,10 @@ This gate is complete when:
 - `tools/future_milestone_contracts_check.py` includes this contract;
 - `docs/CURRENT_STATUS.md`, `docs/ROADMAP.md`, and `README.md` record the
   `world-transvoxel-terrain` A5 completion handoff;
-- the next action is explicitly limited to `world-transvoxel-terrain` addon
-  A6 game repository readiness decision;
+- the next action is explicitly limited to a separate validation game repository
+  only when the user explicitly asks for it;
 - no separate game repository has been created as part of this gate.
 
-After this gate passes, the next valid action is A6 game repository readiness
-decision in `world-transvoxel-terrain`. The game repository remains deferred
-until that decision explicitly approves it.
+After this gate passes, the next valid action is a separate validation game
+repository only when the user explicitly asks for it. Production game systems
+remain deferred until separately contracted.

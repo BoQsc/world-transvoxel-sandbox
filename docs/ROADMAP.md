@@ -356,6 +356,6 @@ The A5 phase 1 debug snapshot contract is complete at commit `809ecf6`, A5
 phase 2 local reference scene scaffold is complete at commit `efd8404`, A5 phase
 3 backend reference-scene runtime smoke is complete at commit `f0ad840`, A5
 phase 4 debug overlay category rendering is complete at commit `1ff8f37`, and
-A5 exit review is complete at commit `cc3f5d2`. The next valid action is A6 game
-repository readiness decision in `world-transvoxel-terrain`, not a game
-repository.
+A5 exit review is complete at commit `cc3f5d2`. A6 game repository readiness
+decision is complete at commit `2219a0f`. A separate validation game repository
+is approved only when explicitly requested.
