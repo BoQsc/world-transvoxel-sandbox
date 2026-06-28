@@ -43,8 +43,9 @@ validation commit `9007b83`, plus A4 phase 5 exit-review commit `a02e8cc`; A4
 is complete there. A5 phase 1 debug snapshot contract commit `809ecf6` is also
 complete there, plus A5 phase 2 local reference scene scaffold commit
 `efd8404`, plus A5 phase 3 backend reference-scene runtime smoke commit
-`f0ad840`, plus A5 phase 4 debug overlay category rendering commit `1ff8f37`.
-Next work belongs in `world-transvoxel-terrain` as A5 phase 5 A5 exit review.
+`f0ad840`, plus A5 phase 4 debug overlay category rendering commit `1ff8f37`,
+plus A5 exit review commit `cc3f5d2`; A5 is complete there. Next work belongs in
+`world-transvoxel-terrain` as A6 game repository readiness decision.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
@@ -677,6 +678,37 @@ Result:
   and material placeholder state in overlay text;
 - decision: A5 remains active for exit review. Next work is A5 phase 5 A5 exit
   review in `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A5 phase 5 exit review - completed outside this
+sandbox.
+
+Commands:
+
+```console
+python tools/a5_phase5_exit_review.py
+python tools/validate_a5_phase5.py
+python tools/validate_a5_phase4.py
+python tools/validate_terrain_skeleton.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `cc3f5d2 Close A5 with exit review evidence`;
+- marker: `WT_TERRAIN_A5_PHASE5_CONTRACT_PASS
+  next=a6_game_repository_readiness_decision
+  implementation=a5_exit_review`;
+- exit marker: `WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS validators=7 smokes=4
+  report=artifacts/a5_phase5_exit_review/a5_phase5_exit_review_report.json
+  next=a6_game_repository_readiness_decision`;
+- reviewed validators: terrain skeleton, A4 phase 5, A5 phase 1, A5 phase 2,
+  A5 phase 3, A5 phase 4, and A5 phase 5;
+- reviewed smokes: A5 phase 1 debug snapshot, A5 phase 2 reference scene
+  scaffold, A5 phase 3 reference scene runtime, and A5 phase 4 debug overlay
+  categories;
+- engines: Godot 4.6.3 and Godot 4.7 for each A5 smoke;
+- decision: A5 is complete. Next work is A6 game repository readiness decision
+  in `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1379,7 +1411,7 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A5 phase 5 A5 exit review.
+moves to `world-transvoxel-terrain` A6 game repository readiness decision.
 
 Scope:
 
@@ -1401,15 +1433,14 @@ Exit:
 
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
-  phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4 commits and
-  points further work to that repo.
+  phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4/A5 phase 5
+  commits and points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A5 phase 5 A5 exit review.
-2. Keep A5 local to addon smoke evidence; do not create the game repository.
-3. Do not create the separate game repository until `world-transvoxel-terrain`
-   has its own package boundary and local smoke tests.
+1. In `world-transvoxel-terrain`, do A6 game repository readiness decision.
+2. Keep A6 as a readiness decision; do not create the game repository yet.
+3. Do not create the separate game repository unless A6 explicitly approves it.
 
 ## Deferred by rule
 

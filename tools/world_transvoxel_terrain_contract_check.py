@@ -9,9 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED = {
     "docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md": (
-        "Status: active post-S5 architecture gate",
+        "Status: complete post-S5 architecture gate",
         "WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS",
         "`world-transvoxel-terrain` is the reusable Godot terrain addon",
+        "commit `cc3f5d2`",
         "official MIT-backed World Transvoxel backend is used first",
         "Optional independent 0BSD backend work remains deferred",
         "load a 2048 x 2048 x 64 terrain profile",
@@ -24,7 +25,7 @@ REQUIRED = {
         "settled terrain must be cold",
         "water and lava",
         "separate game repository",
-        "After this gate passes, the next valid action is to create the",
+        "After this gate passes, the next valid action is A6 game repository readiness",
     ),
     "docs/REPOSITORY_BOUNDARY_CONTRACT.md": (
         "world-transvoxel-sandbox validates world-transvoxel",
@@ -67,7 +68,7 @@ def main() -> None:
 
     print(
         "WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS "
-        "next=create_world_transvoxel_terrain_addon_architecture "
+        "next=a6_game_repository_readiness_decision "
         "game_repository=deferred"
     )
 

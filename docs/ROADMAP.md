@@ -352,11 +352,10 @@ commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
 phase 2 bridge/storage fixture commit `4b8855c`, plus A4 phase 3 terrain-world
 lifecycle commit `b28c623`, plus A4 phase 4 reference runtime/cold-idle
 validation commit `9007b83`, plus A4 phase 5 exit-review commit `a02e8cc`.
-The A5 phase 1 debug snapshot contract is complete at commit `809ecf6`, and A5
-phase 2 local reference scene scaffold is complete at commit `efd8404`. The next
-valid action is A5 phase 3 backend reference-scene runtime smoke in
-`world-transvoxel-terrain`, not a game repository. A5 phase 3 is now complete at
-commit `f0ad840`; the next valid action is A5 phase 4 debug overlay category
-rendering in `world-transvoxel-terrain`. A5 phase 4 is now complete at commit
-`1ff8f37`; the next valid action is A5 phase 5 A5 exit review in
-`world-transvoxel-terrain`.
+The A5 phase 1 debug snapshot contract is complete at commit `809ecf6`, A5
+phase 2 local reference scene scaffold is complete at commit `efd8404`, A5 phase
+3 backend reference-scene runtime smoke is complete at commit `f0ad840`, A5
+phase 4 debug overlay category rendering is complete at commit `1ff8f37`, and
+A5 exit review is complete at commit `cc3f5d2`. The next valid action is A6 game
+repository readiness decision in `world-transvoxel-terrain`, not a game
+repository.

@@ -1,6 +1,6 @@
 # World Transvoxel Terrain Architecture Contract
 
-Status: active post-S5 architecture gate.
+Status: complete post-S5 architecture gate.
 
 Validation marker:
 
@@ -10,7 +10,9 @@ WT_SANDBOX_WORLD_TRANSVOXEL_TERRAIN_CONTRACT_PASS
 
 This contract defines what `world-transvoxel-terrain` must become before a
 separate game repository is created. It is not a game design document, not a GPU
-rewrite plan, and not a 0BSD backend replacement milestone.
+rewrite plan, and not a 0BSD backend replacement milestone. The sandbox-side
+architecture gate is satisfied by `world-transvoxel-terrain` A5 completion at
+commit `cc3f5d2`.
 
 ## Repository role
 
@@ -180,13 +182,12 @@ This gate is complete when:
 
 - this contract exists and passes `tools/world_transvoxel_terrain_contract_check.py`;
 - `tools/future_milestone_contracts_check.py` includes this contract;
-- `docs/CURRENT_STATUS.md`, `docs/ROADMAP.md`, and `README.md` point to this
-  contract as the active post-S5 workstream;
+- `docs/CURRENT_STATUS.md`, `docs/ROADMAP.md`, and `README.md` record the
+  `world-transvoxel-terrain` A5 completion handoff;
 - the next action is explicitly limited to `world-transvoxel-terrain` addon
-  architecture or skeleton work;
+  A6 game repository readiness decision;
 - no separate game repository has been created as part of this gate.
 
-After this gate passes, the next valid action is to create the
-`world-transvoxel-terrain` addon architecture/skeleton. The game repository
-remains deferred until the terrain addon exists with its own package boundary and
-local smoke tests.
+After this gate passes, the next valid action is A6 game repository readiness
+decision in `world-transvoxel-terrain`. The game repository remains deferred
+until that decision explicitly approves it.
