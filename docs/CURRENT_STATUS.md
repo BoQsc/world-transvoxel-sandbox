@@ -47,7 +47,8 @@ complete there, plus A5 phase 2 local reference scene scaffold commit
 plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
-exists with G0 install/run validation complete at commit `8923f6e`.
+exists with G0 install/run validation complete at commit `8923f6e` and a G1
+visible-playtest guard at commit `06e7956`.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -765,6 +766,31 @@ Result:
 - engines: Godot 4.6.3 and Godot 4.7;
 - decision: G0 install/run validation is complete. Next validation-game work is
   G1 human-visible playtest confirmation.
+
+World Transvoxel Validation Game G1 visible playtest guard - completed outside
+this sandbox; human rerun confirmation remains pending.
+
+Commands:
+
+```console
+python tools/validate_g1_contract.py
+python tools/g1_visible_playtest_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-validation-game`;
+- commit: `06e7956 Add G1 visible playtest guard`;
+- marker: `WT_VALIDATION_G1_CONTRACT_PASS
+  implementation=human_visible_playtest_guard
+  next=human_rerun_confirmation`;
+- smoke marker: `WT_VALIDATION_G1_SMOKE_PASS engines=2
+  report=artifacts/g1_visible_playtest/g1_visible_playtest_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- decision: the gray-rectangle-only playtest was not acceptable. The validation
+  scene now targets the terrain chunk, shows status text and orientation markers,
+  and fails if no terrain `MeshInstance3D` exists. Human rerun confirmation is
+  next.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1495,8 +1521,8 @@ Exit:
 
 ## Next finite steps
 
-1. In `world-transvoxel-validation-game`, do G1 human-visible playtest
-   confirmation.
+1. In `world-transvoxel-validation-game`, rerun the G1 human-visible playtest
+   scene and confirm whether the result is now useful.
 2. Record visual, orientation, artifact, popping, or performance failures as
    addon follow-up work, not hidden validation-game workarounds.
 3. Keep production game systems, GPU compute, fluids, planets, and 0BSD backend

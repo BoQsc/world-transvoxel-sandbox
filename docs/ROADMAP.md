@@ -359,4 +359,5 @@ phase 4 debug overlay category rendering is complete at commit `1ff8f37`, and
 A5 exit review is complete at commit `cc3f5d2`. A6 game repository readiness
 decision is complete at commit `2219a0f`. A separate validation game repository
 is approved only when explicitly requested. `world-transvoxel-validation-game`
-exists with G0 install/run validation complete at commit `8923f6e`.
+exists with G0 install/run validation complete at commit `8923f6e` and a G1
+visible-playtest guard at commit `06e7956`; human rerun confirmation is pending.
