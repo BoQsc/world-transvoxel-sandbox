@@ -323,8 +323,7 @@ is deferred until `world-transvoxel-terrain` exists.
 
 ## Post-S5 - world-transvoxel-terrain addon architecture
 
-Status: architecture gate complete; separate addon repository A4 phase 4
-reference runtime/cold-idle validation complete.
+Status: architecture gate complete; separate addon repository A4 complete.
 Scope is governed by `docs/WORLD_TRANSVOXEL_TERRAIN_ARCHITECTURE_CONTRACT.md`
 and checked by `tools/world_transvoxel_terrain_contract_check.py`.
 
@@ -352,5 +351,6 @@ addon-local smoke harness commit `8609c99`, plus A3 `world-transvoxel` bridge
 commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
 phase 2 bridge/storage fixture commit `4b8855c`, plus A4 phase 3 terrain-world
 lifecycle commit `b28c623`, plus A4 phase 4 reference runtime/cold-idle
-validation commit `9007b83`. The next valid action is A4 phase 5 A4 exit review
-in `world-transvoxel-terrain`, not a game repository.
+validation commit `9007b83`, plus A4 phase 5 exit-review commit `a02e8cc`.
+The next valid action is A5 local reference scene and debug UI in
+`world-transvoxel-terrain`, not a game repository.

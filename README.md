@@ -96,8 +96,10 @@ harness at commit `8609c99`, plus A3 `world-transvoxel` bridge at commit
 `ef03d55`, plus A4 phase 1 resource semantics at commit `2774664`, plus A4
 phase 2 bridge/storage fixture at commit `4b8855c`, plus A4 phase 3
 terrain-world lifecycle at commit `b28c623`, plus A4 phase 4 reference
-runtime/cold-idle validation at commit `9007b83`; next work belongs there as
-A4 phase 5 A4 exit review. Broad GPU implementation is not authorized.
+runtime/cold-idle validation at commit `9007b83`, plus A4 phase 5 exit review
+at commit `a02e8cc`. A4 is complete there; next work belongs in
+`world-transvoxel-terrain` as A5 local reference scene and debug UI. Broad GPU
+implementation is not authorized.
 
 ## Run
 
