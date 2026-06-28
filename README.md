@@ -104,9 +104,10 @@ plus A5 phase 4 debug overlay category rendering at commit `1ff8f37`, and A5
 exit review at commit `cc3f5d2`, plus A6 game repository readiness decision at
 commit `2219a0f`. A6 is complete. A separate validation game repository is
 approved only when explicitly requested; `world-transvoxel-validation-game` now
-exists with G0 install/run validation complete and G1 root-safe visual capture
-evidence through commit `3c521b0`, including nonzero terrain triangle checks.
-Broad GPU implementation is not authorized.
+exists with G0 install/run validation complete and G1 playable-character visual
+evidence through commit `d9eb31e`, including terrain triangles, terrain
+collision, scripted player motion, and visible player capture. Broad GPU
+implementation is not authorized.
 
 ## Run
 

@@ -47,8 +47,9 @@ complete there, plus A5 phase 2 local reference scene scaffold commit
 plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
-exists with G0 install/run validation complete and G1 root-safe visual capture
-evidence through commit `3c521b0`, including nonzero terrain triangle checks.
+exists with G0 install/run validation complete and G1 playable-character visual
+evidence through commit `d9eb31e`, including terrain triangles, terrain
+collision, scripted player motion, and visible player capture.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -782,7 +783,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `3c521b0 Harden G1 terrain visual evidence`;
+- commit: `d9eb31e Add playable G1 validation character`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -794,13 +795,16 @@ Result:
 - visual capture marker: `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS engines=2
   report=artifacts/g1_visual_capture/g1_visual_capture_report.json`;
 - terrain geometry: `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7;
+- player: `player_motion=2.800` and `player_cyan_samples=432` on Godot 4.6.3
+  and Godot 4.7;
 - engines: Godot 4.6.3 and Godot 4.7;
 - decision: the gray-rectangle-only playtest was not acceptable. The validation
   scene now targets the terrain chunk, shows status text and orientation markers,
-  fails if no terrain `MeshInstance3D` exists, and saves a visual capture for
-  inspection. The repository-root project is notice-only; addon-enabled playtest
-  projects are generated under `artifacts/.../project`. Human rerun confirmation
-  is next.
+  fails if no terrain `MeshInstance3D` exists, verifies terrain collision plus
+  scripted player movement with human input disabled, and saves a visual capture
+  containing the player. The repository-root project is notice-only;
+  addon-enabled playtest projects are generated under `artifacts/.../project`.
+  Human rerun confirmation is next.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1526,8 +1530,8 @@ Exit:
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
   phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4/A5 phase 5
-  and A6 commits plus the validation-game G0/G1 root-safe visual-capture commit
-  and points further work to the approved next boundary.
+  and A6 commits plus the validation-game G0/G1 playable-character visual
+  evidence commit and points further work to the approved next boundary.
 
 ## Next finite steps
 
