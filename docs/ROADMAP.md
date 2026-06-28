@@ -359,7 +359,9 @@ phase 4 debug overlay category rendering is complete at commit `1ff8f37`, and
 A5 exit review is complete at commit `cc3f5d2`. A6 game repository readiness
 decision is complete at commit `2219a0f`. A separate validation game repository
 is approved only when explicitly requested. `world-transvoxel-validation-game`
-exists with G0 install/run validation complete and first-person playable-world
-target evidence through commit `d7848dc`, including terrain triangles, terrain
-collision, scripted player motion, crosshair, visible player capture, and the
-larger playable-world target contract; human rerun confirmation is pending.
+exists with G0 install/run validation complete, first-person playable-world
+target evidence, and G2 first-person flat baseline evidence through commit
+`1f839f3`, including flat generation profile selection, terrain triangles,
+terrain collision, scripted player motion, scripted jump, crosshair, visible
+player capture, and the larger playable-world target contract; human rerun
+confirmation is pending.

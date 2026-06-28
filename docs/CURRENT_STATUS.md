@@ -47,10 +47,11 @@ complete there, plus A5 phase 2 local reference scene scaffold commit
 plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
-exists with G0 install/run validation complete and first-person playable-world
-target evidence through commit `d7848dc`, including terrain triangles, terrain
-collision, scripted player motion, crosshair, visible player capture, and the
-larger playable-world target contract.
+exists with G0 install/run validation complete, first-person playable-world
+target evidence, and G2 first-person flat baseline evidence through commit
+`1f839f3`, including flat generation profile selection, terrain triangles,
+terrain collision, scripted player motion, scripted jump, crosshair, visible
+player capture, and the larger playable-world target contract.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -784,7 +785,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `d7848dc Add playable world target and first-person baseline`;
+- commit: `1f839f3 Complete first-person flat baseline gate`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -794,12 +795,20 @@ Result:
   engines=2
   report=artifacts/root_project_safe_import/root_project_safe_import_report.json`;
 - playable-world marker: `WT_VALIDATION_PLAYABLE_WORLD_TARGET_PASS
-  next=g2_first_person_baseline`;
+  next=g3_terrain_generation_modes`;
+- G2 marker: `WT_VALIDATION_G2_CONTRACT_PASS
+  implementation=first_person_flat_baseline
+  next=g3_terrain_generation_modes`;
+- G2 smoke marker: `WT_VALIDATION_G2_SMOKE_PASS engines=2
+  report=artifacts/g2_first_person_baseline/g2_first_person_baseline_report.json`;
 - visual capture marker: `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS engines=2
   report=artifacts/g1_visual_capture/g1_visual_capture_report.json`;
 - terrain geometry: `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7;
 - player: `player_motion=2.800` and `player_cyan_samples=432` on Godot 4.6.3
   and Godot 4.7;
+- G2 player probes: `walk_motion=2.800` and `jump_height=1.080` on Godot 4.6.3
+  and Godot 4.7;
+- generation: `profile_id=flat_baseline`, `source_mode=FLAT`, `seed=1`;
 - view: first-person camera/crosshair for human play; overview camera mode only
   for automated capture;
 - engines: Godot 4.6.3 and Godot 4.7;
@@ -809,7 +818,8 @@ Result:
   scripted player movement with human input disabled, and saves a visual capture
   containing the player. The repository-root project is notice-only;
   addon-enabled playtest projects are generated under `artifacts/.../project`.
-  Human rerun confirmation is next.
+  G2 first-person flat baseline is programmatically complete; G3 terrain
+  generation modes are next. Human rerun confirmation remains pending.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
