@@ -46,7 +46,8 @@ complete there, plus A5 phase 2 local reference scene scaffold commit
 `f0ad840`, plus A5 phase 4 debug overlay category rendering commit `1ff8f37`,
 plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
-approved only when explicitly requested.
+approved only when explicitly requested. `world-transvoxel-validation-game` now
+exists with G0 install/run validation complete at commit `8923f6e`.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -739,6 +740,31 @@ Result:
   and the full A5 exit review;
 - decision: the separate validation game repository may be created when the user
   explicitly asks. This is not a production-ready terrain claim.
+
+World Transvoxel Validation Game G0 install/run validation scaffold - completed
+outside this sandbox.
+
+Commands:
+
+```console
+python tools/validate_g0_contract.py
+python tools/g0_install_run_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-validation-game`;
+- commit: `8923f6e Create validation game G0 install run scaffold`;
+- marker: `WT_VALIDATION_G0_CONTRACT_PASS
+  implementation=install_run_validation_scaffold
+  next=human_visible_playtest_confirmation`;
+- smoke marker: `WT_VALIDATION_G0_SMOKE_PASS engines=2
+  report=artifacts/g0_install_run_smoke/g0_install_run_smoke_report.json`;
+- composed sources: `world-transvoxel` commit `a84256e` and
+  `world-transvoxel-terrain` commit `2219a0f`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- decision: G0 install/run validation is complete. Next validation-game work is
+  G1 human-visible playtest confirmation.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1449,8 +1475,7 @@ Scope:
   `world-transvoxel`;
 - keep `world-transvoxel-terrain` as the reusable terrain addon above
   `world-transvoxel`;
-- keep the separate validation game repository uncreated unless the user
-  explicitly asks for it;
+- keep `world-transvoxel-validation-game` as the separate validation repository;
 - use the official MIT-backed backend first;
 - keep GDScript limited to scaffolding, input, debug UI, and test harness glue;
 - keep hot terrain work in native code, low-level addon paths, binary formats,
@@ -1465,14 +1490,15 @@ Exit:
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
   phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4/A5 phase 5
-  and A6 commits and points further work to the approved next boundary.
+  and A6 commits plus the validation-game G0 commit and points further work to
+  the approved next boundary.
 
 ## Next finite steps
 
-1. Do not create a separate validation game repository unless the user explicitly
-   asks for it.
-2. If requested, create a small validation game repository that imports
-   `world-transvoxel` and `world-transvoxel-terrain`; do not fork the sandbox.
+1. In `world-transvoxel-validation-game`, do G1 human-visible playtest
+   confirmation.
+2. Record visual, orientation, artifact, popping, or performance failures as
+   addon follow-up work, not hidden validation-game workarounds.
 3. Keep production game systems, GPU compute, fluids, planets, and 0BSD backend
    replacement out of scope until separately contracted.
 

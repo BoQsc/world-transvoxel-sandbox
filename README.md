@@ -103,8 +103,9 @@ plus A5 phase 3 backend reference-scene runtime smoke at commit `f0ad840`,
 plus A5 phase 4 debug overlay category rendering at commit `1ff8f37`, and A5
 exit review at commit `cc3f5d2`, plus A6 game repository readiness decision at
 commit `2219a0f`. A6 is complete. A separate validation game repository is
-approved only when explicitly requested. Broad GPU implementation is not
-authorized.
+approved only when explicitly requested; `world-transvoxel-validation-game` now
+exists with G0 install/run validation complete at commit `8923f6e`. Broad GPU
+implementation is not authorized.
 
 ## Run
 
