@@ -40,8 +40,9 @@ commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
 phase 2 bridge/storage fixture commit `4b8855c`, plus A4 phase 3 terrain-world
 lifecycle commit `b28c623`, plus A4 phase 4 reference runtime/cold-idle
 validation commit `9007b83`, plus A4 phase 5 exit-review commit `a02e8cc`; A4
-is complete there. Next work belongs in `world-transvoxel-terrain` as A5 local
-reference scene and debug UI. S4 closed with CPU/native
+is complete there. A5 phase 1 debug snapshot contract commit `809ecf6` is also
+complete there. Next work belongs in `world-transvoxel-terrain` as A5 phase 2
+local reference scene scaffold. S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement unless a new explicit contract moves those items into scope.
@@ -554,6 +555,34 @@ Result:
 - decision: A4 is complete at the terrain-addon API/control-plane level. Next
   work is A5 local reference scene and debug UI in `world-transvoxel-terrain`,
   not a game repository.
+
+World Transvoxel Terrain A5 phase 1 debug snapshot contract - completed outside
+this sandbox.
+
+Commands:
+
+```console
+python tools/validate_a5_phase1.py
+python tools/a5_phase1_debug_snapshot_smoke.py
+python tools/a4_phase5_exit_review.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `809ecf6 Add A5 phase 1 debug snapshot contract`;
+- marker: `WT_TERRAIN_A5_PHASE1_CONTRACT_PASS
+  next=a5_phase2_local_reference_scene_scaffold
+  implementation=debug_snapshot_contract`;
+- Godot marker: `WT_TERRAIN_A5_PHASE1_SMOKE_PASS engines=2
+  report=artifacts/a5_phase1_debug_snapshot/a5_phase1_debug_snapshot_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- evidence: `WtTerrainDebugSnapshot.capture()` exposes stable world, terrain
+  profile, generation profile, storage profile, recovery policy, budget,
+  collision, streaming, edit, and material categories without starting hidden
+  backend work;
+- decision: A5 is active. Next work is A5 phase 2 local reference scene scaffold
+  in `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1256,7 +1285,7 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A5 local reference scene and debug UI.
+moves to `world-transvoxel-terrain` A5 phase 2 local reference scene scaffold.
 
 Scope:
 
@@ -1278,11 +1307,11 @@ Exit:
 
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
-  phase 4/A4 phase 5 commits and points further work to that repo.
+  phase 4/A4 phase 5/A5 phase 1 commits and points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, start A5 local reference scene and debug UI.
+1. In `world-transvoxel-terrain`, do A5 phase 2 local reference scene scaffold.
 2. Keep A5 local to addon smoke evidence; do not create the game repository.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
    has its own package boundary and local smoke tests.
