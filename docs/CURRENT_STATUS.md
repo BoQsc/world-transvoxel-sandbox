@@ -43,8 +43,9 @@ validation commit `9007b83`, plus A4 phase 5 exit-review commit `a02e8cc`; A4
 is complete there. A5 phase 1 debug snapshot contract commit `809ecf6` is also
 complete there, plus A5 phase 2 local reference scene scaffold commit
 `efd8404`, plus A5 phase 3 backend reference-scene runtime smoke commit
-`f0ad840`. Next work belongs in `world-transvoxel-terrain` as A5 phase 4 debug
-overlay category rendering. S4 closed with CPU/native
+`f0ad840`, plus A5 phase 4 debug overlay category rendering commit `1ff8f37`.
+Next work belongs in `world-transvoxel-terrain` as A5 phase 5 A5 exit review.
+S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement unless a new explicit contract moves those items into scope.
@@ -645,6 +646,37 @@ Result:
   render/collision resources after viewer removal;
 - decision: A5 remains active. Next work is A5 phase 4 debug overlay category
   rendering in `world-transvoxel-terrain`, not a game repository.
+
+World Transvoxel Terrain A5 phase 4 debug overlay category rendering -
+completed outside this sandbox.
+
+Commands:
+
+```console
+python tools/validate_a5_phase4.py
+python tools/a5_phase4_debug_overlay_categories_smoke.py
+python tools/a5_phase3_reference_scene_runtime_smoke.py
+python tools/a5_phase2_reference_scene_scaffold_smoke.py
+python tools/a5_phase1_debug_snapshot_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `1ff8f37 Add A5 phase 4 debug overlay category rendering`;
+- marker: `WT_TERRAIN_A5_PHASE4_CONTRACT_PASS
+  next=a5_phase5_a5_exit_review
+  implementation=debug_overlay_category_rendering`;
+- Godot marker: `WT_TERRAIN_A5_PHASE4_SMOKE_PASS engines=2
+  report=artifacts/a5_phase4_debug_overlay_categories/a5_phase4_debug_overlay_categories_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- evidence: `WtTerrainDebugOverlayFormatter` renders world, terrain profile,
+  generation profile, storage profile, recovery policy, budget, collision,
+  streaming, edit, and material sections; the backend-backed smoke verifies live
+  backend state, cold-idle, queue state, render resources, collision resources,
+  and material placeholder state in overlay text;
+- decision: A5 remains active for exit review. Next work is A5 phase 5 A5 exit
+  review in `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1347,7 +1379,7 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A5 phase 4 debug overlay category rendering.
+moves to `world-transvoxel-terrain` A5 phase 5 A5 exit review.
 
 Scope:
 
@@ -1369,13 +1401,12 @@ Exit:
 
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
-  phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3 commits and points
-  further work to that repo.
+  phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4 commits and
+  points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A5 phase 4 debug overlay category
-   rendering.
+1. In `world-transvoxel-terrain`, do A5 phase 5 A5 exit review.
 2. Keep A5 local to addon smoke evidence; do not create the game repository.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
    has its own package boundary and local smoke tests.

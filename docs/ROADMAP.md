@@ -357,4 +357,6 @@ phase 2 local reference scene scaffold is complete at commit `efd8404`. The next
 valid action is A5 phase 3 backend reference-scene runtime smoke in
 `world-transvoxel-terrain`, not a game repository. A5 phase 3 is now complete at
 commit `f0ad840`; the next valid action is A5 phase 4 debug overlay category
-rendering in `world-transvoxel-terrain`.
+rendering in `world-transvoxel-terrain`. A5 phase 4 is now complete at commit
+`1ff8f37`; the next valid action is A5 phase 5 A5 exit review in
+`world-transvoxel-terrain`.
