@@ -47,9 +47,10 @@ complete there, plus A5 phase 2 local reference scene scaffold commit
 plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
-exists with G0 install/run validation complete and G1 playable-character visual
-evidence through commit `d9eb31e`, including terrain triangles, terrain
-collision, scripted player motion, and visible player capture.
+exists with G0 install/run validation complete and first-person playable-world
+target evidence through commit `d7848dc`, including terrain triangles, terrain
+collision, scripted player motion, crosshair, visible player capture, and the
+larger playable-world target contract.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -783,7 +784,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `d9eb31e Add playable G1 validation character`;
+- commit: `d7848dc Add playable world target and first-person baseline`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -792,11 +793,15 @@ Result:
 - root safe-import marker: `WT_VALIDATION_ROOT_PROJECT_SAFE_IMPORT_PASS
   engines=2
   report=artifacts/root_project_safe_import/root_project_safe_import_report.json`;
+- playable-world marker: `WT_VALIDATION_PLAYABLE_WORLD_TARGET_PASS
+  next=g2_first_person_baseline`;
 - visual capture marker: `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS engines=2
   report=artifacts/g1_visual_capture/g1_visual_capture_report.json`;
 - terrain geometry: `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7;
 - player: `player_motion=2.800` and `player_cyan_samples=432` on Godot 4.6.3
   and Godot 4.7;
+- view: first-person camera/crosshair for human play; overview camera mode only
+  for automated capture;
 - engines: Godot 4.6.3 and Godot 4.7;
 - decision: the gray-rectangle-only playtest was not acceptable. The validation
   scene now targets the terrain chunk, shows status text and orientation markers,
