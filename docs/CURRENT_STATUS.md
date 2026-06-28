@@ -51,12 +51,14 @@ exists with G0 install/run validation complete, first-person playable-world
 target evidence, G2 first-person flat baseline evidence, G3 flat/mountain
 generation evidence, G4 terrain edit interaction evidence, G5
 material/performance baseline evidence, and G6 profile-selectable playable-world
-evidence through commit `cf12e61`, including 4 by 4 baked page sets, flat and
+evidence through commit `6417d34`, including 4 by 4 baked page sets, flat and
 mountain captures, terrain triangles, terrain collision, scripted player motion,
 scripted jump, crosshair, visible player capture, first-person carve/place
 affordance, edit commits, replacement metrics, materialized checker terrain, GPU
 watt sampling, flat/mountain playable profile selection, and first-person plus
-overview captures.
+overview captures. Human feedback confirms the fixture is still small and
+performance cannot be judged from this scale; edit/place white blink was fixed
+by continuous material reapply.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -790,7 +792,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `cf12e61 Add profile selectable playable world gate`;
+- commit: `6417d34 Stabilize material reapply during edits`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -848,6 +850,9 @@ Result:
   playable scene, submit 16 viewer positions, keep 8 render/collision resources,
   apply materials, perform automated carve/construct, and save first-person plus
   overview captures;
+- human feedback: the fixture is still small, multi-chunk evidence is not
+  obvious while playing, 30 FPS feels acceptable at this scale only, and
+  edit/place white blink was fixed by continuous material reapply;
 - view: first-person camera/crosshair for human play; overview camera mode only
   for automated capture;
 - engines: Godot 4.6.3 and Godot 4.7;
@@ -858,9 +863,9 @@ Result:
   containing the player. The repository-root project is notice-only;
   addon-enabled playtest projects are generated under `artifacts/.../project`.
   G2 first-person flat baseline, G3 terrain generation modes, G4 terrain edit
-  interaction, G5 material/performance baseline, and G6 profile-selectable
-  playable world are programmatically complete; human visual verification is
-  next.
+  interaction, G5 material/performance baseline, and G6 small multi-chunk
+  profile-selectable playable world are programmatically complete; larger
+  streaming-scale terrain validation is next.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1591,8 +1596,8 @@ Exit:
 
 ## Next finite steps
 
-1. Human visually verifies `world-transvoxel-validation-game` G6 generated
-   flat and mountain playable profiles.
+1. Implement larger streaming-scale terrain validation with explicit visible
+   chunk count and performance budget.
 2. Record visual, orientation, artifact, popping, or performance failures as
    addon follow-up work, not hidden validation-game workarounds.
 3. Keep production game systems, GPU compute, fluids, planets, and 0BSD backend

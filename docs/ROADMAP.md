@@ -363,9 +363,12 @@ exists with G0 install/run validation complete, first-person playable-world
 target evidence, G2 first-person flat baseline evidence, G3 flat/mountain
 generation evidence, G4 terrain edit interaction evidence, G5
 material/performance baseline evidence, and G6 profile-selectable playable-world
-evidence through commit `cf12e61`, including 4 by 4 baked page sets, flat and
+evidence through commit `6417d34`, including 4 by 4 baked page sets, flat and
 mountain captures, terrain triangles, terrain collision, scripted player motion,
 scripted jump, crosshair, visible player capture, first-person carve/place
 affordance, edit commits, replacement metrics, materialized checker terrain, GPU
 watt sampling, flat/mountain playable profile selection, and first-person plus
-overview captures; human visual verification is next.
+overview captures; human feedback confirms the fixture is still small and
+performance cannot be judged from this scale; edit/place white blink was fixed
+by continuous material reapply. Larger streaming-scale terrain validation is
+next.
