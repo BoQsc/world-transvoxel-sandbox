@@ -106,10 +106,11 @@ commit `2219a0f`. A6 is complete. A separate validation game repository is
 approved only when explicitly requested; `world-transvoxel-validation-game` now
 exists with G0 install/run validation complete, first-person playable-world
 target evidence, G2 first-person flat baseline evidence, and G3 flat/mountain
-generation evidence through commit `9aa7018`, including 4 by 4 baked page sets,
-flat and mountain captures, terrain triangles, terrain collision, scripted
-player motion, scripted jump, crosshair, visible player capture, and the larger
-playable-world target contract. Broad GPU implementation is not authorized.
+generation evidence plus G4 terrain edit interaction evidence through commit
+`3d5df31`, including 4 by 4 baked page sets, flat and mountain captures, terrain
+triangles, terrain collision, scripted player motion, scripted jump, crosshair,
+visible player capture, first-person carve/place affordance, edit commits, and
+replacement metrics. Broad GPU implementation is not authorized.
 
 ## Run
 

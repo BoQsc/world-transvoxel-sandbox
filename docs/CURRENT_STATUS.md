@@ -49,10 +49,11 @@ commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
 exists with G0 install/run validation complete, first-person playable-world
 target evidence, G2 first-person flat baseline evidence, and G3 flat/mountain
-generation evidence through commit `9aa7018`, including 4 by 4 baked page sets,
-flat and mountain captures, terrain triangles, terrain collision, scripted
-player motion, scripted jump, crosshair, visible player capture, and the larger
-playable-world target contract.
+generation evidence plus G4 terrain edit interaction evidence through commit
+`3d5df31`, including 4 by 4 baked page sets, flat and mountain captures, terrain
+triangles, terrain collision, scripted player motion, scripted jump, crosshair,
+visible player capture, first-person carve/place affordance, edit commits, and
+replacement metrics.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -786,7 +787,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `9aa7018 Add flat and mountain generation mode gate`;
+- commit: `3d5df31 Add first-person terrain edit interaction gate`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -796,7 +797,7 @@ Result:
   engines=2
   report=artifacts/root_project_safe_import/root_project_safe_import_report.json`;
 - playable-world marker: `WT_VALIDATION_PLAYABLE_WORLD_TARGET_PASS
-  next=g4_terrain_edit_interaction`;
+  next=g5_material_performance_baseline`;
 - G2 marker: `WT_VALIDATION_G2_CONTRACT_PASS
   implementation=first_person_flat_baseline
   next=g3_terrain_generation_modes`;
@@ -807,6 +808,11 @@ Result:
   next=g4_terrain_edit_interaction`;
 - G3 smoke marker: `WT_VALIDATION_G3_SMOKE_PASS profiles=2 engines=2
   report=artifacts/g3_generation_modes/g3_generation_modes_report.json`;
+- G4 marker: `WT_VALIDATION_G4_CONTRACT_PASS
+  implementation=first_person_edit_interaction
+  next=g5_material_performance_baseline`;
+- G4 smoke marker: `WT_VALIDATION_G4_SMOKE_PASS engines=2
+  report=artifacts/g4_edit_interaction/g4_edit_interaction_report.json`;
 - visual capture marker: `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS engines=2
   report=artifacts/g1_visual_capture/g1_visual_capture_report.json`;
 - terrain geometry: `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7;
@@ -817,6 +823,10 @@ Result:
 - generation: `profile_id=flat_baseline`, `source_mode=FLAT`, `seed=1`;
 - G3 generation: `flat_large` and `mountain_large`, 16 baked pages each,
   `flat_triangles=4096`, `mountain_triangles=5436`, `mountain_span=7.862`;
+- G4 edits: left mouse carves, right mouse constructs/places; automated carve
+  and place commit through the same interactor with human input disabled;
+  replacement count `2`, carve/place commit frames <= 1, settle frames <= 3 on
+  Godot 4.6.3 and Godot 4.7;
 - view: first-person camera/crosshair for human play; overview camera mode only
   for automated capture;
 - engines: Godot 4.6.3 and Godot 4.7;
@@ -826,9 +836,9 @@ Result:
   scripted player movement with human input disabled, and saves a visual capture
   containing the player. The repository-root project is notice-only;
   addon-enabled playtest projects are generated under `artifacts/.../project`.
-  G2 first-person flat baseline and G3 terrain generation modes are
-  programmatically complete; G4 terrain edit interaction is next. Human rerun
-  confirmation remains pending.
+  G2 first-person flat baseline, G3 terrain generation modes, and G4 terrain
+  edit interaction are programmatically complete; G5 material/performance
+  baseline is next. Human rerun confirmation remains pending.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
