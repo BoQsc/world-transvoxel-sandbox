@@ -38,8 +38,9 @@ separate game repository. The active post-S5 workstream is governed by
 addon-local smoke harness commit `8609c99`, plus A3 `world-transvoxel` bridge
 commit `ef03d55`, plus A4 phase 1 resource semantics commit `2774664`, plus A4
 phase 2 bridge/storage fixture commit `4b8855c`, plus A4 phase 3 terrain-world
-lifecycle commit `b28c623`; next work belongs there as A4 phase 4
-reference-profile runtime/cold-idle validation. S4 closed with CPU/native
+lifecycle commit `b28c623`, plus A4 phase 4 reference runtime/cold-idle
+validation commit `9007b83`; next work belongs there as A4 phase 5 A4 exit
+review. S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, a game repository, or 0BSD backend
 replacement unless a new explicit contract moves those items into scope.
@@ -487,6 +488,42 @@ Result:
 - decision: A4 remains active. Next work is A4 phase 4 reference-profile
   runtime/cold-idle validation in `world-transvoxel-terrain`, not a game
   repository.
+
+World Transvoxel Terrain A4 phase 4 reference runtime/cold-idle validation -
+completed outside this sandbox.
+
+Commands:
+
+```console
+python tools/validate_a4_phase4.py
+python tools/a4_phase4_reference_runtime_cold_idle_smoke.py
+```
+
+Result:
+
+- repository: `world-transvoxel-terrain`;
+- commit: `9007b83 Add A4 phase 4 runtime cold idle validation`;
+- marker: `WT_TERRAIN_A4_PHASE4_CONTRACT_PASS
+  next=a4_phase5_a4_exit_review
+  implementation=reference_profile_runtime_cold_idle`;
+- Godot marker: `WT_TERRAIN_A4_PHASE4_SMOKE_PASS engines=2
+  report=artifacts/a4_phase4_reference_runtime_cold_idle/a4_phase4_reference_runtime_cold_idle_report.json`;
+- engines: Godot 4.6.3 and Godot 4.7;
+- contents: public `WtTerrainWorld.update_viewer()`, `remove_viewer()`,
+  `query_chunk_state()`, runtime metrics, cold-idle summary, focused
+  `WtTerrainRuntimeAudit`, phase 4 smoke, Python runner, validator, docs, and
+  committed `.gd.uid` metadata;
+- evidence: public `WtTerrainWorld` starts the official backend lifecycle
+  fixture, verifies the default 2048 x 2048 x 64 `+Y` up finite reference
+  profile, streams one viewer, waits for render/collision readiness, queries the
+  ready origin chunk, holds selected runtime counters stable while cold idle,
+  removes the viewer, and stops cleanly;
+- claim boundary: this is `reference_profile_runtime_cold_idle`; it does not
+  prove a generated full 2048 x 2048 x 64 world, broad movement, dynamic LOD,
+  seams, visual smoothness, debug UI, native terrain generation policy, optional
+  systems, or game-ready terrain;
+- decision: A4 remains active for one finite closure step. Next work is A4 phase
+  5 A4 exit review in `world-transvoxel-terrain`, not a game repository.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1189,8 +1226,7 @@ Result:
 ## Current active task
 
 Post-S5 active task - keep sandbox tracking aligned while implementation work
-moves to `world-transvoxel-terrain` A4 phase 4 reference-profile runtime/cold-idle
-validation.
+moves to `world-transvoxel-terrain` A4 phase 5 A4 exit review.
 
 Scope:
 
@@ -1211,16 +1247,14 @@ Scope:
 Exit:
 
 - this handoff is satisfied when the sandbox status records the
-  `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3
-  commits and points further work to that repo.
+  `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
+  phase 4 commits and points further work to that repo.
 
 ## Next finite steps
 
-1. In `world-transvoxel-terrain`, do A4 phase 4 reference-profile runtime/cold-idle
-   validation.
-2. A4 phase 4 must keep using the bridge without copying `world-transvoxel`,
-   sandbox implementation, or MIT Transvoxel topology data into this terrain
-   repo.
+1. In `world-transvoxel-terrain`, do A4 phase 5 A4 exit review.
+2. A4 phase 5 must either close A4 with evidence or name the exact remaining A4
+   implementation slice before A5 can start.
 3. Do not create the separate game repository until `world-transvoxel-terrain`
    has its own package boundary and local smoke tests.
 

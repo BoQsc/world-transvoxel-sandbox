@@ -95,9 +95,9 @@ API/source-layout contract at commit `f076597`, plus A2 addon-local smoke
 harness at commit `8609c99`, plus A3 `world-transvoxel` bridge at commit
 `ef03d55`, plus A4 phase 1 resource semantics at commit `2774664`, plus A4
 phase 2 bridge/storage fixture at commit `4b8855c`, plus A4 phase 3
-terrain-world lifecycle at commit `b28c623`; next work belongs there as A4
-phase 4 reference-profile runtime/cold-idle validation. Broad GPU
-implementation is not authorized.
+terrain-world lifecycle at commit `b28c623`, plus A4 phase 4 reference
+runtime/cold-idle validation at commit `9007b83`; next work belongs there as
+A4 phase 5 A4 exit review. Broad GPU implementation is not authorized.
 
 ## Run
 
