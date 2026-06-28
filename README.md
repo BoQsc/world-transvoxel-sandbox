@@ -99,8 +99,9 @@ terrain-world lifecycle at commit `b28c623`, plus A4 phase 4 reference
 runtime/cold-idle validation at commit `9007b83`, plus A4 phase 5 exit review
 at commit `a02e8cc`, plus A5 phase 1 debug snapshot contract at commit
 `809ecf6`, plus A5 phase 2 local reference scene scaffold at commit `efd8404`.
-Next work belongs in `world-transvoxel-terrain` as A5 phase 3 backend
-reference-scene runtime smoke. Broad GPU implementation is not authorized.
+plus A5 phase 3 backend reference-scene runtime smoke at commit `f0ad840`.
+Next work belongs in `world-transvoxel-terrain` as A5 phase 4 debug overlay
+category rendering. Broad GPU implementation is not authorized.
 
 ## Run
 
