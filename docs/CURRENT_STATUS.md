@@ -48,12 +48,13 @@ plus A5 exit review commit `cc3f5d2`, plus A6 game repository readiness decision
 commit `2219a0f`; A6 is complete there. A separate validation game repository is
 approved only when explicitly requested. `world-transvoxel-validation-game` now
 exists with G0 install/run validation complete, first-person playable-world
-target evidence, G2 first-person flat baseline evidence, and G3 flat/mountain
-generation evidence plus G4 terrain edit interaction evidence through commit
-`3d5df31`, including 4 by 4 baked page sets, flat and mountain captures, terrain
-triangles, terrain collision, scripted player motion, scripted jump, crosshair,
-visible player capture, first-person carve/place affordance, edit commits, and
-replacement metrics.
+target evidence, G2 first-person flat baseline evidence, G3 flat/mountain
+generation evidence, G4 terrain edit interaction evidence, and G5
+material/performance baseline evidence through commit `c7da4bb`, including 4 by
+4 baked page sets, flat and mountain captures, terrain triangles, terrain
+collision, scripted player motion, scripted jump, crosshair, visible player
+capture, first-person carve/place affordance, edit commits, replacement metrics,
+materialized checker terrain, and GPU watt sampling.
 S4 closed with CPU/native
 retained and compute rejected for now. Do not start broad GPU compute,
 water/lava, planets, structural collapse, production game systems, or 0BSD
@@ -787,7 +788,7 @@ python tools/g1_visual_capture.py --windowed
 Result:
 
 - repository: `world-transvoxel-validation-game`;
-- commit: `3d5df31 Add first-person terrain edit interaction gate`;
+- commit: `c7da4bb Add material performance baseline gate`;
 - marker: `WT_VALIDATION_G1_CONTRACT_PASS
   implementation=human_visible_playtest_guard
   next=human_rerun_confirmation`;
@@ -797,7 +798,7 @@ Result:
   engines=2
   report=artifacts/root_project_safe_import/root_project_safe_import_report.json`;
 - playable-world marker: `WT_VALIDATION_PLAYABLE_WORLD_TARGET_PASS
-  next=g5_material_performance_baseline`;
+  next=g6_profile_selectable_playable_world`;
 - G2 marker: `WT_VALIDATION_G2_CONTRACT_PASS
   implementation=first_person_flat_baseline
   next=g3_terrain_generation_modes`;
@@ -813,6 +814,12 @@ Result:
   next=g5_material_performance_baseline`;
 - G4 smoke marker: `WT_VALIDATION_G4_SMOKE_PASS engines=2
   report=artifacts/g4_edit_interaction/g4_edit_interaction_report.json`;
+- G5 marker: `WT_VALIDATION_G5_CONTRACT_PASS
+  implementation=materialized_performance_baseline
+  next=g6_profile_selectable_playable_world`;
+- G5 smoke marker: `WT_VALIDATION_G5_SMOKE_PASS engines=2
+  power_samples=45 avg_gpu_power_watts=24.41
+  report=artifacts/g5_material_performance/g5_material_performance_report.json`;
 - visual capture marker: `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS engines=2
   report=artifacts/g1_visual_capture/g1_visual_capture_report.json`;
 - terrain geometry: `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7;
@@ -827,6 +834,9 @@ Result:
   and place commit through the same interactor with human input disabled;
   replacement count `2`, carve/place commit frames <= 1, settle frames <= 3 on
   Godot 4.6.3 and Godot 4.7;
+- G5 material/performance: backend terrain meshes receive the validation checker
+  material, visual captures contain colored terrain, and the windowed smoke
+  measured `avg_gpu_power_watts=24.41`;
 - view: first-person camera/crosshair for human play; overview camera mode only
   for automated capture;
 - engines: Godot 4.6.3 and Godot 4.7;
@@ -836,9 +846,9 @@ Result:
   scripted player movement with human input disabled, and saves a visual capture
   containing the player. The repository-root project is notice-only;
   addon-enabled playtest projects are generated under `artifacts/.../project`.
-  G2 first-person flat baseline, G3 terrain generation modes, and G4 terrain
-  edit interaction are programmatically complete; G5 material/performance
-  baseline is next. Human rerun confirmation remains pending.
+  G2 first-person flat baseline, G3 terrain generation modes, G4 terrain edit
+  interaction, and G5 material/performance baseline are programmatically
+  complete; G6 profile-selectable playable world is next.
 
 Future milestone contract guard - S3/S4/S5 scopes are defined before
 implementation.
@@ -1564,13 +1574,13 @@ Exit:
 - this handoff is satisfied when the sandbox status records the
   `world-transvoxel-terrain` A0/A1/A2/A3/A4 phase 1/A4 phase 2/A4 phase 3/A4
   phase 4/A4 phase 5/A5 phase 1/A5 phase 2/A5 phase 3/A5 phase 4/A5 phase 5
-  and A6 commits plus the validation-game G0/G1 playable-character visual
-  evidence commit and points further work to the approved next boundary.
+  and A6 commits plus validation-game G0 through G5 evidence and points further
+  work to the approved next boundary.
 
 ## Next finite steps
 
-1. In `world-transvoxel-validation-game`, rerun the generated G1 human-visible
-   playtest scene and confirm whether the result is now useful.
+1. In `world-transvoxel-validation-game`, implement G6 profile-selectable
+   playable world for flat and mountain playtest profiles.
 2. Record visual, orientation, artifact, popping, or performance failures as
    addon follow-up work, not hidden validation-game workarounds.
 3. Keep production game systems, GPU compute, fluids, planets, and 0BSD backend
